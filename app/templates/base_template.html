@@ -7,7 +7,9 @@
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
-	<title>APredictor</title>   
+
+	<title>ReSTimator - {{ username }} </title>
+
 	<!-- style sheets -->
 	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
@@ -17,7 +19,7 @@
 		
 		<header>
 
-			<h1>APredictor<h1>
+			<h1>ReSTimator Image Goes Here<h1>
 
 		</header>
 		
@@ -32,21 +34,7 @@
 		</div>
 
 		<div id="content">
-
-			<div id="input">
-				<form method="post" action="{{ url_for('NAMETHIS') }}">
-					<label for="yourname">Please enter your name:</label>
-                  	<input type="text" name="yourname" /><br />
-                  	<label for="youremail">Please enter your email:</label>
-                  	<input type="text" name="youremail" /><br />
-                  	<input type="submit" />
-				</form>
-			</div>
-
-			<div id="analysis">
-			
-			</div>
-
+			{% block content %}{% endblock %} <!-- Block control statement: where other templates can insert themselves -->
 		</div>
 		
 		<footer>
