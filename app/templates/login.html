@@ -1,14 +1,16 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
-	<form action="" method="post" name="login">
+	<form class="form-horizontal" role="form" action="" method="post" name="login">
 		
 		{{ form.hidden_tag() }}
 		
+		<div class="form-group">
 		<p>Please enter your OpenID:<br>{{ form.openid(size=80) }}<br></p>
 
 		<p>{{ form.remember_me }} Remember Me</p>
+		</div>
 
-		<p><input type="submit" value="Sign In"></p>
+		<p><input type="submit" value="Sign In" class="btn btn-default"></p>
 		
 	</form>
 {% endblock %}
