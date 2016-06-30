@@ -1,1 +1,17 @@
+# virtual environment
 venv
+
+# Pycharm project files
+.idea
+*.iml
+__pycache__/
+
+config
+
+# pytest 
+.cache
+
+# files too large to push
+*.csv
+*csv.zip
+# keep outer zip and xlsx, but not inner zips and csvs
