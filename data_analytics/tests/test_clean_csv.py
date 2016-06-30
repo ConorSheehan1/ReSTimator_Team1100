@@ -46,3 +46,5 @@ def test_b04_import():
 
 if __name__ == "__main__":
     test_b02_import()
+    test_b03_import()
+    test_b04_import()

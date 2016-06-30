@@ -34,5 +34,6 @@ for value in csv_count_generator:
 
 def test_unzipper():
     assert count_zips == count_csvs
-print(count_zips)
-print(count_csvs)
+
+if __name__ == "__main__":
+    print(count_zips, "should equal", count_csvs)
