@@ -15,34 +15,48 @@ http://stackoverflow.com/questions/16981921/relative-imports-in-python-3
 import sqlite3
 try:
     from data_analytics import clean_csvs
+    from data_analytics import clean_ground_truth
 except ImportError:
     import clean_csvs
+    import clean_ground_truth
 
 
-def populate_db(room_code):
-    # create database and tables
+def create_tables():
     conn = sqlite3.connect(r"./data/Ucd_Occupancy.db")
     cursor = conn.cursor()
-
     # create table
     logs_table = "CREATE TABLE IF NOT EXISTS WiFiLogs " \
                  "(Key VARCHAR, Event_Time VARCHAR, Associated_Client_Count INT, " \
                  "Authenticated_Client_Count INT, PRIMARY KEY (Key, Event_Time));"
     cursor.execute(logs_table)
 
-
-
-    # convert csv to dataframe, and import dataframe to database
-    df = clean_csvs.importer("./data/CSI WiFiLogs/" + room_code + "/")[0]
-    df.to_sql(name='WiFiLogs', flavor='sqlite', con=conn, index=False,  if_exists='append')
+    location_table = "CREATE TABLE IF NOT EXISTS Location (Room VARCHAR, Capacity VARCHAR, PRIMARY KEY(Room));"
+    cursor.execute(location_table)
 
     conn.close()
 
 
+def populate_db(list_of_room_codes):
+    # create database and tables
+    conn = sqlite3.connect(r"./data/Ucd_Occupancy.db")
+
+    # convert csv to dataframe, and import dataframe to database
+    for code in list_of_room_codes:
+        df_logs = clean_csvs.importer("./data/CSI WiFiLogs/" + code + "/")[0]
+        df_logs.to_sql(name='WiFiLogs', flavor='sqlite', con=conn, index=False,  if_exists='append')
+
+    df_location = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx")[1]
+    df_location.to_sql(name='Location', flavor='sqlite', con=conn, index=False,  if_exists='append')
+
+    conn.close()
+
+
+    # print("print", clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx")[1])
+
+
 if __name__ == "__main__":
-    populate_db("B-02")
-    populate_db("B-03")
-    populate_db("B-04")
+    create_tables()
+    populate_db(["B-02", "B-03", "B-04"])
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~ Old stuff using mysql instead of sqlite ~~~~

@@ -13,10 +13,8 @@ import pandas as pd
 def find_lines(file_path):
     start_rows = []
     df = pd.read_excel(file_path, 'CSI')
-    # print(df.head(10))
     for i, row in df.iterrows():
         if "OCCUPANCY" in str(row[0]):
-            # print("print", i, row)
             start_rows.append(i)
     return start_rows
 
@@ -83,13 +81,14 @@ def import_ground_truth(file_path, do_print=False):
         list_of_df_lengths.append(len(ground_truth))
         return ground_truth
 
+    # clean first chunk of data, then concat each subsequent chunk to first chunk
     total_ground_truth = clean(0)
     for i in range(1, len(valid_lines)):
         total_ground_truth = pd.concat([total_ground_truth, clean(i)])
 
-    print(total_ground_truth)
     total_ground_truth = format_df(total_ground_truth)
 
+    # convert rows to columns
     capacity = capacity.T
     capacity.reset_index(inplace=True)
     capacity.rename(columns={capacity.columns[0]: "Room", capacity.columns[1]: "Capacity"}, inplace=True)

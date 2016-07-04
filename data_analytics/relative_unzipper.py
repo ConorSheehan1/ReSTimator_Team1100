@@ -71,6 +71,10 @@ def unzipper_inner(path, new_folder):
 
 
 def fix_windows_path(string):
+    '''
+    update to manipulate existing string rather than creating new one?
+    check speed and memory usage
+    '''
     new_string = ""
     for i in range(len(string)):
         # two backslashes need to escape escape char
