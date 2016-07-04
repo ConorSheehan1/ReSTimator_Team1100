@@ -48,6 +48,7 @@ class Location(db.Model):
 	building = db.Column(db.String(45), primary_key=True)
 	room = db.Column(db.String(10), primary_key=True)
 	capacity = db.Column(db.Integer)
+	occupy = db.relationship("Occupy", backref="location", lazy="dynamic") 
 
 	def __init__(self, campus, building, room, capacity):
 		''''''
@@ -64,6 +65,7 @@ class Module(db.Model):
 	''''''
 	code = db.Column(db.String(10), primary_key=True)
 	reg_students = db.Column(db.Integer)
+	occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column! / backref adds a virtual column
 
 	def __init__(self, code, reg_students):
 		''''''
@@ -78,22 +80,22 @@ class Occupy(db.Model):
 	day = db.Column(db.String(3))
 	time = db.Column(db.String(20), primary_key=True)
 	date = db.Column(db.String(20), primary_key=True)
-	code = db.Column(db.String(10))
-	room = db.Column(db.String(10), primary_key=True)
 	ground_truth = db.Column(db.Integer)
 	auth = db.Column(db.Integer)
 	assoc = db.Column(db.Integer)
+	module_code = db.Column(db.String(10), db.ForeignKey(module.code), primary_key=True)
+	room_id = db.Column(db.String(10), db.ForeignKey(location.room), primary_key=True)
 
 	def __init__(self, day, time, date, module, room, ground_truth, auth. assoc):
 		''''''
 		self.day = day
 		self.time = time
 		self.date = date
-		self.code = code
-		self.room = room
 		self.ground_truth = ground_truth
 		self.auth = auth
 		self.assoc = assoc
+		self.module_code = module_code
+		self.room_id = room_id
 
 	def __repr__(self):
-		return "<Day: %s, Time: %s, Date: %s, Module Code: %s, Room: %s, Ground Truth: %d, Authenticated: %d, Associated: %d" % (self.day, self.time, self.date, self.code, self.room, self.ground_truth, self.auth, self.assoc)
+		return "<Day: %s, Time: %s, Date: %s, Module Code: %s, Room: %s, Ground Truth: %d, Authenticated: %d, Associated: %d" % (self.day, self.time, self.date, self.module_code, self.room_id, self.ground_truth, self.auth, self.assoc)
