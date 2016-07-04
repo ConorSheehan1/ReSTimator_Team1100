@@ -30,6 +30,8 @@ def populate_db(room_code):
                  "Authenticated_Client_Count INT, PRIMARY KEY (Key, Event_Time));"
     cursor.execute(logs_table)
 
+
+
     # convert csv to dataframe, and import dataframe to database
     df = clean_csvs.importer("./data/CSI WiFiLogs/" + room_code + "/")[0]
     df.to_sql(name='WiFiLogs', flavor='sqlite', con=conn, index=False,  if_exists='append')
