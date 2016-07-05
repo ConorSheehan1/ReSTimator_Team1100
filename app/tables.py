@@ -1,5 +1,6 @@
 from app import db
 
+# Declarative Base - http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 '''The baseclass for all your models is called db.Model. 
 It’s stored on the SQLAlchemy instance you have to create. 
 
@@ -12,35 +13,35 @@ Primary keys are marked with primary_key=True
 
 class Users(db.Model):
 	''''''
-    username = db.Column(db.String(80), primary_key=True) # Column to define a column
-    password = db.Column(db.String(120))
+	username = db.Column(db.String(80), primary_key=True) # Column to define a column
+	password = db.Column(db.String(120))
 
-    def __init__(self, username, email):
-    	''''''
-        self.username = username
-        self.password = password
+	def __init__(self, username, password):
+		''''''
+		self.username = username
+		self.password = password
 
-    def __repr__(self):
-    	''''''
-        return "<User: %s>" % self.username
+	def __repr__(self):
+		''''''
+		return "<User: %s>" % self.username
 
 class Results(db.Model):
 	''''''
 	day = db.Column(db.String(3), primary_key=True)
 	time = db.Column(db.String(20), primary_key=True)
-	module = db.Column(db.Sting(10), primary_key=True)
+	module = db.Column(db.String(10), primary_key=True)
 	estimate = db.Column(db.Integer)
 
-    def __init__(self, day, time, modulem estimate):
-    	''''''
-    	self.day = day
-    	self.time = time
-    	self.module = module
-    	self.estimate = estimate
+	def __init__(self, day, time, module, estimate):
+		''''''
+		self.day = day
+		self.time = time
+		self.module = module
+		self.estimate = estimate
 
-    def __repr__(self):
-    	''''''
-        return "<Day: %s, Time: %s, Module Code: %s, Est.: %d>" % (self.day, self.time, self.module, self.estimate)
+	def __repr__(self):
+		''''''
+		return "<Day: %s, Time: %s, Module Code: %s, Est.: %d>" % (self.day, self.time, self.module, self.estimate)
 
 class Location(db.Model):
 	''''''
@@ -65,7 +66,7 @@ class Module(db.Model):
 	''''''
 	code = db.Column(db.String(10), primary_key=True)
 	reg_students = db.Column(db.Integer)
-	occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column! / backref adds a virtual column
+	occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column / backref adds a virtual column
 
 	def __init__(self, code, reg_students):
 		''''''
@@ -83,10 +84,10 @@ class Occupy(db.Model):
 	ground_truth = db.Column(db.Integer)
 	auth = db.Column(db.Integer)
 	assoc = db.Column(db.Integer)
-	module_code = db.Column(db.String(10), db.ForeignKey(module.code), primary_key=True)
-	room_id = db.Column(db.String(10), db.ForeignKey(location.room), primary_key=True)
+	module_code = db.Column(db.String(10), db.ForeignKey("module.code"), primary_key=True)
+	room_id = db.Column(db.String(10), db.ForeignKey("location.room"), primary_key=True)
 
-	def __init__(self, day, time, date, module, room, ground_truth, auth. assoc):
+	def __init__(self, day, time, date, module, room, ground_truth, auth, assoc):
 		''''''
 		self.day = day
 		self.time = time

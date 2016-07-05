@@ -6,19 +6,22 @@
 		
 		<div class="form-group">
 			<p>
-				Username:<br> {{ form.username(size=80) }}<br>
-				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				Day: {{ form.day() }}
+				{% for error in form.day.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 			<p>
-				Password:<br> {{ form.password() }}<br>
-				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				Time: {{ form.time() }}
+				{% for error in form.time.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 			<p>
-				{{ form.remember_me }} Remember Me
+				Module: {{ form.module() }}
+				{% for error in form.module.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
 			</p>
 		</div>
 
