@@ -45,12 +45,12 @@ def fix_merged_cells(file_path, file_name):
     df_total_module = read_timetable(fixed_path, list_of_sheets[0])
     for sheet in list_of_sheets[1:]:
         df_total_module = pd.concat([df_total_module, read_timetable(fixed_path, sheet)])
-    # print(len(df_total_module.Module_Code.unique()))
+    # print(len(df_total_module.module_code.unique()))
     # print(len(df_total_module))
     df_total_module.drop_duplicates(inplace=True)
     df_total_module.dropna(inplace=True)
 
-    print(df_total_module)
+    # print(df_total_module)
     return df_total_module
 
 
@@ -75,7 +75,7 @@ def read_timetable(file_path, sheet, last_column=10):
                 if type(tuple[i]) == str:
                     # print(tuple[i], tuple[i+1])
                     list_of_modules.append([tuple[i], tuple[i+1]])
-    df_module = pd.DataFrame(list_of_modules, columns=["Module_Code", "Capacity"])
+    df_module = pd.DataFrame(list_of_modules, columns=["module_code", "reg_students"])
 
     return df_module
 

@@ -15,3 +15,7 @@ config
 *.csv
 *csv.zip
 # keep outer zip and xlsx, but not inner zips and csvs
+
+# images
+*.png
+*.jpg

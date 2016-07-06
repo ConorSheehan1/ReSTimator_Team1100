@@ -45,13 +45,13 @@ def format_df(df):
     '''
     convert room columns to rows
     '''
-    new_df = pd.DataFrame(columns=["Time", "Occupancy", "Room"])
+    new_df = pd.DataFrame(columns=["time", "occupancy", "room"])
 
     # loop through rows in df, convert room columns to rows
     count = 0
     for i, row in df.iterrows():
         for column in df.columns[1:]:
-            new_df.loc[count] = [row["Time"], row[column], column]
+            new_df.loc[count] = [row["time"], row[column], column]
             count += 1
 
     return new_df
@@ -74,8 +74,8 @@ def import_ground_truth(file_path, do_print=False):
         # update parse_cols to use column name rather than index?
         ground_truth = xl_occupancy.parse(sheetname='CSI', skiprows=start, skip_footer=stop, parse_cols=[0, 2, 4, 5])
         ground_truth.drop(ground_truth.index[[0, 1]], inplace=True)
-        ground_truth.rename(columns={ground_truth.columns[0]: 'Time'}, inplace=True)
-        ground_truth["Time"] = date + ground_truth["Time"].astype(str)
+        ground_truth.rename(columns={ground_truth.columns[0]: 'time'}, inplace=True)
+        ground_truth["time"] = date + ground_truth["time"].astype(str)
 
         # count length of each dataframe to see that all lines are added to larger df
         list_of_df_lengths.append(len(ground_truth))
@@ -91,7 +91,7 @@ def import_ground_truth(file_path, do_print=False):
     # convert rows to columns
     capacity = capacity.T
     capacity.reset_index(inplace=True)
-    capacity.rename(columns={capacity.columns[0]: "Room", capacity.columns[1]: "Capacity"}, inplace=True)
+    capacity.rename(columns={capacity.columns[0]: "room", capacity.columns[1]: "capacity"}, inplace=True)
 
     if do_print:
         print(total_ground_truth, capacity)
