@@ -23,6 +23,12 @@
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
+			<p>
+				Accept Terms and Conditions:<br> {{ form.accept_terms() }}<br>
+				{% for error in form.accept_terms.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
 		</div>
 
 		<p><input type="submit" value="Register" class="btn btn-default"></p>

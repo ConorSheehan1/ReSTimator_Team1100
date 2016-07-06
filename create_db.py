@@ -1,3 +1,4 @@
-from app import db
+from app import db # import database object
 
-db.create_all()
+# create database and tables
+db.create_all() # initializes db based on the schema in the tables.py file

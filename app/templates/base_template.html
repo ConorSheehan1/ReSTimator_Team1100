@@ -8,7 +8,7 @@
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 
-	<title>ReSTimator - {{ username }} </title>
+	<title>ReSTimator - {{ pg_name }} </title>
 
 	<!-- style sheets -->
 	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
@@ -65,12 +65,13 @@
 	<!-- http://www.w3schools.com/bootstrap/bootstrap_navbar.asp -->
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
-			<div class="navbar-header"><a class="navbar-brand" href="#">ReSTimator Logo</a></div>
+			<div class="navbar-header"><a class="navbar-brand" href="{{ url_for('home') }}">ReSTimator Logo</a></div>
 
 			<ul class="nav navbar-nav">
 				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ReSTimator <span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li class="active"><a href="{{ url_for('home') }}">Home</a></li>
+						<li><a href="{{ url_for('analysis') }}">Analysis</a></li>
 						<li><a href="{{ url_for('about') }}">About</a></li>
 						<li><a href="{{ url_for('data') }}">Data</a></li>
 						<li><a href="{{ url_for('contact') }}">Contact</a></li>
@@ -92,6 +93,7 @@
 				<p><a href="#">Link</a></p>
 			</div>
 			<div class="col-sm-8 text-left">
+
 <hr>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
@@ -102,14 +104,15 @@
 </ul>
 {% endif %}
 {% endwith %}
+				<!-- child template -->
 				{% block content %}{% endblock %} <!-- Block control statement: where other templates can insert themselves -->
 			</div>
 			<div class="col-sm-2 sidenav">
 				<div class="well">
-					<p>ADS</p>
+					<p>DIV</p>
 				</div>
 				<div class="well">
-					<p>ADS</p>
+					<p>DIV</p>
 				</div>
 			</div>
 		</div>
