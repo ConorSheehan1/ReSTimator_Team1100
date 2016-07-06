@@ -42,7 +42,10 @@ def analysis():
     '''analysis view'''
     pg_name = "Analysis" 
     form = AnalysisForm()
-    return render_template("analysis.html", pg_name=pg_name, form=form)
+    query = ""
+    if request.method == "POST" and form.validate_on_submit():
+        query = Results.query.filter_by(day=form.day.data, time=form.time.data, module=form.module.data).all()
+    return render_template("analysis.html", pg_name=pg_name, form=form, query=query)
 
 @restimatorApp.route("/about")
 def about():
