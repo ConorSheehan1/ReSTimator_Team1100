@@ -2,6 +2,10 @@
 1. Run run_app.py
 2. Open browser and type localhost:
 
+## Input data  
+1. 0 values should be explicitly put in files sent to this program. Rows with empty values may be dropped.  
+  This occurs in clean_timetable.py for example.
+
 **data_analytics**
 
 1. Run relative_unzipper.py to extract logs
@@ -10,9 +14,9 @@
 **Testing**
 
 * Tests must be run from the test directory in order to pass.
-* py.test is preferable as it will display why tests fail
-* tests take roughly a minute to pass
+* Tests take roughly a minute to pass
+* Results may vary depending on whether nosetest or pytest is used. For best results use nose.
 
 **Notes**
 
-* usage, notes, and references are included in the doc string of each file.
+* Usage, notes, and references are included in the doc string of each file.

@@ -52,6 +52,7 @@ def importer(path, do_print=False):
     # make all columns lowercase
     result.columns = map(str.lower, result.columns)
 
+
     return result, count
 
 
@@ -73,7 +74,4 @@ if __name__ == "__main__":
     b04 = importer("./data/CSI WiFiLogs/B-04/", True)[0]
 
     all_rooms = pd.concat([b02, b03, b04])
-
-    # reorder columns
-
-    print(all_rooms.head(10))
+    print(all_rooms.tail(10))
