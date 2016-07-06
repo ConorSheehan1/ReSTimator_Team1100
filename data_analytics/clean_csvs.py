@@ -10,7 +10,11 @@ I chose to drop authenticated client count, because it contains the same info as
 This may be changed in future if we expect to find logs where the counts are different
 
 References
+http://www.swegler.com/becky/blog/2014/08/06/useful-pandas-snippets/
 http://stackoverflow.com/questions/30763351/removing-space-in-dataframe-python
+http://stackoverflow.com/questions/19726029/python-make-pandas-dataframe-column-headers-all-lowercase
+
+Update: handle dat/time iso 8601??
 '''
 
 import pandas as pd
@@ -33,8 +37,6 @@ def importer(path, do_print=False):
 
         skip = count_bad_lines(file_path)
         df = pd.read_csv(file_path, skiprows=skip, index_col=False)
-        # May change back to associated clients
-        # df.drop(["Authenticated Client Count"], axis=1, inplace=True)
 
         list_.append(df)
         count += 1
@@ -42,6 +44,15 @@ def importer(path, do_print=False):
     result = pd.concat(list_)
     # replace spaces with underscores in column names so sql will work
     result.columns = [x.strip().replace(' ', '_') for x in result.columns]
+
+    # split key into three columns, drop previous column
+    result['campus'], result['building'], result['room'] = zip(*result['Key'].apply(lambda x: x.split(' > ')))
+    result.drop("Key", axis=1, inplace=True)
+
+    # make all columns lowercase
+    result.columns = map(str.lower, result.columns)
+
+
     return result, count
 
 
@@ -63,5 +74,4 @@ if __name__ == "__main__":
     b04 = importer("./data/CSI WiFiLogs/B-04/", True)[0]
 
     all_rooms = pd.concat([b02, b03, b04])
-    # all_rooms.reset_index()
     print(all_rooms.tail(10))
