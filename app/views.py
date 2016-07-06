@@ -19,7 +19,7 @@ def login():
     '''form view'''
     pg_name = "Login" 
     form = LoginForm() # create instance of LoginForm
-    if form.validate_on_submit(): # validate_on_submit method processes form on form submission request. Returns true if all validators attached to fields pass (need more validators in form)
+    if request.method == "POST" and form.validate_on_submit(): # validate_on_submit method processes form on form submission request. Returns true if all validators attached to fields pass (need more validators in form)
     	flash("Login requested for Username=%s, remember_me=%s" % (form.username.data, str(form.remember_me.data))) # returns a message on next page to user
     	return redirect("/home") # redirect tells the client web browser to navigate to a different page
     return render_template("login.html", pg_name=pg_name, title="Sign In", form=form) # pass LoginForm object to template
@@ -29,7 +29,7 @@ def sign_up():
     '''Sign up view'''
     pg_name = "Sign Up" 
     form = RegistrationForm() # create instance of RegistrationForm
-    if request.method == 'POST' and form.validate():
+    if request.method == "POST" and form.validate():
         user = Users(form.username.data, form.password.data) 
         db.session.add(user)
         db.session.commit()
@@ -61,5 +61,9 @@ def contact():
     '''contact view'''
     pg_name = "Contact" 
     return render_template("contact.html", pg_name=pg_name)
+
+# @csrf.error_handler
+# def csrf_error(reason):
+#     return render_template('csrf_error.html', reason=reason), 400
 
 

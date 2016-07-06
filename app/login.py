@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, Email # validator, a function that 
 class LoginForm(Form):
 	username = StringField('Username', [DataRequired(), Email()]) # Required validator checks that the field is not submitted empty. There are many more validators included with Flask-WTF
 	password = PasswordField('Password', [DataRequired()])
-	remember_me = BooleanField('remember_me', default=False)
+	# remember_me = BooleanField('remember_me', default=False)
 
 '''source: http://flask.pocoo.org/snippets/64/
 def __init__(self, *args, **kwargs):

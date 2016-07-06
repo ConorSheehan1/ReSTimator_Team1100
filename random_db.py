@@ -10,12 +10,15 @@ db.session.add(user3)
 
 
 # Results Table Testing
-# u = tables.Results(day = "Mon", time = "222222", module = "COMP4", estimate = 50)
-# db.session.add(u)
-# t = tables.Results(day = "Tue", time = "322332", module = "COMP3", estimate = 60)
-# db.session.add(t)
-# v = tables.Results(day = "Fri", time = "221112", module = "COMP2", estimate = 70)
-# db.session.add(v)
+u = tables.Results(day = "Mon", time = "222222", module = "COMP4", estimate = 50)
+db.session.add(u)
+t = tables.Results(day = "Tue", time = "322332", module = "COMP3", estimate = 60)
+db.session.add(t)
+v = tables.Results(day = "Fri", time = "221112", module = "COMP2", estimate = 70)
+db.session.add(v)
+w = tables.Results(day = "Fri", time = "221113", module = "COMP4", estimate = 70)
+db.session.add(w)
+
 
 db.session.commit()
 
@@ -28,5 +31,13 @@ db.session.commit()
 # 2. insert values
 # db.session.add(tablename(values)) 
 # db.session.commit()
+
+# 3. select distinct day from Results order by day
+# db.session.query(Results.day).distinct().order_by(Results.day)
+
+# 4. select * from tablename where username = peter
+# tablename.query.filter_by(username='peter').all()
+# or
+# tablename.query.filter(tablename.email.endswith('@example.com')).all()
 
  
