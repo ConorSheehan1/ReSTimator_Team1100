@@ -1,7 +1,7 @@
 import os 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "data.db")
+SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "data.db") # sqlite db location
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 WTF_CSRF_ENABLED = True	# cross-site request forgery protection enabled to make application more secure (READ UP ON)

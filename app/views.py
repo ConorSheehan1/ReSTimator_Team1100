@@ -1,15 +1,16 @@
 from flask import render_template, flash, redirect, url_for, request
 # from flask_login import login_required, current_user
-from app import restimatorApp, db, tables
+from app import restimatorApp, db
 from .login import LoginForm
 from .sign_up import RegistrationForm
 from .analysis import AnalysisForm
+from .tables import * # import database objects
 
 @restimatorApp.route("/")
 @restimatorApp.route("/home", methods=["GET", "POST"])
 def home():
     '''home view''' 
-    random = tables.Users.query.all()
+    random = db.session.query(Users).all()
     return render_template("home.html", random=random) # function takes a template filename and a variable list of template args and returns the rendered template (invokes Jinja2 templating engine)
 
 @restimatorApp.route('/login', methods=["GET", "POST"]) # view function accepts both GET and POST requests
@@ -26,7 +27,7 @@ def sign_up():
     '''Sign up view'''
     form = RegistrationForm() # create instance of RegistrationForm
     if request.method == 'POST' and form.validate():
-        user = tables.Users(form.username.data, form.password.data) 
+        user = Users(form.username.data, form.password.data) 
         db.session.add(user)
         db.session.commit()
         flash("Successfully Registered")
@@ -53,3 +54,6 @@ def data():
 def contact():
     '''data view'''
     return render_template("contact.html")
+
+
+# u = db.session.query(tablename).all()

@@ -1,4 +1,4 @@
-from app import db
+from app import db # import database object
 
 # Declarative Base - http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 '''The baseclass for all your models is called db.Model. 
@@ -12,39 +12,41 @@ Primary keys are marked with primary_key=True
 '''
 
 class Users(db.Model):
-	''''''
-	username = db.Column(db.String(80), primary_key=True) # Column to define a column
-	password = db.Column(db.String(120))
+	'''Database object'''
+	# class variables
+	# __tablename__ = "users"
+	username = db.Column(db.String(80), primary_key=True, nullable=False) # Column to define a column
+	password = db.Column(db.String(120), nullable=False)
 
 	def __init__(self, username, password):
-		''''''
+		'''instance attributes'''
 		self.username = username
 		self.password = password
 
 	def __repr__(self):
-		''''''
-		return "<User: %s>" % self.username
+		'''object representation'''
+		return "{} - {}".format(self.username, self.password)
 
 class Results(db.Model):
-	''''''
+	'''Database object'''
 	day = db.Column(db.String(3), primary_key=True)
 	time = db.Column(db.String(20), primary_key=True)
 	module = db.Column(db.String(10), primary_key=True)
 	estimate = db.Column(db.Integer)
 
 	def __init__(self, day, time, module, estimate):
-		''''''
+		'''instance attributes'''
 		self.day = day
 		self.time = time
 		self.module = module
 		self.estimate = estimate
 
 	def __repr__(self):
-		''''''
-		return "<Day: %s, Time: %s, Module Code: %s, Est.: %d>" % (self.day, self.time, self.module, self.estimate)
+		'''object representation'''
+		return "{} - {}".format(self.day, self.time, self.module, self.estimate)
 
 class Location(db.Model):
-	''''''
+	'''Database object'''
 	campus = db.Column(db.String(45), unique=True)
 	building = db.Column(db.String(45), primary_key=True)
 	room = db.Column(db.String(10), primary_key=True)
@@ -52,32 +54,33 @@ class Location(db.Model):
 	occupy = db.relationship("Occupy", backref="location", lazy="dynamic") 
 
 	def __init__(self, campus, building, room, capacity):
-		''''''
+		'''instance attributes'''
 		self.campus = campus
 		self.building = building
 		self.room = room
 		self.capacity = capacity
 
 	def __repr__(self):
-		''''''
-		return "<Campus: %s, Building: %s, Room: %s, Capacity: %d" % (self.campus, self.building, self.room, self.capacity)
+		'''object representation'''
+		return "{} - {}".format(self.campus, self.building, self.room, self.capacity)
 
 class Module(db.Model):
-	''''''
+	'''Database object'''
 	code = db.Column(db.String(10), primary_key=True)
 	reg_students = db.Column(db.Integer)
 	occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column / backref adds a virtual column
 
 	def __init__(self, code, reg_students):
-		''''''
+		'''instance attributes'''
 		self.code = code
 		self.reg_students = reg_students
 
 	def __repr__(self):
-		''''''
-		return "<Module Code: %s, Registered Students: %d" % (self.code, self.reg_students)
+		'''object representation'''
+		return "{} - {}".format(self.code, self.reg_students)
 
 class Occupy(db.Model):
+	'''Database object'''
 	day = db.Column(db.String(3))
 	time = db.Column(db.String(20), primary_key=True)
 	date = db.Column(db.String(20), primary_key=True)
@@ -88,7 +91,7 @@ class Occupy(db.Model):
 	room_id = db.Column(db.String(10), db.ForeignKey("location.room"), primary_key=True)
 
 	def __init__(self, day, time, date, module, room, ground_truth, auth, assoc):
-		''''''
+		'''instance attributes'''
 		self.day = day
 		self.time = time
 		self.date = date
@@ -99,4 +102,5 @@ class Occupy(db.Model):
 		self.room_id = room_id
 
 	def __repr__(self):
-		return "<Day: %s, Time: %s, Date: %s, Module Code: %s, Room: %s, Ground Truth: %d, Authenticated: %d, Associated: %d" % (self.day, self.time, self.date, self.module_code, self.room_id, self.ground_truth, self.auth, self.assoc)
+		'''object representation'''
+		return "{} - {}".format(self.day, self.time, self.date, self.module_code, self.room_id, self.ground_truth, self.auth, self.assoc)
