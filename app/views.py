@@ -9,22 +9,25 @@ from .tables import * # import database objects
 @restimatorApp.route("/")
 @restimatorApp.route("/home", methods=["GET", "POST"])
 def home():
-    '''home view''' 
+    '''home view'''
+    pg_name = "Home" 
     random = db.session.query(Users).all()
-    return render_template("home.html", random=random) # function takes a template filename and a variable list of template args and returns the rendered template (invokes Jinja2 templating engine)
+    return render_template("home.html", pg_name=pg_name, random=random) # function takes a template filename and a variable list of template args and returns the rendered template (invokes Jinja2 templating engine)
 
 @restimatorApp.route('/login', methods=["GET", "POST"]) # view function accepts both GET and POST requests
 def login():
-	'''form view'''
-	form = LoginForm() # create instance of LoginForm
-	if form.validate_on_submit(): # validate_on_submit method processes form on form submission request. Returns true if all validators attached to fields pass (need more validators in form)
-		flash("Login requested for Username=%s, remember_me=%s" % (form.username.data, str(form.remember_me.data))) # returns a message on next page to user
-		return redirect("/home") # redirect tells the client web browser to navigate to a different page
-	return render_template("login.html", title="Sign In", form=form) # pass LoginForm object to template
+    '''form view'''
+    pg_name = "Login" 
+    form = LoginForm() # create instance of LoginForm
+    if form.validate_on_submit(): # validate_on_submit method processes form on form submission request. Returns true if all validators attached to fields pass (need more validators in form)
+    	flash("Login requested for Username=%s, remember_me=%s" % (form.username.data, str(form.remember_me.data))) # returns a message on next page to user
+    	return redirect("/home") # redirect tells the client web browser to navigate to a different page
+    return render_template("login.html", pg_name=pg_name, title="Sign In", form=form) # pass LoginForm object to template
 
 @restimatorApp.route("/sign_up", methods=["GET", "POST"])
 def sign_up():
     '''Sign up view'''
+    pg_name = "Sign Up" 
     form = RegistrationForm() # create instance of RegistrationForm
     if request.method == 'POST' and form.validate():
         user = Users(form.username.data, form.password.data) 
@@ -36,24 +39,27 @@ def sign_up():
 
 @restimatorApp.route("/analysis", methods=["GET", "POST"])
 def analysis():
-    '''about view'''
+    '''analysis view'''
+    pg_name = "Analysis" 
     form = AnalysisForm()
-    return render_template("analysis.html", form=form)
+    return render_template("analysis.html", pg_name=pg_name, form=form)
 
 @restimatorApp.route("/about")
 def about():
     '''about view'''
-    return render_template("about.html")
+    pg_name = "About" 
+    return render_template("about.html", pg_name=pg_name)
 
 @restimatorApp.route("/data")
 def data():
     '''data view'''
-    return render_template("data.html")
+    pg_name = "Data" 
+    return render_template("data.html", pg_name=pg_name)
 
 @restimatorApp.route("/contact")
 def contact():
-    '''data view'''
-    return render_template("contact.html")
+    '''contact view'''
+    pg_name = "Contact" 
+    return render_template("contact.html", pg_name=pg_name)
 
 
-# u = db.session.query(tablename).all()
