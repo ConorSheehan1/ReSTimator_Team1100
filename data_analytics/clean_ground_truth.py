@@ -9,6 +9,11 @@ http://pandas.pydata.org/pandas-docs/stable/generated/pandas.ExcelFile.parse.htm
 '''
 import pandas as pd
 
+try:
+    from data_analytics.clean_timetable import format_date
+except ImportError:
+    from clean_timetable import format_date
+
 
 def find_lines(file_path):
     start_rows = []
@@ -41,6 +46,14 @@ def get_date(excel_file, start, stop):
     return date_time
 
 
+def find_date(date):
+    '''
+    mod function to work in clean_csv and clean_gt
+    '''
+    parts = date.split(" ")
+    return parts[2] + " " + parts[1][:-2] + " " + parts[3]
+
+
 def format_df(df):
     '''
     convert room columns to rows
@@ -53,6 +66,15 @@ def format_df(df):
         for column in df.columns[1:]:
             new_df.loc[count] = [row["time"], row[column], column]
             count += 1
+
+    dates = new_df["time"].map(find_date)
+    new_df["date"] = dates.map(format_date)
+
+    # time: day date etc hour.mins - hour.mins
+    # get first hour.mins
+    new_df["time"] = new_df["time"].apply(lambda x: x.split('-')[0][-5:].strip())
+    # format time to match timetable
+    new_df["time"] = new_df["time"].apply(lambda x: x.replace(".", ":"))
 
     return new_df
 
@@ -93,7 +115,7 @@ def import_ground_truth(file_path, do_print=False):
     capacity.reset_index(inplace=True)
     capacity.rename(columns={capacity.columns[0]: "room", capacity.columns[1]: "capacity"}, inplace=True)
 
-    print(total_ground_truth, capacity)
+    # print(total_ground_truth, capacity)
     return total_ground_truth, capacity, list_of_df_lengths
 
 

@@ -24,6 +24,7 @@ try:
     from data_analytics.relative_unzipper import fix_windows_path
     from data_analytics.clean_timetable import format_date
 except ImportError:
+    from relative_unzipper import fix_windows_path
     from clean_timetable import format_date
 
 
@@ -57,6 +58,10 @@ def get_day(date):
     return date.split(" ")[0]
 
 
+def get_room(full_location):
+    return full_location.split(" > ")[-1]
+
+
 def importer(path, do_print=False):
     list_ = []
     count = 0
@@ -76,8 +81,17 @@ def importer(path, do_print=False):
     # replace spaces with underscores in column names so sql will work
     result.columns = [x.strip().replace(' ', '_') for x in result.columns]
 
+    # create new df for location data
+    location = pd.DataFrame(result["Key"].unique(), columns=["Key"])
+
     # split key into three columns, drop previous column
-    result['campus'], result['building'], result['room'] = zip(*result['Key'].apply(lambda x: x.split(' > ')))
+    location['campus'], location['building'], location['room'] = zip(*location['Key'].apply(lambda x: x.split(' > ')))
+
+    # format room to match data from ground truth
+    location["room"] = location["room"].apply(lambda x: x.replace("-", ""))
+    location.drop("Key", axis=1, inplace=True)
+
+    result["room"] = result['Key'].apply(get_room)
     result.drop("Key", axis=1, inplace=True)
 
     # make all columns lowercase
@@ -92,13 +106,25 @@ def importer(path, do_print=False):
     result["event_time"] = result["event_time"].map(get_time)
     result.rename(columns={result.columns[0]: 'time'}, inplace=True)
 
-    return result, count
+    return result, count, location
 
+
+def concat_log_dfs(list_of_paths, do_print=False):
+    prefix = "./data/CSI WiFiLogs/"
+    logs_iter = importer(prefix + list_of_paths[0] + "/", do_print)
+    df_logs = logs_iter[0]
+    df_location = logs_iter[2]
+    for path in list_of_paths[1:]:
+        logs_iter2 = importer(prefix + path + "/", do_print)
+        df_logs = pd.concat([df_logs, logs_iter2[0]])
+        df_location = pd.concat([df_location, logs_iter2[2]])
+
+    # if do_print:
+    #     print(df_logs, df_location)
+    return df_logs, df_location
 
 if __name__ == "__main__":
-    b02 = importer("./data/CSI WiFiLogs/B-02/", True)[0]
-    b03 = importer("./data/CSI WiFiLogs/B-03/", True)[0]
-    b04 = importer("./data/CSI WiFiLogs/B-04/", True)[0]
+    my_list = ["B-02", "B-03", "B-04"]
+    concat_log_dfs(my_list, True)
 
-    all_rooms = pd.concat([b02, b03, b04])
-    print(all_rooms.tail(10))
+

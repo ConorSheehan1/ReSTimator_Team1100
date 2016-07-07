@@ -48,6 +48,8 @@ def fix_merged_cells(file_path, file_name, do_print=False):
     workbook.remove_sheet(workbook["All"])
     for sheet in workbook:
         # unmerge cells
+        if do_print:
+            print("unmerging: ", end="")
         for cell in sheet.merged_cells:
             letter = sheet[cell].column
             number = sheet[cell].row
@@ -57,9 +59,9 @@ def fix_merged_cells(file_path, file_name, do_print=False):
                     previous_cell = letter + str(number-1)
                     if sheet[previous_cell].value is not None:
                         if do_print:
-                            print("unmerged", letter + str(number))
+                            print(letter + str(number) + ", ", end="")
                         sheet[cell].value = sheet[previous_cell].value
-
+        print()
         # fix dates
         for rowOfCellObjects in sheet['N2':'W2']:
             for cellObj in rowOfCellObjects:
@@ -90,7 +92,9 @@ def fix_merged_cells(file_path, file_name, do_print=False):
     df_total_module.dropna(inplace=True)
     df_total_module["reg_students"] = df_total_module["reg_students"].astype(int)
 
-    print(df_total_module)
+    # match room code format with ground truth
+    df_total_module["room"] = df_total_module["room"].apply(lambda x: x.replace(".", ""))
+
     return df_total_module
 
 
@@ -120,5 +124,5 @@ def read_timetable(file_path, sheet, last_column=0):
 
 if __name__ == "__main__":
     # print(format_date("Jan 2"))
-    fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx")
+    fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx", True)
 

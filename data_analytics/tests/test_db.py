@@ -9,7 +9,7 @@ except ImportError:
 def test_num_rows():
     conn = sqlite3.connect(r"../data/Ucd_Occupancy.db")
     cursor = conn.cursor()
-    count = "SELECT COUNT(*) FROM WiFiLogs"
+    count = "SELECT COUNT(*) FROM wifi_logs"
     cursor.execute(count)
     # fetch_all returns a tuple in a list, so use [0][0] to get just integer
     # number of rows in database
@@ -24,7 +24,7 @@ def test_num_rows():
     num_rows_df = len(all_rooms)
 
     print(num_rows_df, num_rows_db)
-    assert num_rows_db == num_rows_df
+    assert num_rows_db == num_rows_df*3
 
 if __name__ == "__main__":
     test_num_rows()
