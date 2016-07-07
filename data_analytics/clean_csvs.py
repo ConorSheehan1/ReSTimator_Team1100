@@ -22,8 +22,39 @@ import glob
 
 try:
     from data_analytics.relative_unzipper import fix_windows_path
+    from data_analytics.clean_timetable import format_date
 except ImportError:
-    from relative_unzipper import fix_windows_path
+    from clean_timetable import format_date
+
+
+def count_bad_lines(path):
+    count = 0
+    with open(path, "r") as f:
+        content = f.readlines()
+        for line in content:
+            # print(line)
+            if "Key" in line:
+                break
+            else:
+                count += 1
+    return count
+
+
+def get_date(date):
+    '''
+    month, date, year, day_name
+    '''
+    parts = date.split(" ")
+    return parts[1] + " " + parts[2] + " " + parts[-1]
+
+
+def get_time(time):
+    time_list = time.split(" ")[3].split(":")[:-1]
+    return time_list[0] + ":" + time_list[1]
+
+
+def get_day(date):
+    return date.split(" ")[0]
 
 
 def importer(path, do_print=False):
@@ -52,21 +83,17 @@ def importer(path, do_print=False):
     # make all columns lowercase
     result.columns = map(str.lower, result.columns)
 
+    # convert event_time to date, and date to int
+    dates = result["event_time"].map(get_date)
+    result["date"] = dates.map(format_date)
+
+    result["day"] = result["event_time"].map(get_day)
+
+    result["event_time"] = result["event_time"].map(get_time)
+    result.rename(columns={result.columns[0]: 'time'}, inplace=True)
 
     return result, count
 
-
-def count_bad_lines(path):
-    count = 0
-    with open(path, "r") as f:
-        content = f.readlines()
-        for line in content:
-            # print(line)
-            if "Key" in line:
-                break
-            else:
-                count += 1
-    return count
 
 if __name__ == "__main__":
     b02 = importer("./data/CSI WiFiLogs/B-02/", True)[0]

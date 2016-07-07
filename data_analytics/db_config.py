@@ -47,7 +47,7 @@ def create_tables():
                               "PRIMARY KEY(room));"
     cursor.execute(location_table)
 
-    module_table = prefix + "module (module_code VARCHAR, reg_students INT," \
+    module_table = prefix + "module (module_code VARCHAR, reg_students INT, " \
                             "PRIMARY KEY (module_code));"
     cursor.execute(module_table)
 
@@ -74,7 +74,11 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
     df_ground_truth.to_sql(name='ground_truth', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     df_module = clean_timetable.fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx", do_print)
-    df_module.to_sql(name='module', flavor='sqlite', con=conn, index=False,  if_exists=method)
+
+    # df_module_table = df_module.loc[df_module["module_code", "reg_students"]]
+    df_module_table = df_module[["module_code", "reg_students"]].copy()
+    df_module_table.drop_duplicates(inplace=True)
+    df_module_table.to_sql(name='module', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     if do_print:
         print("Data saved to db!")

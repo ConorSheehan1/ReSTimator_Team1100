@@ -93,7 +93,7 @@ def import_ground_truth(file_path, do_print=False):
     capacity.reset_index(inplace=True)
     capacity.rename(columns={capacity.columns[0]: "room", capacity.columns[1]: "capacity"}, inplace=True)
 
-    # print(total_ground_truth, capacity)
+    print(total_ground_truth, capacity)
     return total_ground_truth, capacity, list_of_df_lengths
 
 
