@@ -1,3 +1,4 @@
+from app import db
 from flask_wtf import Form
 from wtforms import SelectField
 from .tables import Results
@@ -11,9 +12,8 @@ class AnalysisForm(Form):
 
     def __init__(self, *args, **kwargs):
     	super(AnalysisForm, self).__init__(*args, **kwargs)
-    	# self.day.choices = [i.day for i in Results.query.order_by(Results.day.distinct())]
-    	self.day.choices = [(i.day ,i.day) for i in Results.query.order_by(Results.day)]
-    	self.time.choices = [(i.time, i.time) for i in Results.query.order_by(Results.time)]
-    	self.module.choices = [(i.module, i.module) for i in Results.query.order_by(Results.module)]
+    	self.day.choices = [(i.day ,i.day) for i in db.session.query(Results.day).distinct().order_by(Results.day)]
+    	self.time.choices = [(i.time ,i.time) for i in db.session.query(Results.time).distinct().order_by(Results.time)]
+    	self.module.choices = [(i.module ,i.module) for i in db.session.query(Results.module).distinct().order_by(Results.module)]
 
 

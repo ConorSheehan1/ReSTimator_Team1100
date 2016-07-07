@@ -61,7 +61,7 @@
 	}
 	</style>
 </head>
-<body>		
+<body>	
 	<!-- http://www.w3schools.com/bootstrap/bootstrap_navbar.asp -->
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
@@ -124,5 +124,6 @@
 
 	<!-- Main script -->
 	<script type="text/javascript" src="/static/scripts/main.js"></script>
+	<script type="text/javascript"> var csrftoken = "{{ csrf_token() }}" </script> <!-- http://flask-wtf.readthedocs.io/en/latest/csrf.html -->
 </body>
 </html>
