@@ -40,10 +40,11 @@ def get_date(excel_file, start, stop):
     try to update to return date/time in exact same format as WiFi logs
     '''
     header = excel_file.parse(sheetname='CSI', skiprows=start-3, skip_footer=stop+11)
-    day = header["Unnamed: 0"][0][:3]
+    # day = header["Unnamed: 0"][0][:3]
     date = header["Unnamed: 0"][1]
-    date_time = day + " " + date + " "
-    return date_time
+    # date_time = day + " " + date + " "
+    # return date_time
+    return date + " "
 
 
 def find_date(date):
@@ -51,7 +52,7 @@ def find_date(date):
     mod function to work in clean_csv and clean_gt
     '''
     parts = date.split(" ")
-    return parts[2] + " " + parts[1][:-2] + " " + parts[3]
+    return parts[1] + " " + parts[0][:-2] + " " + parts[2]
 
 
 def format_df(df):

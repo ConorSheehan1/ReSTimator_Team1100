@@ -114,11 +114,12 @@ def read_timetable(file_path, sheet, last_column=0):
             if i % 2 == 0:
                 if type(tuple[i]) == str:
                     # choose start of class as time, strip twice to account for 2 digit numbers
-                    list_of_modules.append([tuple[1].split(" - ")[0], df.columns[i-1].strip()[:3],
+                    list_of_modules.append([tuple[1].split(" - ")[0], #df.columns[i-1].strip()[:3],
                                             format_date(month + " " + df.columns[i-1].strip()[-4:-2].strip()),
                                             sheet.strip(), tuple[i], tuple[i+1]])
 
-    df_module = pd.DataFrame(list_of_modules, columns=["time", "day", "date", "room", "module_code", "reg_students"])
+    # df_module = pd.DataFrame(list_of_modules, columns=["time", "day", "date", "room", "module_code", "reg_students"])
+    df_module = pd.DataFrame(list_of_modules, columns=["time", "date", "room", "module_code", "reg_students"])
     return df_module
 
 

@@ -55,7 +55,7 @@ def create_tables():
     cursor.execute(module_table)
 
     # Real is equivilant to float in slqite
-    ground_truth = prefix + "ground_truth (time VARCHAR, occupancy REAL, room VARCHAR, date INT, day VARCHAR," \
+    ground_truth = prefix + "ground_truth (time VARCHAR, occupancy REAL, room VARCHAR, date INT," \
                             "module_code VARCHAR, reg_students INT," \
                             "PRIMARY KEY (time, room, date));"
     cursor.execute(ground_truth)
@@ -73,7 +73,8 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
 
     iter_gt = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx", do_print)
     df_location = iter_gt[1]
-    df_full_location = pd.merge(df_location, iter_csvs[1], on="room")
+    # use inner join for rooms, only want common locations to have full location data
+    df_full_location = pd.merge(df_location, iter_csvs[1], how="inner", on="room")
     df_full_location.to_sql(name='location', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     df_timetable = clean_timetable.fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx", do_print)
@@ -84,15 +85,11 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
 
     # merge ground truth with timetable based on date room and time
     df_ground_truth = iter_gt[0]
-    print(df_ground_truth, df_timetable)
-    df_full_gt = pd.merge(df_ground_truth, df_timetable, how="left", on=["time", "room", "date"])
-    print(df_full_gt)
+    # use outer merge for ground truth, keep occupancy data even if timetable data doesn't match and vice versa
+    df_full_gt = pd.merge(df_ground_truth, df_timetable, how="outer", on=["time", "room", "date"])
+    df_full_gt.drop_duplicates(inplace=True)
+    df_full_gt["date"] = df_full_gt["date"].astype(int)
     df_full_gt.to_sql(name='ground_truth', flavor='sqlite', con=conn, index=False,  if_exists=method)
-
-    if do_print:
-        print("Data saved to db!")
-
-    # print(df_ground_truth, df_timetable)
 
     conn.close()
 

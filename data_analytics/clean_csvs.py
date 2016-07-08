@@ -54,12 +54,9 @@ def get_time(time):
     return time_list[0] + ":" + time_list[1]
 
 
-def get_day(date):
-    return date.split(" ")[0]
-
-
 def get_room(full_location):
-    return full_location.split(" > ")[-1]
+    room = full_location.split(" > ")[-1]
+    return room.replace("-", "")
 
 
 def importer(path, do_print=False):
@@ -100,8 +97,6 @@ def importer(path, do_print=False):
     # convert event_time to date, and date to int
     dates = result["event_time"].map(get_date)
     result["date"] = dates.map(format_date)
-
-    result["day"] = result["event_time"].map(get_day)
 
     result["event_time"] = result["event_time"].map(get_time)
     result.rename(columns={result.columns[0]: 'time'}, inplace=True)
