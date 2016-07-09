@@ -99,4 +99,4 @@ if __name__ == "__main__":
     change to update for actual use
     '''
     create_tables()
-    populate_db(["B-02", "B-03", "B-04"], "replace")
+    populate_db(["B-02", "B-03", "B-04"], "replace", True)

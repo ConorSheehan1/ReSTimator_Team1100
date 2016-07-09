@@ -20,9 +20,10 @@ def format_date(unformatted_date):
     month = values[0][:3].lower()
     if len(values) >= 2:
         date = values[1].strip()
-        # add leading zero
+        # add leading zero if leading zero isn't already there
         if int(date) <= 9:
-            date = "0" + date
+            # cast to int removes leading zeros, add one leading 0: date can never be more than 2 digits
+            date = "0" + str(int(date))
 
     if len(values) >= 3:
         year = values[2]
@@ -63,15 +64,15 @@ def fix_merged_cells(file_path, file_name, do_print=False):
                         sheet[cell].value = sheet[previous_cell].value
         print()
         # fix dates
-        for rowOfCellObjects in sheet['N2':'W2']:
-            for cellObj in rowOfCellObjects:
+        for row in sheet['N2':'W2']:
+            for cell in row:
                 # skip no.reg students
-                if cellObj.value is not None and "." not in cellObj.value:
-                    date_number = int(cellObj.value.split(" ")[1][0])
+                if cell.value is not None and "." not in cell.value:
+                    date_number = int(cell.value.split(" ")[1][0])
                     # update to check date above?
-                    cellObj.value = cellObj.value.split(" ")[0] + " " + str(date_number+7) + "th"
+                    cell.value = cell.value.split(" ")[0] + " " + str(date_number+7) + "th"
                     if do_print:
-                        print("date fixed", cellObj.value)
+                        print("date fixed", cell.value)
 
     # save fixed xlsx to new file
     fixed_path = file_path + "Fixed_" + file_name
