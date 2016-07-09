@@ -24,7 +24,7 @@ def test_num_rows():
     num_rows_df = len(all_rooms)
 
     print(num_rows_df, num_rows_db)
-    assert num_rows_db == num_rows_df*3
+    assert num_rows_db == num_rows_df
 
 if __name__ == "__main__":
     test_num_rows()
