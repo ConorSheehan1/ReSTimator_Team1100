@@ -38,6 +38,15 @@ def format_date(unformatted_date):
         return "Error no month or date passed"
 
 
+def format_time(unformatted_time):
+    time_list = unformatted_time.split(":")
+    hour = time_list[0]
+    minute = time_list[1]
+    if int(hour) <= 9:
+        hour = "0" + hour
+    return hour + ":" + minute
+
+
 def fix_merged_cells(file_path, file_name, do_print=False):
     '''
     fix practical v lecture?
@@ -96,6 +105,10 @@ def fix_merged_cells(file_path, file_name, do_print=False):
     # match room code format with ground truth
     df_total_module["room"] = df_total_module["room"].apply(lambda x: x.replace(".", ""))
 
+    # match time format with logs
+    df_total_module["time"] = df_total_module["time"].apply(format_time)
+    print(df_total_module)
+
     return df_total_module
 
 
@@ -115,7 +128,7 @@ def read_timetable(file_path, sheet, last_column=0):
             if i % 2 == 0:
                 if type(tuple[i]) == str:
                     # choose start of class as time, strip twice to account for 2 digit numbers
-                    list_of_modules.append([tuple[1].split(" - ")[0], #df.columns[i-1].strip()[:3],
+                    list_of_modules.append([tuple[1].split(" - ")[0],
                                             format_date(month + " " + df.columns[i-1].strip()[-4:-2].strip()),
                                             sheet.strip(), tuple[i], tuple[i+1]])
 

@@ -29,10 +29,12 @@ try:
     from data_analytics import clean_csvs
     from data_analytics import clean_ground_truth
     from data_analytics import clean_timetable
+    from data_analytics import predict
 except ImportError:
     import clean_csvs
     import clean_ground_truth
     import clean_timetable
+    import predict
 
 
 def create_tables():
@@ -40,11 +42,6 @@ def create_tables():
     cursor = conn.cursor()
 
     prefix = "CREATE TABLE IF NOT EXISTS "
-
-    logs_table = prefix + "wifi_logs (campus VARCHAR, building VARCHAR, room VARCHAR, event_time VARCHAR," \
-                          " associated_client_count INT, authenticated_client_count INT," \
-                          " PRIMARY KEY (campus, building, room, event_time));"
-    cursor.execute(logs_table)
 
     location_table = prefix + "location (room VARCHAR, capacity INT, " \
                               "PRIMARY KEY(room));"
@@ -54,12 +51,16 @@ def create_tables():
                             "PRIMARY KEY (module_code));"
     cursor.execute(module_table)
 
-    # Real is equivilant to float in slqite
-    ground_truth = prefix + "ground_truth (time VARCHAR, occupancy REAL, room VARCHAR, date INT," \
-                            "module_code VARCHAR, reg_students INT," \
-                            "PRIMARY KEY (time, room, date));"
-    cursor.execute(ground_truth)
+    occupy = prefix + "occupy (room VARCHAR, date INT, time VARCHAR, occupancy REAL, module_code VARCHAR, " \
+                      "reg_students INT," \
+                      "PRIMARY KEY (time, date, room));"
+    cursor.execute(occupy)
     conn.close()
+
+
+def find_bad_time(name, df):
+    print(name.upper())
+    print(df.loc[df['time'] == "9:00"])
 
 
 def populate_db(list_of_room_codes, method="append", do_print=False):
@@ -69,7 +70,9 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
     # get all csv dataframes
     iter_csvs = clean_csvs.concat_log_dfs(list_of_room_codes, do_print)
     df_logs = iter_csvs[0]
-    df_logs.to_sql(name='wifi_logs', flavor='sqlite', con=conn, index=False,  if_exists=method)
+    # get average value per hour
+    df_logs = predict.get_average(df_logs)
+    # df_logs.to_sql(name='wifi_logs', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     iter_gt = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx", do_print)
     df_location = iter_gt[1]
@@ -86,12 +89,21 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
     # merge ground truth with timetable based on date room and time
     df_ground_truth = iter_gt[0]
     # use outer merge for ground truth, keep occupancy data even if timetable data doesn't match and vice versa
-    df_full_gt = pd.merge(df_ground_truth, df_timetable, how="outer", on=["time", "room", "date"])
-    df_full_gt.drop_duplicates(inplace=True)
-    df_full_gt["date"] = df_full_gt["date"].astype(int)
-    df_full_gt.to_sql(name='ground_truth', flavor='sqlite', con=conn, index=False,  if_exists=method)
+    df_occupy = pd.merge(df_ground_truth, df_timetable, how="outer", on=["time", "room", "date"])
+    df_occupy = pd.merge(df_occupy, df_logs, how="outer", on=["time", "room", "date"])
+
+    # outer merge can result in duplicates
+    df_occupy.drop_duplicates(inplace=True)
+    df_occupy["date"] = df_occupy["date"].astype(int)
+    df_occupy.drop("reg_students", axis=1, inplace=True)
+    df_occupy.to_sql(name='occupy', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     conn.close()
+
+    find_bad_time("df_ground_truth",  df_ground_truth)
+    find_bad_time("df_timetable",  df_timetable)
+    find_bad_time("df_logs",  df_logs)
+    find_bad_time("df_occupy",  df_occupy)
 
 if __name__ == "__main__":
     '''

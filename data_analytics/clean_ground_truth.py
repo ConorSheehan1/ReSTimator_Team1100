@@ -10,9 +10,9 @@ http://pandas.pydata.org/pandas-docs/stable/generated/pandas.ExcelFile.parse.htm
 import pandas as pd
 
 try:
-    from data_analytics.clean_timetable import format_date
+    from data_analytics.clean_timetable import format_date, format_time
 except ImportError:
-    from clean_timetable import format_date
+    from clean_timetable import format_date, format_time
 
 
 def find_lines(file_path):
@@ -76,6 +76,7 @@ def format_df(df):
     new_df["time"] = new_df["time"].apply(lambda x: x.split('-')[0][-5:].strip())
     # format time to match timetable
     new_df["time"] = new_df["time"].apply(lambda x: x.replace(".", ":"))
+    new_df["time"] = new_df["time"].apply(format_time)
 
     return new_df
 

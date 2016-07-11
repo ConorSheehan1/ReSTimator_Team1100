@@ -47,18 +47,19 @@ def merge_logs_gt(logs, gt):
     return result
 
 
-def run_regression(df):
+def run_regression(df, target, independent):
     # occupancy = target feature
-    chosen_features = df[["occupancy", "associated_client_count", "authenticated_client_count"]]
-    print(chosen_features)
-    linm = sm.ols(formula=("occupancy ~(associated_client_count + authenticated_client_count)"),
+    # chosen_features = df[["occupancy", "associated_client_count", "authenticated_client_count"]]
+    chosen_features = df[[target, independent]]
+    # print(chosen_features)
+    linm = sm.ols(formula=(target + "~(" + independent + ")"),
                   data=chosen_features).fit()
     print(linm.summary())
     return linm
 
 
-def predict_occupancy(linm, df):
-    predictions = linm.predict(df[["associated_client_count", "authenticated_client_count"]])
+def predict_occupancy(linm, df, independent):
+    predictions = linm.predict(df[independent])
     # # normalise predictions
     for i in range(len(predictions)):
         if predictions.iloc[i] < 0.125:
@@ -82,20 +83,26 @@ if __name__ == "__main__":
     gt_b002 = ground_truth.loc[ground_truth["room"] == "B002"]
 
     first_test = merge_logs_gt(first_b002, gt_b002)
-    first_linm = run_regression(first_test)
-
     avg_test = merge_logs_gt(avg_b002, gt_b002)
-    avg_linm = run_regression(avg_test)
 
-    logs_b003 = clean_csvs.importer("./data/CSI WiFiLogs/B-03/")[0]
-    first_b003 = get_first_time(logs_b003)
-    avg_b003 = get_average(logs_b003)
+    first_linm_associated = run_regression(first_test, "occupancy", "associated_client_count")
+    first_linm_authenticated = run_regression(first_test, "occupancy", "authenticated_client_count")
 
-    gt_b003 = ground_truth.loc[ground_truth["room"] == "B003"]
-    first_predict_b003 = predict_occupancy(first_linm, first_b003)
-    avg_predict_b003 = predict_occupancy(avg_linm, avg_b003)
+    avg_linm_associated = run_regression(avg_test, "occupancy", "associated_client_count")
+    avg_linm_associated = run_regression(avg_test, "occupancy", "authenticated_client_count")
+
+    # avg_test = merge_logs_gt(avg_b002, gt_b002)
+    # avg_linm = run_regression(avg_test)
+
+    # logs_b003 = clean_csvs.importer("./data/CSI WiFiLogs/B-03/")[0]
+    # first_b003 = get_first_time(logs_b003)
+    # avg_b003 = get_average(logs_b003)
+    #
+    # gt_b003 = ground_truth.loc[ground_truth["room"] == "B003"]
+    # first_predict_b003 = predict_occupancy(first_linm, first_b003)
+    # avg_predict_b003 = predict_occupancy(avg_linm, avg_b003)
 
     #test accuracy
-    print("length\n", len(gt_b002), len(gt_b003))
+    # print("length\n", len(gt_b002), len(gt_b003))
     # print(accuracy_score(gt_b003["occupancy"], first_predict_b003))
     # print(accuracy_score(gt_b003["occupancy"], avg_predict_b003))
