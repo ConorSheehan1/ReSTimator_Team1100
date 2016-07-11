@@ -58,11 +58,6 @@ def create_tables():
     conn.close()
 
 
-def find_bad_time(name, df):
-    print(name.upper())
-    print(df.loc[df['time'] == "9:00"])
-
-
 def populate_db(list_of_room_codes, method="append", do_print=False):
     conn = sqlite3.connect(r"./data/ucd_occupancy.db")
 
@@ -100,10 +95,7 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
 
     conn.close()
 
-    find_bad_time("df_ground_truth",  df_ground_truth)
-    find_bad_time("df_timetable",  df_timetable)
-    find_bad_time("df_logs",  df_logs)
-    find_bad_time("df_occupy",  df_occupy)
+    return df_occupy
 
 if __name__ == "__main__":
     '''
