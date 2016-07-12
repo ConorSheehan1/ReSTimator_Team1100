@@ -1,11 +1,12 @@
-from app import db, tables
+from app.app import db
+from app import tables
 
 # User Table Testing
-user1 = tables.Users(username="Andy", password="22222") 
+user1 = tables.Users(username="andy@ucd.ie", password="22222") 
 db.session.add(user1)
-user2 = tables.Users(username="Stephen", password="22223") 
+user2 = tables.Users(username="stephen@ucd.ie", password="22223") 
 db.session.add(user2)
-user3 = tables.Users(username="Conor", password="22224") 
+user3 = tables.Users(username="conor@ucd.ie", password="22224") 
 db.session.add(user3)
 
 

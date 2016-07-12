@@ -1,5 +1,6 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
+
 	<form class="form-horizontal" role="form" action="" method="post" name="login">
 		
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
@@ -36,4 +37,5 @@
 		<li> {{ q.day }} - {{ q.time }} - {{ q.module }} - {{ q.estimate }}% </li>
 	{% endfor %}
 	</ul>
+	
 {% endblock %}

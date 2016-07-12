@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 # from flask_login import login_required, current_user
-from app import restimatorApp, db
+from .app import restimatorApp, db
 from .login import LoginForm
 from .sign_up import RegistrationForm
 from .analysis import AnalysisForm
@@ -20,7 +20,7 @@ def login():
     pg_name = "Login" 
     form = LoginForm() # create instance of LoginForm
     if request.method == "POST" and form.validate_on_submit(): # validate_on_submit method processes form on form submission request. Returns true if all validators attached to fields pass (need more validators in form)
-    	flash("Login requested for Username=%s, remember_me=%s" % (form.username.data, str(form.remember_me.data))) # returns a message on next page to user
+    	flash("Login requested for Username=%s" % (form.username.data)) # returns a message on next page to user
     	return redirect("/home") # redirect tells the client web browser to navigate to a different page
     return render_template("login.html", pg_name=pg_name, title="Sign In", form=form) # pass LoginForm object to template
 
@@ -35,7 +35,7 @@ def sign_up():
         db.session.commit()
         flash("Successfully Registered")
         return redirect("/home") # redirect(url_for("/home"))
-    return render_template("sign_up.html", form=form)
+    return render_template("sign_up.html", pg_name=pg_name, form=form)
 
 @restimatorApp.route("/analysis", methods=["GET", "POST"])
 def analysis():

@@ -1,4 +1,4 @@
-from app import db
+from .app import db
 from flask_wtf import Form
 from wtforms import SelectField
 from .tables import Results
