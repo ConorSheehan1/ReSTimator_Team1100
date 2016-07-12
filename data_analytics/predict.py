@@ -39,28 +39,20 @@ def get_average(df):
 
 
 def get_average_range(df, min, max):
-    # copy dataframe so old dataframe is not overwritten!
-    df_new = df.copy(deep=True)
+    # find rows whos minute values are within min and max
+    data_list = []
+    for i, row in df.iterrows():
+        if min <= int(row["time"].split(":")[1]) <= max:
+            data_list.append(row)
 
-    # reset logs index so rows can be dropped based on index
-    df_new.reset_index(drop=True, inplace=True)
+    # add valid rows to new_df, use old df columns
+    df_new = pd.DataFrame(data=data_list, columns=df.columns)
+    print(len(df), len(df_new))
 
-    # drop rows not in range min - max
-    drop_list = []
-    for i, row in df_new.iterrows():
-        # split time on :[1] to get minutes
-        # get integer value of minutes to compare with min and max
-        minutes = int(row["time"].split(":")[1])
-        if minutes < min or minutes > max:
-            print(i, int(row["time"].split(":")[1]))
-            drop_list.append(i)
-
-    df_new.drop(drop_list, inplace=True)
-
-    # call average function
-    avg = get_average(df)
-    print("stuff", len(df), len(df_new), len(avg))
-
+    avg = get_average(df_new)
+    avg2 = get_average(df)
+    print(avg.loc[avg['time'] == "10:00"])
+    print(avg2.loc[avg2['time'] == "10:00"])
     return avg
 
 
