@@ -3,6 +3,7 @@ http://stackoverflow.com/questions/30328646/python-pandas-group-by-in-group-by-a
 http://stackoverflow.com/questions/25473153/python-pandas-iterrows-with-previous-values
 http://stackoverflow.com/questions/17071871/select-rows-from-a-dataframe-based-on-values-in-a-column-in-pandas
 http://stackoverflow.com/questions/14247586/python-pandas-how-to-select-rows-with-one-or-more-nulls-from-a-dataframe-without
+http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.copy.html
 '''
 
 import pandas as pd
@@ -19,25 +20,59 @@ except ImportError:
     import clean_timetable
 
 
-def get_average(logs):
-    # assume
-    # reset logs index
-    logs.reset_index(drop=True, inplace=True)
+def get_average(df):
+    '''
+    get average value of dataframe per hour
+    ignore minute values, look at hour, groupby and get mean
+    '''
+    # copy dataframe so old dataframe is not overwritten!
+    df_new = df.copy(deep=True)
 
     # get just hour value for logs time: drop minutes, add 00 as new minutes value
-    logs["time"] = logs["time"].apply(lambda x: x.split(":")[0]+":00")
+    df_new["time"] = df_new["time"].apply(lambda x: x.split(":")[0] + ":00")
     # get average of every row where time and date are the same
-    avg = logs.groupby(['time', 'date', 'room'], as_index=False).mean()
-    # print(avg.loc[avg['time'] == "09:00"])
+    avg = df_new.groupby(['time', 'date', 'room'], as_index=False).mean()
+
+    # check that rows are merge on hour
+    # print(len(df), len(avg))
     return avg
 
 
-def get_first_time(logs):
-    logs["time"] = logs["time"].apply(lambda x: x.split(":")[0]+":00")
+def get_average_range(df, min, max):
+    # copy dataframe so old dataframe is not overwritten!
+    df_new = df.copy(deep=True)
+
+    # reset logs index so rows can be dropped based on index
+    df_new.reset_index(drop=True, inplace=True)
+
+    # drop rows not in range min - max
+    drop_list = []
+    for i, row in df_new.iterrows():
+        # split time on :[1] to get minutes
+        # get integer value of minutes to compare with min and max
+        minutes = int(row["time"].split(":")[1])
+        if minutes < min or minutes > max:
+            print(i, int(row["time"].split(":")[1]))
+            drop_list.append(i)
+
+    df_new.drop(drop_list, inplace=True)
+
+    # call average function
+    avg = get_average(df)
+    print("stuff", len(df), len(df_new), len(avg))
+
+    return avg
+
+
+def get_first_time(df):
+    # copy dataframe so old dataframe is not overwritten!
+    df_new = df.copy(deep=True)
+
+    df_new["time"] = df_new["time"].apply(lambda x: x.split(":")[0] + ":00")
     # keep first unique value for date, time and room
-    logs.drop_duplicates(subset=["time", "date", "room"], keep="first", inplace=True)
+    df_new.drop_duplicates(subset=["time", "date", "room"], keep="first", inplace=True)
     # print(logs.loc[logs['time'] == "10:00"])
-    return logs
+    return df_new
 
 
 def merge_logs_gt(logs, gt):
@@ -48,10 +83,7 @@ def merge_logs_gt(logs, gt):
 
 
 def run_regression(df, target, independent):
-    # occupancy = target feature
-    # chosen_features = df[["occupancy", "associated_client_count", "authenticated_client_count"]]
     chosen_features = df[[target, independent]]
-    # print(chosen_features)
     linm = sm.ols(formula=(target + "~(" + independent + ")"),
                   data=chosen_features).fit()
     print(linm.summary())
@@ -76,6 +108,7 @@ def predict_occupancy(linm, df, independent):
 
 if __name__ == "__main__":
     logs_b002 = clean_csvs.importer("./data/CSI WiFiLogs/B-02/")[0]
+
     avg_b002 = get_average(logs_b002)
     first_b002 = get_first_time(logs_b002)
 
@@ -85,12 +118,17 @@ if __name__ == "__main__":
     first_test = merge_logs_gt(first_b002, gt_b002)
     avg_test = merge_logs_gt(avg_b002, gt_b002)
 
-    first_linm_associated = run_regression(first_test, "occupancy", "associated_client_count")
-    first_linm_authenticated = run_regression(first_test, "occupancy", "authenticated_client_count")
+    avg_range_test = get_average_range(logs_b002, 15, 45)
 
-    avg_linm_associated = run_regression(avg_test, "occupancy", "associated_client_count")
-    avg_linm_associated = run_regression(avg_test, "occupancy", "authenticated_client_count")
+    # first_linm_associated = run_regression(first_test, "occupancy", "associated_client_count")
+    # first_linm_authenticated = run_regression(first_test, "occupancy", "authenticated_client_count")
+    #
+    # avg_linm_associated = run_regression(avg_test, "occupancy", "associated_client_count")
+    # avg_linm_associated = run_regression(avg_test, "occupancy", "authenticated_client_count")
 
+
+
+    # -------------------------------------------------
     # avg_test = merge_logs_gt(avg_b002, gt_b002)
     # avg_linm = run_regression(avg_test)
 
