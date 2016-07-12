@@ -47,12 +47,8 @@ def get_average_range(df, min, max):
 
     # add valid rows to new_df, use old df columns
     df_new = pd.DataFrame(data=data_list, columns=df.columns)
-    print(len(df), len(df_new))
 
     avg = get_average(df_new)
-    avg2 = get_average(df)
-    print(avg.loc[avg['time'] == "10:00"])
-    print(avg2.loc[avg2['time'] == "10:00"])
     return avg
 
 
