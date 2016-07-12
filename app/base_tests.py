@@ -1,4 +1,4 @@
-from app.app import restimatorApp
+from app import restimatorApp
 import unittest
 
 class FlaskTest(unittest.TestCase):
