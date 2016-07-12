@@ -16,6 +16,11 @@ from sign_up import RegistrationForm
 from analysis import AnalysisForm
 from models import * 
 
+# from project.users.views import user_blueprint
+
+# # Register blueprint
+# app.register_blueprint(users_blueprint)
+
 @restimatorApp.route("/")
 @restimatorApp.route("/home", methods=["GET", "POST"])
 def home():
