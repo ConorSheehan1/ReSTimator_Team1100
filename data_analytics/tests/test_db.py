@@ -56,9 +56,10 @@ def test_date_time_format():
                 assert False
 
         # date is always yyyymmdd
-        # this test will break in the year 10000, sorry guys no future proofing
+        # this test will break in the year 10000 (len(10000mmdd) == 9 != 8) sorry guys no future proofing
         if len(str(date)) != 8:
             assert False
+
     # if all cases don't assert false, assert true
     assert True
 
