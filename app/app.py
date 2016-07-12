@@ -3,11 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
 
 restimatorApp = Flask(__name__) # application object
-restimatorApp.debug = True # debugger and helpful for auto reload when changes are made to the code
+# restimatorApp.debug = True 
 
 CsrfProtect(restimatorApp) # enables CSRF protection for all view handlers
 
-restimatorApp.config.from_object("config") # read and use config file
+restimatorApp.config.from_object("config.DevelopmentConfig") # read and use config file
 
 db = SQLAlchemy(restimatorApp) # sqlalchemy database object
 

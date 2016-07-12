@@ -74,6 +74,13 @@ class FlaskTest(unittest.TestCase):
 	# 	response = tester.post("/login", data=dict(username="x", password="ucd", remember_me=False))
 	# 	self.assertIn(b"This field is required", response.data)
 
+	def test_login_feature3(self):
+		'''Test Login feature requires user to login first'''
+		pass
+	# 	tester = restimatorApp.test_client(self)
+	# 	response = tester.post("/", follow_redirects=True)
+	# 	self.assertIn(b"Login first", response.data)
+
 	# Analysis page testing
 
 	def test_analysis(self):
