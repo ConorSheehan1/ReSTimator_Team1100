@@ -43,8 +43,8 @@ def create_tables():
 
     prefix = "CREATE TABLE IF NOT EXISTS "
 
-    location_table = prefix + "location (room VARCHAR, capacity INT, " \
-                              "PRIMARY KEY(room));"
+    location_table = prefix + "location (room VARCHAR, building VARCHAR, campus VARCHAR, capacity INT, " \
+                              "PRIMARY KEY(room, building, campus));"
     cursor.execute(location_table)
 
     module_table = prefix + "module (module_code VARCHAR, reg_students INT, " \
@@ -52,7 +52,7 @@ def create_tables():
     cursor.execute(module_table)
 
     occupy = prefix + "occupy (room VARCHAR, date INT, time VARCHAR, occupancy REAL, module_code VARCHAR, " \
-                      "reg_students INT," \
+                      "associated_client_count INT, authenticated_client_count INT," \
                       "PRIMARY KEY (time, date, room));"
     cursor.execute(occupy)
     conn.close()
@@ -66,19 +66,21 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
     iter_csvs = clean_csvs.concat_log_dfs(list_of_room_codes, do_print)
     df_logs = iter_csvs[0]
     # get average value per hour
-    df_logs = predict.get_average(df_logs)
+    # df_logs = predict.get_average(df_logs)
     # df_logs.to_sql(name='wifi_logs', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     iter_gt = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx", do_print)
     df_location = iter_gt[1]
     # use inner join for rooms, only want common locations to have full location data
     df_full_location = pd.merge(df_location, iter_csvs[1], how="inner", on="room")
+    print(df_full_location)
     df_full_location.to_sql(name='location', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     df_timetable = clean_timetable.fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx", do_print)
 
     df_module = df_timetable[["module_code", "reg_students"]].copy()
-    df_module.drop_duplicates(inplace=True)
+    # drop duplicated module codes, fix?
+    df_module.drop_duplicates(subset=["module_code"], inplace=True)
     df_module.to_sql(name='module', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     # merge ground truth with timetable based on date room and time
@@ -104,3 +106,4 @@ if __name__ == "__main__":
     '''
     create_tables()
     populate_db(["B-02", "B-03", "B-04"], "replace", True)
+    # populate_db(["B-02", "B-03", "B-04"])
