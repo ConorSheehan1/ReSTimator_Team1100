@@ -1,4 +1,4 @@
-from app import restimatorApp
+from project import restimatorApp
 
 if __name__ == "__main__":
     # Start server with run method

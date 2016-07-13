@@ -1,7 +1,7 @@
-from app import db
+from project import db
 from flask_wtf import Form
 from wtforms import SelectField
-from models import Results
+from project.models import Results
 from wtforms.validators import DataRequired
 # from wtforms.validators import DataRequired, Email, EqualTo # validator, a function that can be attached to a field to perform validation on the data submitted by the user.
 

@@ -1,30 +1,35 @@
-from flask import render_template, flash, redirect, url_for, request
-# from flask_login import login_required, current_user
-from app import restimatorApp, db
-from .login import LoginForm
+from project import restimatorApp, db
+from flask import render_template, flash, redirect, url_for, request, session, Blueprint
+from functools import wraps  
+
+###VIEWS: handlers that respond to requests from browsers. Flask handlers are written as functions (each view function is mapped to one or more request URLs)###
 from .sign_up import RegistrationForm
 from .analysis import AnalysisForm
-from .tables import * # import database objects
+from project.models import * 
 
-@restimatorApp.route("/")
-@restimatorApp.route("/home", methods=["GET", "POST"])
+main_blueprint = Blueprint("main", __name__, template_folder="templates")
+
+def login_required(test):
+    '''If user tries to send GET request and they are not logged in i.e. no logged_in key, then this function will redirect user back to login page'''
+    @wraps(test)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return test(*args, **kwargs)
+        else:
+            flash("Required to log in to view page")
+            return redirect(url_for("users.login"))
+    return wrap
+
+@main_blueprint.route("/")
+@main_blueprint.route("/home", methods=["GET", "POST"])
+@login_required
 def home():
     '''home view'''
     pg_name = "Home" 
     random = db.session.query(Users).all()
     return render_template("home.html", pg_name=pg_name, random=random) # function takes a template filename and a variable list of template args and returns the rendered template (invokes Jinja2 templating engine)
 
-@restimatorApp.route('/login', methods=["GET", "POST"]) # view function accepts both GET and POST requests
-def login():
-    '''form view'''
-    pg_name = "Login" 
-    form = LoginForm() # create instance of LoginForm
-    if request.method == "POST" and form.validate_on_submit(): # validate_on_submit method processes form on form submission request. Returns true if all validators attached to fields pass (need more validators in form)
-    	flash("Login requested for Username=%s, remember_me=%s" % (form.username.data, str(form.remember_me.data))) # returns a message on next page to user
-    	return redirect("/home") # redirect tells the client web browser to navigate to a different page
-    return render_template("login.html", pg_name=pg_name, title="Sign In", form=form) # pass LoginForm object to template
-
-@restimatorApp.route("/sign_up", methods=["GET", "POST"])
+@main_blueprint.route("/sign_up", methods=["GET", "POST"])
 def sign_up():
     '''Sign up view'''
     pg_name = "Sign Up" 
@@ -35,9 +40,10 @@ def sign_up():
         db.session.commit()
         flash("Successfully Registered")
         return redirect("/home") # redirect(url_for("/home"))
-    return render_template("sign_up.html", form=form)
+    return render_template("sign_up.html", pg_name=pg_name, form=form)
 
-@restimatorApp.route("/analysis", methods=["GET", "POST"])
+@main_blueprint.route("/analysis", methods=["GET", "POST"])
+@login_required
 def analysis():
     '''analysis view'''
     pg_name = "Analysis" 
@@ -47,19 +53,20 @@ def analysis():
         query = Results.query.filter_by(day=form.day.data, time=form.time.data, module=form.module.data).all()
     return render_template("analysis.html", pg_name=pg_name, form=form, query=query)
 
-@restimatorApp.route("/about")
+@main_blueprint.route("/about")
 def about():
     '''about view'''
     pg_name = "About" 
     return render_template("about.html", pg_name=pg_name)
 
-@restimatorApp.route("/data")
+@main_blueprint.route("/data")
+@login_required
 def data():
     '''data view'''
     pg_name = "Data" 
     return render_template("data.html", pg_name=pg_name)
 
-@restimatorApp.route("/contact")
+@main_blueprint.route("/contact")
 def contact():
     '''contact view'''
     pg_name = "Contact" 
@@ -68,5 +75,3 @@ def contact():
 # @csrf.error_handler
 # def csrf_error(reason):
 #     return render_template('csrf_error.html', reason=reason), 400
-
-

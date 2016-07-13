@@ -1,4 +1,4 @@
-from app import db # import database object
+from project import db # import database object
 
 # Declarative Base - http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 '''The baseclass for all your models is called db.Model. 
@@ -14,7 +14,7 @@ Primary keys are marked with primary_key=True
 class Users(db.Model):
 	'''Database object'''
 	# class variables
-	# __tablename__ = "users"
+	# __tablename__ = "users" # can specify table name here if needed
 	username = db.Column(db.String(80), primary_key=True, nullable=False) # Column to define a column
 	password = db.Column(db.String(120), nullable=False)
 
