@@ -1,5 +1,4 @@
 # source: http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms 
-
 from flask_wtf import Form
 from wtforms import StringField, BooleanField, PasswordField
 from wtforms.validators import DataRequired, Email # validator, a function that can be attached to a field to perform validation on the data submitted by the user.
