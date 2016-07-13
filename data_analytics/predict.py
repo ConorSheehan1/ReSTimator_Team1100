@@ -114,8 +114,6 @@ if __name__ == "__main__":
     # avg_linm_associated = run_regression(avg_test, "occupancy", "associated_client_count")
     # avg_linm_associated = run_regression(avg_test, "occupancy", "authenticated_client_count")
 
-
-
     # -------------------------------------------------
     # avg_test = merge_logs_gt(avg_b002, gt_b002)
     # avg_linm = run_regression(avg_test)

@@ -135,7 +135,7 @@ def fix_merged_cells(file_path, file_name, do_print=False):
 
     # remove (parctial) and (lecture) from df
     df_total_module["module_code"] = df_total_module["module_code"].apply(lambda x: x.split("(")[0].strip())
-    print(df_total_module)
+    # print(df_total_module)
 
     return df_total_module
 
