@@ -1,12 +1,12 @@
 import os 
 
 class BaseConfig():
-	# basedir = os.path.abspath(os.path.dirname(__file__))
+	basedir = os.path.abspath(os.path.dirname(__file__))
 
 	DEBUG = False # debugger and helpful for auto reload when changes are made to the code
 	
-	# SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "sample.db") # sqlite db location
-	SQLALCHEMY_DATABASE_URI = "sqlite:///sample.db" # sqlite db location
+	SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "project/sample.db") # sqlite db location
+	# SQLALCHEMY_DATABASE_URI = "sqlite:///sample.db" # sqlite db location
 	SQLALCHEMY_TRACK_MODIFICATIONS = False # disabled for the time being
 
 	SECRET_KEY = "\xc6\xbb\x98e3\xc7W\xe8\x81\xe3\xcfB\xb0*g^\xca\xfe\x19\x92\x8e\xd2#\x02" # used to create a cryptographoc token to validate form
