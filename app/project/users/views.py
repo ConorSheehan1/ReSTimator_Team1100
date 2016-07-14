@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, session, Blueprint
 from functools import wraps 
 from .login_form import LoginForm
+from project.models import Users
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates")
 
@@ -20,12 +21,17 @@ def login_required(test):
 def login():
 	'''form view'''
 	pg_name = "Login" 
-	form = LoginForm() # create instance of LoginForm
+	error = None
+	form = LoginForm(request.form) # create instance of LoginForm request.form
 	if request.method == "POST" and form.validate_on_submit():
-		session["logged_in"] = True # if user credentials are correct, set to true
-		flash("Login requested for Username=%s" % (form.username.data)) # returns a message on next page to user
-		return redirect("/home") # redirect tells the client web browser to navigate to a different page
-	return render_template("login.html", pg_name=pg_name, title="Sign In", form=form) # pass LoginForm object to template
+		user = Users.query.filter_by(username=request.form["username"]).first()
+		if user is not None: # update password check i.e. bcrypt
+			session["logged_in"] = True # if user credentials are correct, set to true
+			flash("Login requested for Username=%s" % (form.username.data)) # returns a message on next page to user
+			return redirect(url_for("main.home")) # redirect tells the client web browser to navigate to a different page
+		else:
+			error = "Invalid user credentials. Please try again."
+	return render_template("login.html", pg_name=pg_name, title="Sign In", form=form, error=error) # pass LoginForm object to template
 
 @users_blueprint.route("/logout")
 @login_required

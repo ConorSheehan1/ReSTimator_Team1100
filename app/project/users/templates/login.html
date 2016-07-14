@@ -6,23 +6,27 @@
 		
 		<div class="form-group">
 			<p>
-				Username:<br> {{ form.username(placeholder="Username") }}<br>
+				{{ form.username(placeholder="Username") }}
 				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 			<p>
-				Password:<br> {{ form.password(placeholder="Password") }}<br>
+				{{ form.password(placeholder="Password") }}
 				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
-				{% endfor %}<br>
+				{% endfor %}
 			</p>
 			<p>
 				{{ form.remember_me }} Remember Me
 			</p>
+			<p><input type="submit" value="Sign In" class="btn btn-default"></p>
+			{% if error != None %}
+				<p style="color: red;"> {{ error }} <p>
+			{% endif %}
 		</div>
 
-		<p><input type="submit" value="Sign In" class="btn btn-default"></p>
+		
 		
 	</form>
 {% endblock %}
