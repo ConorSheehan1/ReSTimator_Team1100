@@ -47,6 +47,31 @@ def format_time(unformatted_time):
     return hour + ":" + minute
 
 
+def read_timetable(file_path, sheet, last_column=0):
+    '''
+    change list_of_modules to set? solved with drop_duplicates? runtime?
+    currently only checking first week in sheet (last_column=10) check for difference in next week?
+    '''
+
+    list_of_modules = []
+    df = pd.read_excel(file_path, sheetname=sheet, skiprows=1, skip_footer=3, parse_cols=last_column+10)
+    header = pd.read_excel(file_path, sheetname=sheet, skip_footer=len(df)+4, parse_cols=2)
+    month = header.columns[1].split(" ")[1]
+
+    for tuple in df.itertuples():
+        for i in range(len(tuple)):
+            if i % 2 == 0:
+                if type(tuple[i]) == str:
+                    # choose start of class as time, strip twice to account for 2 digit numbers
+                    list_of_modules.append([tuple[1].split(" - ")[0],
+                                            format_date(month + " " + df.columns[i-1].strip()[-4:-2].strip()),
+                                            sheet.strip(), tuple[i], tuple[i+1]])
+
+    # df_module = pd.DataFrame(list_of_modules, columns=["time", "day", "date", "room", "module_code", "reg_students"])
+    df_module = pd.DataFrame(list_of_modules, columns=["time", "date", "room", "module_code", "reg_students"])
+    return df_module
+
+
 def fix_merged_cells(file_path, file_name, do_print=False):
     '''
     fix practical v lecture?
@@ -107,34 +132,12 @@ def fix_merged_cells(file_path, file_name, do_print=False):
 
     # match time format with logs
     df_total_module["time"] = df_total_module["time"].apply(format_time)
-    print(df_total_module)
+
+    # remove (parctial) and (lecture) from df
+    df_total_module["module_code"] = df_total_module["module_code"].apply(lambda x: x.split("(")[0].strip())
+    # print(df_total_module)
 
     return df_total_module
-
-
-def read_timetable(file_path, sheet, last_column=0):
-    '''
-    change list_of_modules to set? solved with drop_duplicates? runtime?
-    currently only checking first week in sheet (last_column=10) check for difference in next week?
-    '''
-
-    list_of_modules = []
-    df = pd.read_excel(file_path, sheetname=sheet, skiprows=1, skip_footer=3, parse_cols=last_column+10)
-    header = pd.read_excel(file_path, sheetname=sheet, skip_footer=len(df)+4, parse_cols=2)
-    month = header.columns[1].split(" ")[1]
-
-    for tuple in df.itertuples():
-        for i in range(len(tuple)):
-            if i % 2 == 0:
-                if type(tuple[i]) == str:
-                    # choose start of class as time, strip twice to account for 2 digit numbers
-                    list_of_modules.append([tuple[1].split(" - ")[0],
-                                            format_date(month + " " + df.columns[i-1].strip()[-4:-2].strip()),
-                                            sheet.strip(), tuple[i], tuple[i+1]])
-
-    # df_module = pd.DataFrame(list_of_modules, columns=["time", "day", "date", "room", "module_code", "reg_students"])
-    df_module = pd.DataFrame(list_of_modules, columns=["time", "date", "room", "module_code", "reg_students"])
-    return df_module
 
 
 if __name__ == "__main__":

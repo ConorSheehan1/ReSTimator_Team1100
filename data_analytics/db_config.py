@@ -43,52 +43,51 @@ def create_tables():
 
     prefix = "CREATE TABLE IF NOT EXISTS "
 
-    location_table = prefix + "location (room VARCHAR, capacity INT, " \
-                              "PRIMARY KEY(room));"
+    occupy = prefix + "occupy (room VARCHAR, date INT, time VARCHAR, occupancy REAL, module_code VARCHAR, " \
+                      "associated_client_count INT, authenticated_client_count INT," \
+                      "PRIMARY KEY (time, date, room));"
+    cursor.execute(occupy)
+
+    location_table = prefix + "location (room VARCHAR, building VARCHAR, campus VARCHAR, capacity INT, " \
+                              "PRIMARY KEY(room, building, campus)" \
+                              "FOREIGN KEY(room) REFERENCES occupy(room));"
     cursor.execute(location_table)
 
     module_table = prefix + "module (module_code VARCHAR, reg_students INT, " \
-                            "PRIMARY KEY (module_code));"
+                            "PRIMARY KEY (module_code)" \
+                            "FOREIGN KEY(module_code) REFERENCES occupy(module_code));"
     cursor.execute(module_table)
-
-    occupy = prefix + "occupy (room VARCHAR, date INT, time VARCHAR, occupancy REAL, module_code VARCHAR, " \
-                      "reg_students INT," \
-                      "PRIMARY KEY (time, date, room));"
-    cursor.execute(occupy)
     conn.close()
 
 
 def populate_db(list_of_room_codes, method="append", do_print=False):
     conn = sqlite3.connect(r"./data/ucd_occupancy.db")
 
-    # convert csv to dataframe, and import dataframe to database
     # get all csv dataframes
     iter_csvs = clean_csvs.concat_log_dfs(list_of_room_codes, do_print)
     df_logs = iter_csvs[0]
-    # get average value per hour
-    df_logs = predict.get_average(df_logs)
-    # df_logs.to_sql(name='wifi_logs', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     iter_gt = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx", do_print)
     df_location = iter_gt[1]
-    # use inner join for rooms, only want common locations to have full location data
+    # use inner merge for rooms, only want common locations to have full location data
     df_full_location = pd.merge(df_location, iter_csvs[1], how="inner", on="room")
     df_full_location.to_sql(name='location', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
     df_timetable = clean_timetable.fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx", do_print)
 
     df_module = df_timetable[["module_code", "reg_students"]].copy()
-    df_module.drop_duplicates(inplace=True)
+    # drop duplicated module codes, fix?
+    df_module.drop_duplicates(subset=["module_code"], inplace=True)
     df_module.to_sql(name='module', flavor='sqlite', con=conn, index=False,  if_exists=method)
 
-    # merge ground truth with timetable based on date room and time
     df_ground_truth = iter_gt[0]
     # use outer merge for ground truth, keep occupancy data even if timetable data doesn't match and vice versa
-    df_occupy = pd.merge(df_ground_truth, df_timetable, how="outer", on=["time", "room", "date"])
-    df_occupy = pd.merge(df_occupy, df_logs, how="outer", on=["time", "room", "date"])
+    df_occupy = pd.merge(df_ground_truth, df_timetable, how="outer", on=["time", "date", "room"])
+    df_occupy = pd.merge(df_occupy, df_logs, how="outer", on=["time", "date", "room"])
 
     # outer merge can result in duplicates
     df_occupy.drop_duplicates(inplace=True)
+    # convert floats from merge back to ints
     df_occupy["date"] = df_occupy["date"].astype(int)
     df_occupy.drop("reg_students", axis=1, inplace=True)
     df_occupy.to_sql(name='occupy', flavor='sqlite', con=conn, index=False,  if_exists=method)
@@ -104,3 +103,4 @@ if __name__ == "__main__":
     '''
     create_tables()
     populate_db(["B-02", "B-03", "B-04"], "replace", True)
+    # populate_db(["B-02", "B-03", "B-04"])
