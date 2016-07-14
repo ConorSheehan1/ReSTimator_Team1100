@@ -1,7 +1,8 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, Blueprint
-from .login_form import LoginForm
+from .forms import LoginForm, SignUpForm
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
+from project import db
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates")
 
@@ -27,3 +28,18 @@ def logout():
     logout_user() # logs out user and cleans out session cookie
     flash("User logged out")
     return redirect(url_for("users.login"))
+
+@users_blueprint.route("/sign_up", methods=["GET", "POST"])
+def sign_up():
+    '''Sign up view'''
+    pg_name = "Sign Up" 
+    form = SignUpForm() # create instance of RegistrationForm
+    if request.method == "POST" and form.validate_on_submit():
+        user = Users(username=form.username.data, password=form.password.data) 
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        flash("Successfully Registered")
+        return redirect(url_for("main.home"))
+    return render_template("sign_up.html", pg_name=pg_name, form=form)
+
