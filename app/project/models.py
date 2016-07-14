@@ -1,6 +1,6 @@
 from project import db # import database object
+from werkzeug.security import generate_password_hash, check_password_hash # http://flask.pocoo.org/snippets/54/
 
-# Declarative Base - http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 '''The baseclass for all your models is called db.Model. 
 It’s stored on the SQLAlchemy instance you have to create. 
 
@@ -20,11 +20,21 @@ class Users(db.Model):
 	def __init__(self, username, password):
 		'''instance attributes'''
 		self.username = username
-		self.password = password
+		# self.password = password
+		self.password = self.set_password(password)
 
 	def __repr__(self):
 		'''object representation'''
 		return "{} - {}".format(self.username, self.password)
+
+	def set_password(self, password):
+		''''''
+		self.pw_hash = generate_password_hash(password)
+		return self.pw_hash
+
+	def check_password(self, password):
+		''''''
+		return check_password_hash(self.pw_hash, password)
 
 	def is_authenticated(self):
 		'''Returns True if the user is authenticated i.e. user provided valid credentials'''
