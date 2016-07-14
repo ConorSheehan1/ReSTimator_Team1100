@@ -1,24 +1,13 @@
-from project import restimatorApp, db
-from flask import render_template, flash, redirect, url_for, request, session, Blueprint
-from functools import wraps  
-
-###VIEWS: handlers that respond to requests from browsers. Flask handlers are written as functions (each view function is mapped to one or more request URLs)###
+from project import db
+from flask import render_template, flash, redirect, url_for, request, Blueprint
+from flask.ext.login import login_required
 from .sign_up import RegistrationForm
 from .analysis import AnalysisForm
 from project.models import * 
 
 main_blueprint = Blueprint("main", __name__, template_folder="templates")
 
-def login_required(test):
-    '''If user tries to send GET request and they are not logged in i.e. no logged_in key, then this function will redirect user back to login page'''
-    @wraps(test)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return test(*args, **kwargs)
-        else:
-            flash("Required to log in to view page")
-            return redirect(url_for("users.login"))
-    return wrap
+###VIEWS: handlers that respond to requests from browsers. Flask handlers are written as functions (each view function is mapped to one or more request URLs)###
 
 @main_blueprint.route("/")
 @main_blueprint.route("/home", methods=["GET", "POST"])
@@ -39,7 +28,7 @@ def sign_up():
         db.session.add(user)
         db.session.commit()
         flash("Successfully Registered")
-        return redirect("/home") # redirect(url_for("/home"))
+        return redirect(url_for("home"))
     return render_template("sign_up.html", pg_name=pg_name, form=form)
 
 @main_blueprint.route("/analysis", methods=["GET", "POST"])

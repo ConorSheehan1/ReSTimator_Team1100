@@ -12,8 +12,7 @@ Primary keys are marked with primary_key=True
 '''
 
 class Users(db.Model):
-	'''Database object'''
-	# class variables
+	'''Database object - application user login details'''
 	# __tablename__ = "users" # can specify table name here if needed
 	username = db.Column(db.String(80), primary_key=True, nullable=False) # Column to define a column
 	password = db.Column(db.String(120), nullable=False)
@@ -26,6 +25,26 @@ class Users(db.Model):
 	def __repr__(self):
 		'''object representation'''
 		return "{} - {}".format(self.username, self.password)
+
+	def is_authenticated(self):
+		'''Returns True if the user is authenticated i.e. user provided valid credentials'''
+		return True
+
+	def is_active(self):
+		'''Returns True if this is an active user 
+
+		i.e. authenticated and user account is activated.
+		Inactive accounts may not log in 
+		'''
+		return True
+
+	def is_anonymous(self):
+		'''Returns False if this is an anonymous user'''
+		return False
+
+	def get_id(self):
+		'''Returns a unicode uniquely identifing the user'''
+		return str(self.username)
 
 class Results(db.Model):
 	'''Database object'''

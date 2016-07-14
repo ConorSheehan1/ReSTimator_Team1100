@@ -1,6 +1,6 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
-	<form class="form-horizontal" role="form" action="" method="post" name="login">
+	<form class="form-horizontal" role="form" method="post" action="" name="login">
 		
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 		
@@ -18,15 +18,11 @@
 				{% endfor %}
 			</p>
 			<p>
-				{{ form.remember_me }} Remember Me
+				<input type="submit" value="Sign In" class="btn btn-default">
 			</p>
-			<p><input type="submit" value="Sign In" class="btn btn-default"></p>
 			{% if error != None %}
 				<p style="color: red;"> {{ error }} <p>
 			{% endif %}
 		</div>
-
-		
-		
 	</form>
 {% endblock %}
