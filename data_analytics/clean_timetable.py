@@ -117,9 +117,14 @@ def fix_merged_cells(file_path, file_name, do_print=False):
 
     list_of_sheets = [sheet.title for sheet in workbook]
 
-    # create one large dataframe
+    # read first section of first sheet in excel file into df
     df_total_module = read_timetable(fixed_path, list_of_sheets[0])
+    # add second section
+    df_total_module = pd.concat([df_total_module, read_timetable(fixed_path, list_of_sheets[0], 13)])
+
+    # read subsequent sheets
     for sheet in list_of_sheets[1:]:
+        # read both parts of sheet and add to dataframe
         df_total_module = pd.concat([df_total_module, read_timetable(fixed_path, sheet),
                                      read_timetable(fixed_path, sheet, 13)])
 
@@ -135,7 +140,8 @@ def fix_merged_cells(file_path, file_name, do_print=False):
 
     # remove (parctial) and (lecture) from df
     df_total_module["module_code"] = df_total_module["module_code"].apply(lambda x: x.split("(")[0].strip())
-    # print(df_total_module)
+
+    # print(df_total_module.loc[df_total_module["room"] == "B002"])
 
     return df_total_module
 
