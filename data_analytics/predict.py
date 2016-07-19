@@ -38,6 +38,13 @@ def get_average(df):
     return avg
 
 
+def get_max(df):
+    df_new = df.copy(deep=True)
+    df_new["time"] = df_new["time"].apply(lambda x: x.split(":")[0] + ":00")
+    df_max = df_new.groupby(['time', 'date', 'room'], as_index=False).max()
+    return df_max
+
+
 def get_average_range(df, min, max):
     # find rows whos minute values are within min and max
     data_list = []
@@ -63,6 +70,22 @@ def get_first_time(df):
     return df_new
 
 
+def get_half_hour(df):
+    data_list = []
+    for i, row in df.iterrows():
+        if row["time"].split(":")[1][0] == "3":
+            data_list.append(row)
+
+    df_half_hour = pd.DataFrame(data=data_list, columns=df.columns)
+    df_half_hour = get_first_time(df_half_hour)
+
+    # df_half_hour.drop_duplicates(subset=["time", "date", "room"], keep="first", inplace=True)
+    # df_half_hour = df_new.groupby(['time', 'date', 'room'], as_index=False).mean()
+
+    # print(df_half_hour["time"])
+    return df_half_hour
+
+
 def merge_logs_gt(logs, gt):
     # inner merge to keep only common values between logs and ground truth
     result = pd.merge(logs, gt, how="inner", on=["room", "time", "date"])
@@ -74,7 +97,7 @@ def run_regression(df, target, independent):
     chosen_features = df[[target, independent]]
     linm = sm.ols(formula=(target + "~(" + independent + ")"),
                   data=chosen_features).fit()
-    print(linm.summary())
+    # print(linm.summary())
     return linm
 
 
@@ -94,39 +117,65 @@ def predict_occupancy(linm, df, independent):
     print(predictions)
     return predictions
 
+
+def mean_squared_error(df, linm):
+    return ((df["occupancy"] - linm.predict(df)) ** 2).mean()
+
 if __name__ == "__main__":
     logs_b002 = clean_csvs.importer("./data/CSI WiFiLogs/B-02/")[0]
 
-    avg_b002 = get_average(logs_b002)
     first_b002 = get_first_time(logs_b002)
+    avg_b002 = get_average(logs_b002)
+    avg_range_b002 = get_average_range(logs_b002, 15, 45)
+    max_b002 = get_max(logs_b002)
+    half_hour_b002 = get_half_hour(logs_b002)
+
+    logs_b003 = clean_csvs.importer("./data/CSI WiFiLogs/B-03/")[0]
+
+    first_b003 = get_first_time(logs_b003)
+    avg_b003 = get_average(logs_b003)
+    avg_range_b003 = get_average_range(logs_b003, 15, 45)
+    max_b003 = get_max(logs_b003)
+    half_hour_b003 = get_half_hour(logs_b003)
+
+    vars = [first_b002, avg_b002, avg_range_b002, max_b002, half_hour_b002, first_b003]
+    for var in vars:
+        print(var.shape)
 
     ground_truth = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx")[0]
     gt_b002 = ground_truth.loc[ground_truth["room"] == "B002"]
 
     first_test = merge_logs_gt(first_b002, gt_b002)
     avg_test = merge_logs_gt(avg_b002, gt_b002)
+    avg_range_test = merge_logs_gt(avg_range_b002, gt_b002)
+    max_test = merge_logs_gt(max_b002, gt_b002)
+    half_hour_test = merge_logs_gt(half_hour_b002, gt_b002)
 
-    avg_range_test = get_average_range(logs_b002, 15, 45)
+    gt_b003 = ground_truth.loc[ground_truth["room"] == "B003"]
+    first_test_b003 = merge_logs_gt(first_b003, gt_b003)
+    avg_test_b003 = merge_logs_gt(avg_b003, gt_b003)
+    avg_range_test_b003 = merge_logs_gt(avg_range_b003, gt_b003)
+    max_test_b003 = merge_logs_gt(max_b003, gt_b003)
+    half_hour_test_b003 = merge_logs_gt(half_hour_b003, gt_b003)
 
-    # first_linm_associated = run_regression(first_test, "occupancy", "associated_client_count")
-    # first_linm_authenticated = run_regression(first_test, "occupancy", "authenticated_client_count")
-    #
-    # avg_linm_associated = run_regression(avg_test, "occupancy", "associated_client_count")
-    # avg_linm_associated = run_regression(avg_test, "occupancy", "authenticated_client_count")
+    list_of_features = ["authenticated_client_count", "associated_client_count"]
+    for feature in list_of_features:
+        print("FIRST TIME", feature)
+        first_regression = run_regression(first_test, "occupancy", feature)
+        print(mean_squared_error(first_test_b003, first_regression), "\n")
 
-    # -------------------------------------------------
-    # avg_test = merge_logs_gt(avg_b002, gt_b002)
-    # avg_linm = run_regression(avg_test)
+        print("AVG", feature)
+        avg_regression = run_regression(avg_test, "occupancy",  feature)
+        print(mean_squared_error(avg_test_b003, avg_regression), "\n")
 
-    # logs_b003 = clean_csvs.importer("./data/CSI WiFiLogs/B-03/")[0]
-    # first_b003 = get_first_time(logs_b003)
-    # avg_b003 = get_average(logs_b003)
-    #
-    # gt_b003 = ground_truth.loc[ground_truth["room"] == "B003"]
-    # first_predict_b003 = predict_occupancy(first_linm, first_b003)
-    # avg_predict_b003 = predict_occupancy(avg_linm, avg_b003)
+        print("AVG RANGE", feature)
+        range_regression = run_regression(avg_range_test, "occupancy",  feature)
+        print(mean_squared_error(avg_range_test_b003, range_regression), "\n")
 
-    #test accuracy
-    # print("length\n", len(gt_b002), len(gt_b003))
-    # print(accuracy_score(gt_b003["occupancy"], first_predict_b003))
-    # print(accuracy_score(gt_b003["occupancy"], avg_predict_b003))
+        print("MAX", feature)
+        max_regression = run_regression(max_test, "occupancy",  feature)
+        print(mean_squared_error(max_test_b003, max_regression), "\n")
+
+        print("HALF HOUR", feature)
+        half_hour_regression = run_regression(half_hour_test, "occupancy",  feature)
+        print(mean_squared_error(half_hour_test_b003, half_hour_regression), "\n")

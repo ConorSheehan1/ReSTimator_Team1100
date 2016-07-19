@@ -60,7 +60,7 @@ def get_room(full_location):
 
 
 def importer(path, do_print=False):
-    list_ = []
+    df_list = []
     count = 0
     for file_path in glob.iglob(path + "*.csv"):
         file_path = fix_windows_path(file_path)
@@ -71,10 +71,10 @@ def importer(path, do_print=False):
         skip = count_bad_lines(file_path)
         df = pd.read_csv(file_path, skiprows=skip, index_col=False)
 
-        list_.append(df)
+        df_list.append(df)
         count += 1
 
-    result = pd.concat(list_)
+    result = pd.concat(df_list)
     # replace spaces with underscores in column names so sql will work
     result.columns = [x.strip().replace(' ', '_') for x in result.columns]
 
