@@ -25,7 +25,7 @@ def analysis():
     form = AnalysisForm()
     query = ""
     if request.method == "POST" and form.validate_on_submit():
-        query = Results.query.filter_by(day=form.day.data, time=form.time.data, module=form.module.data).all()
+        query = Results.query.filter_by(room=form.room.data, day=form.day.data, hourly_time=form.hourly_time.data).all()
     return render_template("analysis.html", pg_name=pg_name, form=form, query=query)
 
 @main_blueprint.route("/about")

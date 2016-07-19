@@ -7,20 +7,20 @@
 		
 		<div class="form-group">
 			<p>
+				Room: {{ form.room() }}
+				{% for error in form.room.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+			<p>
 				Day: {{ form.day() }}
 				{% for error in form.day.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 			<p>
-				Time: {{ form.time() }}
-				{% for error in form.time.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
-					<span style="color: red;">* {{ error }}</span>
-				{% endfor %}<br>
-			</p>
-			<p>
-				Module: {{ form.module() }}
-				{% for error in form.module.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				Time: {{ form.hourly_time() }}
+				{% for error in form.hourly_time.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
@@ -34,7 +34,7 @@
 
 	<ul>
 	{% for q in query %}
-		<li> {{ q.day }} - {{ q.time }} - {{ q.module }} - {{ q.estimate }}% </li>
+		<li> {{ q.room }} - {{ q.day }} - {{ q.hourly_time }} - {{ "{0:.2f}".format(q.predicted_occupancy * 100) }}% </li>
 	{% endfor %}
 	</ul>
 	
