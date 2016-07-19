@@ -8,7 +8,7 @@ http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.copy.html
 
 import pandas as pd
 import statsmodels.formula.api as sm
-from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
 
 try:
     from data_analytics import clean_csvs
@@ -121,6 +121,19 @@ def predict_occupancy(linm, df, independent):
 def mean_squared_error(df, linm):
     return ((df["occupancy"] - linm.predict(df)) ** 2).mean()
 
+
+def create_graph(df, linm, feature, name):
+    # First, plot the observed data
+    df.plot(kind='scatter', x=feature, y='occupancy')
+
+    X_minmax = pd.DataFrame({feature: [df[feature].min(), df[feature].max()]})
+
+    # Next, plot the regression line, in red.
+    plt.plot(X_minmax, linm.predict(X_minmax), c='red', linewidth=2)
+
+    plt.savefig("data/plots/formatted/" + name + "_" + feature + '.png', dpi=100)
+    # plt.show()
+
 if __name__ == "__main__":
     logs_b002 = clean_csvs.importer("./data/CSI WiFiLogs/B-02/")[0]
 
@@ -138,9 +151,9 @@ if __name__ == "__main__":
     max_b003 = get_max(logs_b003)
     half_hour_b003 = get_half_hour(logs_b003)
 
-    vars = [first_b002, avg_b002, avg_range_b002, max_b002, half_hour_b002, first_b003]
-    for var in vars:
-        print(var.shape)
+    # vars = [first_b002, avg_b002, avg_range_b002, max_b002, half_hour_b002, first_b003]
+    # for var in vars:
+    #     print(var.shape)
 
     ground_truth = clean_ground_truth.import_ground_truth("./data/CSI Occupancy report.xlsx")[0]
     gt_b002 = ground_truth.loc[ground_truth["room"] == "B002"]
@@ -163,19 +176,30 @@ if __name__ == "__main__":
         print("FIRST TIME", feature)
         first_regression = run_regression(first_test, "occupancy", feature)
         print(mean_squared_error(first_test_b003, first_regression), "\n")
+        # create_graph(first_test_b003, first_regression, feature, "first_time")
+        create_graph(avg_test_b003, first_regression, feature, "first_time")
 
         print("AVG", feature)
         avg_regression = run_regression(avg_test, "occupancy",  feature)
         print(mean_squared_error(avg_test_b003, avg_regression), "\n")
+        # create_graph(avg_test_b003, avg_regression, feature, "avg")
+        create_graph(avg_test_b003, avg_regression, feature, "avg")
 
         print("AVG RANGE", feature)
         range_regression = run_regression(avg_range_test, "occupancy",  feature)
         print(mean_squared_error(avg_range_test_b003, range_regression), "\n")
+        # create_graph(avg_range_test_b003, range_regression, feature, "avg_15-45")
+        create_graph(avg_test_b003, range_regression, feature, "avg_15-45")
 
         print("MAX", feature)
         max_regression = run_regression(max_test, "occupancy",  feature)
         print(mean_squared_error(max_test_b003, max_regression), "\n")
+        # create_graph(max_test_b003, max_regression, feature, "max")
+        create_graph(avg_test_b003, max_regression, feature, "max")
 
         print("HALF HOUR", feature)
         half_hour_regression = run_regression(half_hour_test, "occupancy",  feature)
         print(mean_squared_error(half_hour_test_b003, half_hour_regression), "\n")
+        create_graph(half_hour_test_b003, half_hour_regression, feature, "half_hour")
+
+        create_graph(avg_test_b003, half_hour_regression, feature, "half_hour")
