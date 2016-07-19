@@ -107,10 +107,12 @@ def predict_occupancy(linm, df, independent):
     for i in range(len(predictions)):
         if predictions.iloc[i] < 0.125:
             predictions.iloc[i] = 0.00
-        elif predictions.iloc[i] < 0.275:
+        elif predictions.iloc[i] < 0.375:
             predictions.iloc[i] = 0.25
-        elif predictions.iloc[i] < 0.75:
+        elif predictions.iloc[i] < 0.625:
             predictions.iloc[i] = 0.50
+        elif predictions.iloc[i] < 0.875:
+            predictions.iloc[i] = 0.75
         else:
             predictions.iloc[i] = 1.0
     predictions.reset_index(inplace=True, drop=True)
