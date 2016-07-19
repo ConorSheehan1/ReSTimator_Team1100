@@ -119,10 +119,13 @@ def predict_occupancy(linm, df, independent):
 
 
 def mean_squared_error(df, linm):
+    # modified georgiana's code from data analytics comp47350
     return ((df["occupancy"] - linm.predict(df)) ** 2).mean()
 
 
 def create_graph(df, linm, feature, name):
+    # modified georgiana's code from data analytics comp47350
+
     # First, plot the observed data
     df.plot(kind='scatter', x=feature, y='occupancy')
 
