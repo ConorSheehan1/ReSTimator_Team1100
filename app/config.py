@@ -1,6 +1,7 @@
 import os 
 
 class BaseConfig():
+	''''''
 	basedir = os.path.abspath(os.path.dirname(__file__))
 
 	DEBUG = False # debugger and helpful for auto reload when changes are made to the code
@@ -17,7 +18,14 @@ class BaseConfig():
 	RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
 class DevelopmentConfig(BaseConfig):
+	''''''
 	DEBUG = True
+
+class TestingConfig(BaseConfig):
+	''''''
+	DEBUG = True
+	TESTING = True
+	WTF_CSRF_ENABLED = False
 
 # class ProductionConfig(BaseConfig):
 	

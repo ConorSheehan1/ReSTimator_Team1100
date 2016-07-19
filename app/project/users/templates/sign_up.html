@@ -1,30 +1,30 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 	<form class="form-horizontal" role="form" action="" method="post" name="register">
-
-		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention. NB Wraps hidden fields in a hidden DIV tag, in order to keep XHTML compliance -->
+		
+		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 
 		<div class="form-group">
 			<p>
-				Username:<br> {{ form.username(placeholder="Username") }}<br>
+				{{ form.username(placeholder="Username") }}
 				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
-				{% endfor %}<br>
+				{% endfor %}
 			</p>
 			<p>
-				Password:<br> {{ form.password(placeholder="Password") }}<br>
+				{{ form.password(placeholder="Password") }}
 				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
-				{% endfor %}<br>
+				{% endfor %}
 			</p>
 			<p>
-				Repeat Password:<br> {{ form.confirm(placeholder="Repeat Password") }}<br>
+				{{ form.confirm(placeholder="Repeat Password") }}
 				{% for error in form.confirm.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
-				{% endfor %}<br>
+				{% endfor %}
 			</p>
 			<p>
-				Accept Terms and Conditions:<br> {{ form.accept_terms() }}<br>
+				Accept Terms and Conditions: {{ form.accept_terms() }}
 				{% for error in form.accept_terms.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
@@ -33,13 +33,9 @@
 				{% for error in form.recaptcha.errors %}
 					{{ error }}
 				{% endfor %}
-				{{ form.recaptcha }}<br>
-				<!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> -->
+				{{ form.recaptcha }}
 			</p>			
+			<p><input type="submit" value="Register" class="btn btn-default"></p>
 		</div>
-
-		<p><input type="submit" value="Register" class="btn btn-default"></p>
-
 	</form>
-
 {% endblock %}

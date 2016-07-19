@@ -8,6 +8,8 @@ user2 = Users(username="stephen@ucd.ie", password="22223")
 db.session.add(user2)
 user3 = Users(username="conor@ucd.ie", password="22224") 
 db.session.add(user3)
+user4 = Users(username="admin@ucd.ie", password="admin") 
+db.session.add(user4)
 
 
 # Results Table Testing
