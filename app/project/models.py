@@ -58,21 +58,39 @@ class Users(db.Model):
 
 class Results(db.Model):
 	'''Database object'''
-	day = db.Column(db.String(3), primary_key=True)
-	time = db.Column(db.String(20), primary_key=True)
-	module = db.Column(db.String(10), primary_key=True)
-	estimate = db.Column(db.Integer)
+	room = db.Column(db.String(10), primary_key=True)
+	module_code = db.Column(db.String(10), primary_key=True)
+	day = db.Column(db.String(10), primary_key=True)
+	hourly_time = db.Column(db.String(10), primary_key=True)
+	date = db.Column(db.Integer)
+	capacity = db.Column(db.Integer)
+	reg_students = db.Column(db.Integer)
+	occupancy = db.Column(db.Integer)
+	associated_client_count = db.Column(db.Integer)
+	authenticated_client_count = db.Column(db.Integer)
+	cli_cnt_cap = db.Column(db.Integer)
+	predicted_occupancy = db.Column(db.Integer)
+	binned_predicted = db.Column(db.Integer)
 
 	def __init__(self, day, time, module, estimate):
 		'''instance attributes'''
+		self.room = room
+		self.module_code = module_code
 		self.day = day
-		self.time = time
-		self.module = module
-		self.estimate = estimate
+		self.hourly_time = hourly_time
+		self.date = db.Column(db.Integer)
+		self.capacity = db.Column(db.Integer)
+		self.reg_students = db.Column(db.Integer)
+		self.occupancy = db.Column(db.Integer)
+		self.associated_client_count = db.Column(db.Integer)
+		self.authenticated_client_count = db.Column(db.Integer)
+		self.cli_cnt_cap = db.Column(db.Integer)
+		self.predicted_occupancy = db.Column(db.Integer)
+		self.binned_predicted = db.Column(db.Integer)
 
 	def __repr__(self):
 		'''object representation'''
-		return "{} - {}".format(self.day, self.time, self.module, self.estimate)
+		return "{} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {}".format(self.room, self.module_code, self.day, self.hourly_time, self.date, self.capacity, self.reg_students, self.occupancy, self.associated_client_count, self.authenticated_client_count, self.cli_cnt_cap, self.predicted_occupancy, self.binned_predicted) 
 
 class Location(db.Model):
 	'''Database object'''
