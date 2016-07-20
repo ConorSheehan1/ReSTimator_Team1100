@@ -59,7 +59,7 @@ class Users(db.Model):
 class Results(db.Model):
 	'''Database object'''
 	room = db.Column(db.String(10), primary_key=True)
-	module_code = db.Column(db.String(10), primary_key=True)
+	module_code = db.Column(db.String(10))
 	day = db.Column(db.String(10), primary_key=True)
 	hourly_time = db.Column(db.String(10), primary_key=True)
 	date = db.Column(db.Integer)
