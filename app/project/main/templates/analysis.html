@@ -37,7 +37,9 @@
 		<li> {{ q.room }} - {{ q.day }} - {{ q.hourly_time }} - {{ "{0:.2f}".format(q.predicted_occupancy * 100) }}% </li>
 	{% endfor %}
 	</ul>
-
+        
+    <!-- CHART -->
+    <div id="chart"></div>
     {% if chart_query != "" %}
         <!-- Google Chart -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -46,19 +48,17 @@
             google.charts.load('current', {'packages':['corechart']});
 
             // Set a callback to run when the Google Visualization API is loaded.
-//            google.charts.setOnLoadCallback(drawChart);
             google.charts.setOnLoadCallback(function() {
                 var results = []; // array to contain data for chart
                 {% for q in chart_query %}
+                    // add objects for chart
                     results.push({time:"{{ q.hourly_time }}", occupancy:{{ "{0:.2f}".format(q.predicted_occupancy * 100) }}});
                 {% endfor %}
     //            console.log(results[0]);
                 test();
                 drawChart(results);
             });
-
         </script>
-        
-        <div id="chart"></div>
 	{% endif %}
+        
 {% endblock %}
