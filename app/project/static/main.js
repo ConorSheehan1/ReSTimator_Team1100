@@ -1,17 +1,14 @@
 // CHART
-console.log('HI STEPHEN');
+console.log('HELLO STEPHEN');
 
 // Load the Visualization API and the corechart package.
 //google.charts.load('current', {'packages':['corechart']});
 
 function test() {
-    console.log('hello222');
+    console.log('hello555');
 }
 
-//function drawChart(bikes, stands, date) { // function that draws chart
 function drawChart(results) { // function that draws chart
-    // date parameter currently unused - might change
-//    document.getElementById('response').style.display = "block"; // displays response div on webpage
     
     // Create the data table.
     var data = new google.visualization.DataTable(); // create data object
@@ -22,11 +19,11 @@ function drawChart(results) { // function that draws chart
     }
 
     // Set chart options
-    var options = {'title':'Average Bikes/Stands per Day of Week',
+    var options = {'title':'Estimated Occupancy per Hour',
                    'width':680,
                    'height':300};
 
-    // create instance of chart, in 'graph' div on webpage - this is within 'response' div
+    // create instance of chart in 'chart' div on webpage
     var chart = new google.visualization.LineChart(document.getElementById('chart'));
     chart.draw(data, options); //pass data object and options used for drawing graph
 }

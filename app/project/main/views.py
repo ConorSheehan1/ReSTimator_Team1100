@@ -21,12 +21,15 @@ def home():
 @login_required
 def analysis():
     '''analysis view'''
-    pg_name = "Analysis" 
+    pg_name = "Analysis"
     form = AnalysisForm()
     query = ""
+    chart_query = ""
     if request.method == "POST" and form.validate_on_submit():
         query = Results.query.filter_by(room=form.room.data, day=form.day.data, hourly_time=form.hourly_time.data).all()
-    return render_template("analysis.html", pg_name=pg_name, form=form, query=query)
+        chart_query = Results.query.filter_by(room=form.room.data, day=form.day.data)
+        print(chart_query)
+    return render_template("analysis.html", pg_name=pg_name, form=form, query=query, chart_query=chart_query)
 
 @main_blueprint.route("/about")
 def about():
