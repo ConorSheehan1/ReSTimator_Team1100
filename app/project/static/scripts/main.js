@@ -1,13 +1,10 @@
-// CHART
-console.log('HELLO STEPHEN');
-
-// Load the Visualization API and the corechart package.
-//google.charts.load('current', {'packages':['corechart']});
+console.log('HELLO');
 
 function test() {
-    console.log('hello555');
+    console.log('Testing function call external JS');
 }
 
+// CHART
 function drawChart(results) { // function that draws chart
     
     // Create the data table.
@@ -19,9 +16,17 @@ function drawChart(results) { // function that draws chart
     }
 
     // Set chart options
-    var options = {'title':'Estimated Occupancy per Hour',
-                   'width':680,
-                   'height':300};
+    var options = {title:'Estimated Occupancy per Hour',
+                   width:650,
+                   height:300,
+                   vAxis: {title: "Occupancy %"},
+                   hAxis: {title: "Time"},
+                   animation:{
+                       duration: 1000,
+                       easing: 'inAndOut',
+                       startup: true
+                   }
+                  };
 
     // create instance of chart in 'chart' div on webpage
     var chart = new google.visualization.LineChart(document.getElementById('chart'));
