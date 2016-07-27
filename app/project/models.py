@@ -94,10 +94,10 @@ class Results(db.Model):
 
 class Location(db.Model):
 	'''Database object'''
-	campus = db.Column(db.String(45), unique=True)
+	campus = db.Column(db.String(45), primary_key=True)
 	building = db.Column(db.String(45), primary_key=True)
 	room = db.Column(db.String(10), primary_key=True)
-	capacity = db.Column(db.Integer)
+	capacity = db.Column(db.Integer, primary_key=True)
 	occupy = db.relationship("Occupy", backref="location", lazy="dynamic") 
 
 	def __init__(self, campus, building, room, capacity):
@@ -109,45 +109,44 @@ class Location(db.Model):
 
 	def __repr__(self):
 		'''object representation'''
-		return "{} - {}".format(self.campus, self.building, self.room, self.capacity)
+		return "{} - {} - {} - {}".format(self.campus, self.building, self.room, self.capacity)
 
 class Module(db.Model):
 	'''Database object'''
-	code = db.Column(db.String(10), primary_key=True)
+	module_code = db.Column(db.String(10), primary_key=True)
 	reg_students = db.Column(db.Integer)
-	occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column / backref adds a virtual column
+	# occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column / backref adds a virtual column
 
-	def __init__(self, code, reg_students):
+	def __init__(self, module_code, reg_students):
 		'''instance attributes'''
-		self.code = code
+		self.module_code = module_code
 		self.reg_students = reg_students
 
 	def __repr__(self):
 		'''object representation'''
-		return "{} - {}".format(self.code, self.reg_students)
+		return "{} - {}".format(self.module_code, self.reg_students)
 
 class Occupy(db.Model):
 	'''Database object'''
-	day = db.Column(db.String(3))
+	room = db.Column(db.String(10), db.ForeignKey("location.room"), primary_key=True)
+	# date = db.Column(db.String(20), primary_key=True)
+	date = db.Column(db.Integer, primary_key=True)
 	time = db.Column(db.String(20), primary_key=True)
-	date = db.Column(db.String(20), primary_key=True)
-	ground_truth = db.Column(db.Integer)
-	auth = db.Column(db.Integer)
-	assoc = db.Column(db.Integer)
-	module_code = db.Column(db.String(10), db.ForeignKey("module.code"), primary_key=True)
-	room_id = db.Column(db.String(10), db.ForeignKey("location.room"), primary_key=True)
-
-	def __init__(self, day, time, date, module, room, ground_truth, auth, assoc):
+	occupancy = db.Column(db.Integer)
+	module_code = db.Column(db.String(10), db.ForeignKey("module.module_code"))
+	associated_client_count = db.Column(db.Integer)
+	authenticated_client_count = db.Column(db.Integer)
+	
+	def __init__(self, room, date, time, module_code, occupancy, associated_client_count, authenticated_client_count):
 		'''instance attributes'''
-		self.day = day
-		self.time = time
+		self.room = room
 		self.date = date
-		self.ground_truth = ground_truth
-		self.auth = auth
-		self.assoc = assoc
+		self.time = time
+		self.occupancy = occupancy
 		self.module_code = module_code
-		self.room_id = room_id
-
+		self.associated_client_count = associated_client_count
+		self.authenticated_client_count = authenticated_client_count
+		
 	def __repr__(self):
 		'''object representation'''
-		return "{} - {}".format(self.day, self.time, self.date, self.module_code, self.room_id, self.ground_truth, self.auth, self.assoc)
+		return "{} - {} - {} - {} - {} - {} - {}".format(self.room, self.date, self.time, self.occupancy, self.module_code, self.associated_client_count, self.authenticated_client_count)
