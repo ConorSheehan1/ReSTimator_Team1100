@@ -72,6 +72,12 @@ class Results(db.Model):
 	predicted_occupancy = db.Column(db.Integer)
 	binned_predicted = db.Column(db.Integer)
 
+	# campus, building, room, capacity, time, date?, day, module_code, reg_students, assoc, auth, occupancy, prediction
+
+	# infer day from date
+	# infer occupancy count from occupancy
+	# infer prediction % from prediction and capacity
+
 	def __init__(self, day, time, module, estimate):
 		'''instance attributes'''
 		self.room = room
