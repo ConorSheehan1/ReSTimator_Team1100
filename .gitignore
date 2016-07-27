@@ -25,3 +25,6 @@ config
 # images
 *.png
 *.jpg
+
+* ipynb
+.ipynb_checkpoints
