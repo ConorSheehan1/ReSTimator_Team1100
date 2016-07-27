@@ -1,6 +1,6 @@
 ## How to use
-1. Run run_app.py
-2. Open browser and type localhost:
+1. Run run.py
+2. Open browser and go to localhost:5000
 
 ## Input data  
 1. 0 values should be explicitly put in files sent to this program. Rows with empty values may be dropped.  
