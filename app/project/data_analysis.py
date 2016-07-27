@@ -18,24 +18,24 @@ lm = LinearRegression(fit_intercept=False) # create linear regression object
 lm.fit(X, y) # fit the model 
 df_regression["predicted_occupancy"] = pd.Series(lm.predict(X), index=df_regression.index) # add predictions to df
 
-df_regression["predicted_occupancy_bin"] = df_regression["predicted_occupancy"] / df_regression["capacity"]
+# df_regression["predicted_occupancy_bin"] = df_regression["predicted_occupancy"] / df_regression["capacity"]
 
-def bin(r):
-	if r < .125:
-		return .0
-	elif r < .375: 
-		return .25
-	elif r < .625:
-		return .5
-	elif r < .875:
-		return .75
-	else:
-		return 1.0 
+# def bin(r):
+# 	if r < .125:
+# 		return .0
+# 	elif r < .375: 
+# 		return .25
+# 	elif r < .625:
+# 		return .5
+# 	elif r < .875:
+# 		return .75
+# 	else:
+# 		return 1.0 
 
-df_regression["predicted_occupancy_bin"] = df_regression["predicted_occupancy_bin"].apply(lambda x: bin(x))
-df_regression["difference"] = df_regression["predicted_occupancy_bin"] - df_regression["occupancy"]
-df_regression["one_zero"] = df_regression["difference"].apply(lambda x: 1 if x == 0 else 0)
-print(df_regression[["one_zero"]].sum())
+# df_regression["predicted_occupancy_bin"] = df_regression["predicted_occupancy_bin"].apply(lambda x: bin(x))
+# df_regression["difference"] = df_regression["predicted_occupancy_bin"] - df_regression["occupancy"]
+# df_regression["one_zero"] = df_regression["difference"].apply(lambda x: 1 if x == 0 else 0)
+# print(df_regression[["one_zero"]].sum())
 
 
 
