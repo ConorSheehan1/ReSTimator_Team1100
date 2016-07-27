@@ -1,11 +1,12 @@
 import os 
 
+
 class BaseConfig():
 	''''''
 	basedir = os.path.abspath(os.path.dirname(__file__))
 
 	DEBUG = False # debugger and helpful for auto reload when changes are made to the code
-	
+
 	SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "project/sample.db") # sqlite db location
 	# SQLALCHEMY_DATABASE_URI = "sqlite:///sample.db" # sqlite db location
 	SQLALCHEMY_TRACK_MODIFICATIONS = False # disabled for the time being
@@ -17,9 +18,11 @@ class BaseConfig():
 	# RECAPTCHA_API_SERVER = ? # recaptcha api server
 	RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
+
 class DevelopmentConfig(BaseConfig):
 	''''''
 	DEBUG = True
+
 
 class TestingConfig(BaseConfig):
 	''''''

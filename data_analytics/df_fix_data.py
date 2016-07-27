@@ -1,10 +1,9 @@
 import sqlite3
 import pandas as pd
 from datetime import date
-#import numpy as np
-#import statsmodels.formula.api as sm
-#from sklearn.metrics import accuracy_score
-
+# import numpy as np
+# import statsmodels.formula.api as sm
+# from sklearn.metrics import accuracy_score
 
 
 # create ADT dataframe from database
@@ -24,6 +23,7 @@ def create_df():
     
     con.close()
     return df
+
 
 def fill_cols(df):
     """

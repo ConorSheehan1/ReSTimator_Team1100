@@ -131,10 +131,10 @@ def create_graph(df, linm, feature, name):
     # First, plot the observed data
     df.plot(kind='scatter', x=feature, y='occupancy')
 
-    X_minmax = pd.DataFrame({feature: [df[feature].min(), df[feature].max()]})
+    min_max = pd.DataFrame({feature: [df[feature].min(), df[feature].max()]})
 
     # Next, plot the regression line, in red.
-    plt.plot(X_minmax, linm.predict(X_minmax), c='red', linewidth=2)
+    plt.plot(min_max, linm.predict(min_max), c='red', linewidth=2)
 
     plt.savefig("data/plots/formatted/" + name + "_" + feature + '.png', dpi=100)
     # plt.show()
