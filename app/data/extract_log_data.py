@@ -1,13 +1,6 @@
-import pandas as pd
 import os, zipfile, glob, csv, sqlite3, shutil
+import pandas as pd
 import calendar
-import sqlite3
-
-def extract_legacy(excelfile, sheet):
-	'''extract legacy data'''
-	xls = pd.ExcelFile(excelfile)
-	df = xls.parse(sheet)
-	return df
 
 def convert_month(month_string):
     '''Input: abbreviated month name
@@ -63,7 +56,7 @@ def delete_zips():
 def leading_zero(date_string):
     '''add leading zero to day of month for date format'''
     if len(date_string) == 7:
-        date_string = date_string[:5] + "0" + date_string[-1]
+        date_string = date_string[:6] + "0" + date_string[-1]
     return date_string
 
 def log_df():
@@ -100,8 +93,8 @@ def log_df():
     df = df[["room", "date", "time", "associated_client_count", "authenticated_client_count"]] # reorder colummns
     return df
 
-def populate_db(df, table_name, db_path):
-	'''Connect to database and append data to table'''
-	conn = sqlite3.connect(db_path)
-	df.to_sql(name=table_name, flavor="sqlite", con=conn, if_exists="append", index=False)
-	conn.close()
+if __name__ == "__main__":
+    extract_csvs("./log_data")
+    print(log_df())
+    delete_zips()
+    delete_csvs()

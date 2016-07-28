@@ -8,7 +8,7 @@ def occupy_df(conn):
 	# Set up occupy table (Part 1)
 	df_occupy_1 = pd.read_sql(sql="SELECT room, date, time, associated_client_count, authenticated_client_count FROM occupy", con=conn)
 	# Condition 1: time between 9:00 and 17:00
-	df_occupy_1["condition1"] = df_occupy_1["time"].apply(lambda x: "true" if 17 >= int(x[0:2]) >= 9 else "false")
+	df_occupy_1["condition1"] = df_occupy_1["time"].apply(lambda x: "true" if 16 >= int(x[0:2]) >= 9 else "false")
 	df_occupy_1 = df_occupy_1[df_occupy_1["condition1"] == "true"]
 	# Condition 2: quarter past the hour <= time <= quarter past the hour
 	df_occupy_1["condition2"] = df_occupy_1["time"].apply(lambda x: "true" if 45 >= int(x[-2:]) >= 15 else "false")
