@@ -20,7 +20,9 @@ restimatorApp.register_blueprint(main_blueprint)
 
 from project.models import Users
 
-lm.login_view = "users.login" # view that handles the user authentication
+lm.login_view = "users.login"
+# view that handles the user authentication
+
 
 @lm.user_loader
 def load_user(user_id):

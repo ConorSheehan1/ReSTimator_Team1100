@@ -11,6 +11,7 @@ Types: Integer / String (size) / Text -	longer unicode text / DateTime - express
 Primary keys are marked with primary_key=True
 '''
 
+
 class Users(db.Model):
 	'''Database object - application user login details'''
 	# __tablename__ = "users" # can specify table name here if needed
@@ -56,6 +57,7 @@ class Users(db.Model):
 		'''Returns a unicode uniquely identifing the user'''
 		return str(self.username)
 
+
 class Results(db.Model):
 	'''Database object'''
 	room = db.Column(db.String(10), primary_key=True)
@@ -98,6 +100,7 @@ class Results(db.Model):
 		'''object representation'''
 		return "{} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {}".format(self.room, self.module_code, self.day, self.hourly_time, self.date, self.capacity, self.reg_students, self.occupancy, self.associated_client_count, self.authenticated_client_count, self.cli_cnt_cap, self.predicted_occupancy, self.binned_predicted) 
 
+
 class Location(db.Model):
 	'''Database object'''
 	campus = db.Column(db.String(45), primary_key=True)
@@ -117,6 +120,7 @@ class Location(db.Model):
 		'''object representation'''
 		return "{} - {} - {} - {}".format(self.campus, self.building, self.room, self.capacity)
 
+
 class Module(db.Model):
 	'''Database object'''
 	module_code = db.Column(db.String(10), primary_key=True)
@@ -131,6 +135,7 @@ class Module(db.Model):
 	def __repr__(self):
 		'''object representation'''
 		return "{} - {}".format(self.module_code, self.reg_students)
+
 
 class Occupy(db.Model):
 	'''Database object'''

@@ -11,7 +11,7 @@ except ImportError:
 
 
 def test_num_rows():
-    conn = sqlite3.connect(r"../data/Ucd_Occupancy.db")
+    conn = sqlite3.connect(r"../data/ucd_occupancy.db")
     cursor = conn.cursor()
     count = "SELECT COUNT(*) FROM occupy"
     cursor.execute(count)
@@ -40,7 +40,7 @@ def test_num_rows():
 
 def test_date_time_format():
     # read db
-    conn = sqlite3.connect(r"../data/Ucd_Occupancy.db")
+    conn = sqlite3.connect(r"../data/ucd_occupancy.db")
     cursor = conn.cursor()
     date_time = "SELECT time, date FROM occupy"
     cursor.execute(date_time)

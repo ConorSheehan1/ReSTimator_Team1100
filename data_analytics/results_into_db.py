@@ -4,6 +4,7 @@ try:
 except ImportError:
     import df_fix_data, regression
 
+
 def populate_results_table(df):
     """Adds predicted results to database"""
     
