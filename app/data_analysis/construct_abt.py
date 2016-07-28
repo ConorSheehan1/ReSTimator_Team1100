@@ -1,4 +1,6 @@
 import pandas as pd
+from datetime import datetime
+import calendar
 
 def occupy_df(conn):
 	'''Input: database connection
@@ -61,6 +63,15 @@ def location_df(conn):
 # 	else:
 # 		return 1.0 
 
+def get_day(date_int):
+    """Takes date int in format yyyymmdd and returns weekday string."""
+    date_int = str(date_int)
+    year = date_int[0:4] 
+    month = date_int[4:6]
+    day = date_int[6: 8] 
+    return datetime.strptime(year + "," + month + "," + day, "%Y,%m,%d").strftime('%A')
+
+
 def abt(conn):
 	'''Construct ABT'''
 	# create dfs
@@ -80,14 +91,10 @@ def abt(conn):
 	df_abt["reg_students_less_occ"] = df_abt["reg_students"] - df_abt["occupancy_number"]
 	df_abt["adjustment"] = df_abt["reg_students_less_occ"].apply(lambda x: x if x <= 0 else 0)
 	df_abt["occupancy_number_adj"] = df_abt["adjustment"] + df_abt["occupancy_number"]
+	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x))
+
 
 	# Need to figure out how to handle 0% gt number but clearly has clients and classes (some are correct though based on client count)
-
-	# Bin authenticated and associated client counts for logistic regressions (a / c)
-	# df_abt["assoc_binned"] = df_abt["associated_client_count"] / df_abt["capacity"]
-	# df_abt["assoc_binned"] = df_abt["assoc_binned"].apply(lambda x: bin(x))
-	# df_abt["auth_binned"] = df_abt["authenticated_clietn_count"] / df_abt["capacity"]
-	# df_abt["auth_binned"] = df_abt["auth_binned"].apply(lambda x: bin(x))
 
 	return df_abt
 

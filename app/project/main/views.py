@@ -31,9 +31,8 @@ def analysis():
     query = ""
     chart_query = ""
     if request.method == "POST" and form.validate_on_submit():
-        query = Results.query.filter_by(room=form.room.data, day=form.day.data, hourly_time=form.hourly_time.data).all()
+        query = Results.query.filter_by(room=form.room.data, day=form.day.data, time=form.time.data).all()
         chart_query = Results.query.filter_by(room=form.room.data, day=form.day.data)
-        print(chart_query)
     return render_template("analysis.html", pg_name=pg_name, form=form, query=query, chart_query=chart_query)
 
 

@@ -19,8 +19,8 @@
 				{% endfor %}<br>
 			</p>
 			<p>
-				Time: {{ form.hourly_time() }}
-				{% for error in form.hourly_time.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				Time: {{ form.time() }}
+				{% for error in form.time.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
@@ -34,12 +34,12 @@
 
 	<ul>
 	{% for q in query %}
-		<li> {{ q.room }} - {{ q.day }} - {{ q.hourly_time }} - {{ "{0:.2f}".format(q.predicted_occupancy * 100) }}% </li>
+		<li> {{ q.date }} Predicted Occupancy: {{ "{0:.0f}".format(q.predicted_occupancy) }} ({{ "{0:.2f}".format((q.predicted_occupancy / q.capacity) * 100) }}% of {{ q.capacity }} seats occupied) </li>
 	{% endfor %}
 	</ul>
-        
-    <!-- CHART -->
+    <!-- CHARTS-->
     <div id="chart"></div>
+    <!-- <div id="chart_perc"></div> -->
     {% if chart_query != "" %}
         <!-- Google Chart -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -50,13 +50,16 @@
             // Set a callback to run when the Google Visualization API is loaded.
             google.charts.setOnLoadCallback(function() {
                 var results = []; // array to contain data for chart
+                // var results_perc = []; // array to contain data for chart
                 {% for q in chart_query %}
                     // add objects for chart
-                    results.push({time:"{{ q.hourly_time }}", occupancy:{{ "{0:.2f}".format(q.predicted_occupancy * 100) }}});
+                    results.push({time:"{{ q.time }}", occupancy:{{ q.predicted_occupancy }}});
+                    // results_perc.push({time:"{{ q.time }}", occupancy:{{ (q.predicted_occupancy / q.capacity) * 100 }}});
                 {% endfor %}
     //            console.log(results[0]);
                 test();
                 drawChart(results);
+                // drawChart_perc(results_perc);
             });
         </script>
 	{% endif %}

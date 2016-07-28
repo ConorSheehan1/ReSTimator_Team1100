@@ -61,40 +61,38 @@ class Users(db.Model):
 class Results(db.Model):
 	'''Database object'''
 	room = db.Column(db.String(10), primary_key=True)
-	module_code = db.Column(db.String(10))
-	day = db.Column(db.String(10), primary_key=True)
-	hourly_time = db.Column(db.String(10), primary_key=True)
-	date = db.Column(db.Integer)
-	capacity = db.Column(db.Integer)
-	reg_students = db.Column(db.Integer)
-	occupancy = db.Column(db.Integer)
+	date = db.Column(db.Integer, primary_key=True)
+	time = db.Column(db.String(10), primary_key=True)
+	module_code = db.Column(db.String(10), primary_key=True)
+	day = db.Column(db.String(10))
 	associated_client_count = db.Column(db.Integer)
 	authenticated_client_count = db.Column(db.Integer)
-	cli_cnt_cap = db.Column(db.Integer)
+	occupancy = db.Column(db.Integer)
+	reg_students = db.Column(db.Integer)
+	campus = db.Column(db.String(30))
+	building = db.Column(db.String(30), primary_key=True)
+	capacity = db.Column(db.Integer)
 	predicted_occupancy = db.Column(db.Integer)
-	binned_predicted = db.Column(db.Integer)
-
-	# campus, building, room, capacity, time, date?, day, module_code, reg_students, assoc, auth, occupancy, prediction
 
 	# infer day from date
 	# infer occupancy count from occupancy
 	# infer prediction % from prediction and capacity
 
-	def __init__(self, day, time, module, estimate):
+	def __init__(self, room, date, time, module_code, day, associated_client_count, authenticated_client_count, occupancy, reg_students, campus, building, capacity, predicted_occupancy):
 		'''instance attributes'''
 		self.room = room
+		self.date = db.Column(db.Integer)
+		self.time = time
 		self.module_code = module_code
 		self.day = day
-		self.hourly_time = hourly_time
-		self.date = db.Column(db.Integer)
-		self.capacity = db.Column(db.Integer)
-		self.reg_students = db.Column(db.Integer)
-		self.occupancy = db.Column(db.Integer)
 		self.associated_client_count = db.Column(db.Integer)
 		self.authenticated_client_count = db.Column(db.Integer)
-		self.cli_cnt_cap = db.Column(db.Integer)
-		self.predicted_occupancy = db.Column(db.Integer)
-		self.binned_predicted = db.Column(db.Integer)
+		self.occupancy = db.Column(db.Integer)
+		self.reg_students = db.Column(db.Integer)
+		self.campus = campus
+		self.building = building
+		self.capacity = capacity
+		self.predicted_occupancy = predicted_occupancy
 
 	def __repr__(self):
 		'''object representation'''
