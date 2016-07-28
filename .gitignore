@@ -10,7 +10,6 @@ venv
 # Pycharm project files
 .idea
 *.iml
-__pycache__/
 
 config
 
