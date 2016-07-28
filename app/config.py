@@ -10,7 +10,7 @@ class BaseConfig():
 	# SQLALCHEMY_DATABASE_URI = "sqlite:///sample.db" # sqlite db location
 	SQLALCHEMY_TRACK_MODIFICATIONS = False # disabled for the time being
 
-	SECRET_KEY = "\xc6\xbb\x98e3\xc7W\xe8\x81\xe3\xcfB\xb0*g^\xca\xfe\x19\x92\x8e\xd2#\x02" # used to create a cryptographoc token to validate form
+	SECRET_KEY = "\xc6\xbb\x98e3\xc7W\xe8\x81\xe3\xcfB\xb0*g^\xca\xfe\x19\x92\x8e\xd2#\x02" # used to create a cryptographic token to validate form
 
 	RECAPTCHA_PUBLIC_KEY = '6LeYIbsSAAAAACRPIllxA7wvXjIE411PfdB2gt2J'
 	RECAPTCHA_PRIVATE_KEY = '6LeYIbsSAAAAAJezaIq3Ft_hSTo0YtyeFG-JgRtu'

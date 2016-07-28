@@ -48,6 +48,19 @@ def location_df(conn):
 	df_location = pd.read_sql(sql="SELECT * FROM location", con=conn)
 	return df_location
 
+# def bin(r):
+# 	'''Bin client counts into percintle categories'''
+# 	if r < .125:
+# 		return .0
+# 	elif r < .375: 
+# 		return .25
+# 	elif r < .625:
+# 		return .5
+# 	elif r < .875:
+# 		return .75
+# 	else:
+# 		return 1.0 
+
 def abt(conn):
 	'''Construct ABT'''
 	# create dfs
@@ -69,6 +82,12 @@ def abt(conn):
 	df_abt["occupancy_number_adj"] = df_abt["adjustment"] + df_abt["occupancy_number"]
 
 	# Need to figure out how to handle 0% gt number but clearly has clients and classes (some are correct though based on client count)
+
+	# Bin authenticated and associated client counts for logistic regressions (a / c)
+	# df_abt["assoc_binned"] = df_abt["associated_client_count"] / df_abt["capacity"]
+	# df_abt["assoc_binned"] = df_abt["assoc_binned"].apply(lambda x: bin(x))
+	# df_abt["auth_binned"] = df_abt["authenticated_clietn_count"] / df_abt["capacity"]
+	# df_abt["auth_binned"] = df_abt["auth_binned"].apply(lambda x: bin(x))
 
 	return df_abt
 

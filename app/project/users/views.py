@@ -25,6 +25,7 @@ def login():
 @users_blueprint.route("/logout")
 @login_required
 def logout():
+    ''''''
     logout_user() # logs out user and cleans out session cookie
     flash("User logged out")
     return redirect(url_for("users.login"))
