@@ -12,17 +12,17 @@ restimatorApp.config.from_object("config.DevelopmentConfig") # read and use conf
 db = SQLAlchemy(restimatorApp) # sqlalchemy database object
 
 from project.users.views import users_blueprint
+from project.analysis.views import analysis_blueprint
 from project.main.views import main_blueprint
 
 # Register blueprint
 restimatorApp.register_blueprint(users_blueprint)
+restimatorApp.register_blueprint(analysis_blueprint)
 restimatorApp.register_blueprint(main_blueprint)
 
 from project.models import Users
 
-lm.login_view = "users.login"
-# view that handles the user authentication
-
+lm.login_view = "users.login" # view that handles the user authentication
 
 @lm.user_loader
 def load_user(user_id):

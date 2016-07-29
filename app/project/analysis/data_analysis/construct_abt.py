@@ -23,13 +23,14 @@ def occupy_df(conn):
 
 	# Set up occupy table (Part 2)
 	df_occupy_2 = pd.read_sql(sql="SELECT room, date, time, module_code, occupancy FROM occupy", con=conn)
+	df_occupy_2 = df_occupy_2.dropna() # drop rows without ground truth data
 
 	# Merge occupy tables
 	df_occupy_merge = pd.merge(left = df_occupy_1, right = df_occupy_2, how="outer", on=["room", "date", "time"])
 
 	# Clean dataframe 
 	df_occupy = df_occupy_merge.groupby(["room", "date", "time", "module_code"], as_index=False).mean() # df with average auth / assoc client counts
-	df_occupy = df_occupy.dropna() # drop rows with NaN
+	df_occupy = df_occupy.dropna() # drop rows without both client count and ground truth
 
 	# close db connection
 	return df_occupy

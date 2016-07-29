@@ -123,7 +123,7 @@ class Module(db.Model):
 	'''Database object'''
 	module_code = db.Column(db.String(10), primary_key=True)
 	reg_students = db.Column(db.Integer)
-	# occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column / backref adds a virtual column
+	occupy = db.relationship("Occupy", backref="module", lazy="dynamic") # not a column / backref adds a virtual column
 
 	def __init__(self, module_code, reg_students):
 		'''instance attributes'''
@@ -138,7 +138,6 @@ class Module(db.Model):
 class Occupy(db.Model):
 	'''Database object'''
 	room = db.Column(db.String(10), db.ForeignKey("location.room"), primary_key=True)
-	# date = db.Column(db.String(20), primary_key=True)
 	date = db.Column(db.Integer, primary_key=True)
 	time = db.Column(db.String(20), primary_key=True)
 	occupancy = db.Column(db.Integer)
