@@ -1,12 +1,19 @@
 # source: http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms 
 from flask_wtf import Form, RecaptchaField
 from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 # validator, a function that can be attached to a field to perform validation on the data submitted by the user.
 
 
+def ucd_email(form, field):
+    if field.data.endswith("@ucd.ie"):
+        return True
+    else:
+        raise ValidationError('Please use a ucd staff email (@ucd.ie)')
+
+
 class LoginForm(Form):
-    username = StringField('Username', validators=[DataRequired(), Email()])
+    username = StringField('Username', validators=[DataRequired(), Email(), ucd_email])
     # Required validator checks that the field is not submitted empty.
     # There are many more validators included with Flask-WTF
     password = PasswordField('Password', validators=[DataRequired()])
