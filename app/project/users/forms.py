@@ -6,9 +6,8 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 
 def ucd_email(form, field):
-    if field.data.endswith("@ucd.ie"):
-        return True
-    else:
+    # only accept emails ending in @ucd.ie
+    if not field.data.endswith("@ucd.ie"):
         raise ValidationError('Please use a ucd staff email (@ucd.ie)')
 
 
