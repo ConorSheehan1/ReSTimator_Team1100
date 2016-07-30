@@ -7,8 +7,8 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 def ucd_email(form, field):
     # only accept emails ending in @ucd.ie
-    if not field.data.endswith("@ucd.ie"):
-        raise ValidationError('Please use a ucd staff email (@ucd.ie)')
+    if not field.data.endswith('@ucd.ie'):
+        raise ValidationError('Please use a ucd staff email (example@ucd.ie)')
 
 
 class LoginForm(Form):
@@ -19,7 +19,7 @@ class LoginForm(Form):
 
 
 class SignUpForm(Form):
-    username = StringField('Email Address', [DataRequired(), Email()])
+    username = StringField('Email Address', [DataRequired(), Email(), ucd_email])
     password = PasswordField('New Password', [DataRequired(), EqualTo('confirm', message='Passwords need to match')])
     confirm = PasswordField('Repeat Password')
     accept_terms = BooleanField('I accept the terms and conditions', [DataRequired()])
