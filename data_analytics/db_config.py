@@ -71,7 +71,7 @@ def populate_db(list_of_room_codes, method="append", do_print=False):
     df_location = iter_gt[1]
     # use inner merge for rooms, only want common locations to have full location data
     df_full_location = pd.merge(df_location, iter_csvs[1], how="inner", on="room")
-    df_full_location.to_sql(name='location', flavor='sqlite', con=conn, index=False,  if_exists=method)
+    df_full_location.to_sql(name='location', flavor='sqlite', con=conn, index=False, if_exists=method)
 
     df_timetable = clean_timetable.fix_merged_cells("./data/", "B0.02 B0.03 B0.04 Timetable.xlsx", do_print)
 

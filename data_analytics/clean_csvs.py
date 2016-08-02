@@ -60,6 +60,7 @@ def get_room(full_location):
 
 
 def importer(path, do_print=False):
+    print(path)
     df_list = []
     count = 0
     for file_path in glob.iglob(path + "*.csv"):

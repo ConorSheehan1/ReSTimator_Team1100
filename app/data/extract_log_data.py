@@ -59,14 +59,15 @@ def leading_zero(date_string):
         date_string = date_string[:6] + "0" + date_string[-1]
     return date_string
 
-def log_df():
+# include varibale path, default value is empty string
+def log_df(path=""):
     '''Input: path with csv files
 
     Output: dataframe of data from csv files
     '''
     df = pd.DataFrame() # create empty dataframe object
 
-    for file in glob.glob("*.csv"): # iterate through csv files
+    for file in glob.glob(path + "*.csv"): # iterate through csv files
         skip = count_bad_lines(file) # start of data
         data = pd.read_csv(file, skiprows=skip, index_col=False) # extract data
         data.columns = [c.replace(' ', '_') for c in data.columns]  # Column names: replace spaces with underscores
