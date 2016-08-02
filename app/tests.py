@@ -3,6 +3,7 @@ from flask.ext.testing import TestCase
 from project import restimatorApp, db
 from project.models import *
 
+
 class BaseTest(TestCase):
 	''''''
 
@@ -21,6 +22,7 @@ class BaseTest(TestCase):
 		''''''
 		db.session.remove()
 		db.drop_all()
+
 
 class FlaskTest(BaseTest):
 	'''Test class'''
