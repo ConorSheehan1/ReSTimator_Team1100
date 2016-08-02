@@ -67,6 +67,15 @@
 			display: inline-block;
 			<!--float: right;-->
 		}
+
+		<!--#drop{-->
+		<!--display: flex;-->
+		<!--}-->
+
+		<!--#drop .nav{-->
+		<!--width: 50px;-->
+		<!--}-->
+
 	}
 
 
@@ -85,7 +94,7 @@
                 <a class="navbar-brand" href="{{ url_for('main.home') }}">ReSTimator Logo</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav", id="drop">
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">ReSTimator<span class="caret"></span></a>
                         <ul class="dropdown-menu">
