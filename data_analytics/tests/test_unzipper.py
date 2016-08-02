@@ -36,9 +36,5 @@ def test_unzipper():
     assert count_zips == count_csvs
 
 
-def test_fix_windows_path():
-    assert relative_unzipper.fix_windows_path(".\www") == "./www"
-
 if __name__ == "__main__":
-    test_fix_windows_path()
     print(count_zips, "should equal", count_csvs)
