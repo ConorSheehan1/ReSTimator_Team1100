@@ -61,7 +61,9 @@ def upload_GT():
     form = GTForm()
     query = ""
     if request.method == "POST" and form.validate_on_submit():
+        # get date in same format as date in database
         date = str(form.date.data.strftime('%x'))
         date = int('20' + date[6:] + date[0:2] + date[3:5])
+        occupancy = float(form.occupancy.data)
 #         query = Results.query.filter_by(room=form.room.data, day=form.day.data, time=form.time.data).all()
     return render_template("add_occupancy.html", pg_name=pg_name, form=form, query=query)
