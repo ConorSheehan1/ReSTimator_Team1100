@@ -1,25 +1,26 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
+
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 	<form class="form-horizontal" role="form" method="post" action="" name="login">
 		
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 		
 		<div class="form-group">
-			<p>
+			<p class="form-inputs">
 				{{ form.username(placeholder="Username") }}
 				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
-			<p>
+			<p class="form-inputs">
 				{{ form.password(placeholder="Password") }}
 				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
 			</p>
-			<p>
+			<p class="form-inputs">
 				<input type="submit" value="Sign In" class="btn btn-default">
-			</p>
+			</p class="form-inputs">
 			{% if error != None %}
 				<p style="color: red;"> {{ error }} <p>
 			{% endif %}
