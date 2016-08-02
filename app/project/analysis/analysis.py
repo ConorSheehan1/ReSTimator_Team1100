@@ -20,7 +20,7 @@ df_regression["predicted_occupancy"] = pd.Series(lm.predict(X), index=df_regress
 df_regression = df_regression[["room", "date", "time", "module_code", "day", "associated_client_count", "authenticated_client_count", "occupancy", "reg_students", "campus", "building", "capacity", "predicted_occupancy"]]
 
 try:
-	df.to_sql(name="results", flavor="sqlite", con=conn, if_exists="append", index=False)
+	df_regression.to_sql(name="results", flavor="sqlite", con=conn, if_exists="append", index=False)
 except sqlite3.IntegrityError:
 	print("Constraint Error: occupy table")
 except sqlite3.OperationalError:
