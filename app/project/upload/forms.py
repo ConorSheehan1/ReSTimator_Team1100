@@ -1,5 +1,5 @@
 from project import db
-from project.models import Results
+from project.models import Location, Module
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SelectField
@@ -24,5 +24,5 @@ class GTForm(Form):
     
     def __init__(self, *args, **kwargs):
         super(GTForm, self).__init__(*args, **kwargs)
-        self.room.choices = [(i.room, i.room) for i in db.session.query(Results.room).distinct().order_by(Results.room)]
-        self.module_code.choices = [(i.module_code, i.module_code) for i in db.session.query(Results.module_code).distinct().order_by(Results.module_code)]     
+        self.room.choices = [(i.room, i.room) for i in db.session.query(Location.room).distinct().order_by(Location.room)]
+        self.module_code.choices = [(i.module_code, i.module_code) for i in db.session.query(Module.module_code).distinct().order_by(Module.module_code)]     
