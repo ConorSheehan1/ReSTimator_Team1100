@@ -1,0 +1,18 @@
+{% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
+{% block content %} <!-- the linked templates have matching block statements named "content" -->
+
+	<form class="form-horizontal" role="form" action="/upload" method="POST" enctype="multipart/form-data" name="upload">
+		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
+		
+		<div class="form-group">
+            Please select a file to upload:
+			<input type="file" name="file"><br /><br />
+		</div>
+
+		<p><input type="submit" value="Upload" class="btn btn-default"></p>
+	</form>
+<!--    {% if filename != "" %}-->
+<!--        <p>Uploaded {{ filename }}</p>-->
+<!--	{% endif %}-->
+        
+{% endblock %}
