@@ -15,11 +15,13 @@ restimatorApp.config['ALLOWED_EXTENSIONS'] = set(['txt', 'xlsx', 'csv']) # These
 
 from project.users.views import users_blueprint
 from project.analysis.views import analysis_blueprint
+from project.upload.views import upload_blueprint
 from project.main.views import main_blueprint
 
 # Register blueprint
 restimatorApp.register_blueprint(users_blueprint)
 restimatorApp.register_blueprint(analysis_blueprint)
+restimatorApp.register_blueprint(upload_blueprint)
 restimatorApp.register_blueprint(main_blueprint)
 
 from project.models import Users
