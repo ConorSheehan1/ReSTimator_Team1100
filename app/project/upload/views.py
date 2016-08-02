@@ -82,4 +82,4 @@ def upload_GT():
         else:
             print('row already exists')
             flash('Your data has already been recorded. Please check that you selected the correct information for Room, Date and Time.')
-    return render_template("add_occupancy.html", pg_name=pg_name, form=form, query=query)
+    return render_template("add_occupancy.html", pg_name=pg_name, form=form)
