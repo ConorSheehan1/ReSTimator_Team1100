@@ -3,6 +3,7 @@ from .forms import UploadForm, GTForm
 from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
+from project import db
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
 
@@ -59,8 +60,8 @@ def upload_GT():
     pg_name = "Input Occupancy Data"
     form = GTForm()
     query = ""
-    print(request.date)
     if request.method == "POST" and form.validate_on_submit():
-        pass
+        date = str(form.date.data.strftime('%x'))
+        date = int('20' + date[6:] + date[0:2] + date[3:5])
 #         query = Results.query.filter_by(room=form.room.data, day=form.day.data, time=form.time.data).all()
     return render_template("add_occupancy.html", pg_name=pg_name, form=form, query=query)

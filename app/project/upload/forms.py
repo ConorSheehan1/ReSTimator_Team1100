@@ -14,12 +14,13 @@ class UploadForm(Form):
     
 class GTForm(Form):
     room = SelectField("Room", validators=[DataRequired()])
-#     date = DateField('DatePicker', format='%Y-%m-%d')
+    date = DateField('Pick a Date', format="%m/%d/%Y")
     time = SelectField("Time", choices = [("09:00", "09:00"), ("10:00", "10:00"), ("11:00", "11:00"),
                                           ("12:00", "12:00"), ("13:00", "13:00"), ("14:00", "14:00"),
                                           ("15:00", "15:00"), ("16:00", "16:00")], validators=[DataRequired()])
     module_code = SelectField("Module Code", validators=[DataRequired()])
-    occupancy = SelectField("Occupancy", choices = [(0, "0%"), (0.25, "25%"), (0.5, "50%"), (0.75, "75%"), (1, "100%")])
+    occupancy = SelectField("Occupancy", choices = [("0", "0%"), ("0.25", "25%"), ("0.5", "50%"), ("0.75", "75%"), ("1", "100%")],
+                            validators=[DataRequired()])
     
     def __init__(self, *args, **kwargs):
         super(GTForm, self).__init__(*args, **kwargs)
