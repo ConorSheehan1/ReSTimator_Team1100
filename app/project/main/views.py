@@ -86,8 +86,11 @@ def upload():
         if file.filename == '':
             flash('No file selected. Please select a file to upload.')
             return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(restimatorApp.config['UPLOAD_FOLDER'], filename))
-            flash('Uploaded ' + filename)
+        if file:
+            if allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(restimatorApp.config['UPLOAD_FOLDER'], filename))
+                flash('Uploaded ' + filename)
+            else:
+                flash('File must be .csv or .xlsx')
     return render_template("upload.html", pg_name=pg_name, form=form)
