@@ -6,6 +6,7 @@ path_legacy_xl = "./data/legacy_data/legacy_data.xlsx"
 path_logs = "./data/log_data"
 path_db = "./project/sample.db"
 
+
 def populate_db(df, table_name, db_path):
 	'''Connect to database and append data to table'''
 	conn = sqlite3.connect(db_path)

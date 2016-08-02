@@ -20,3 +20,11 @@
 **Notes**
 
 * Usage, notes, and references are included in the doc string of each file.
+
+
+## Initial set up
+* run app/create_db.py
+* run app/data/legacy_into_db.py
+* run app/project/analysis.py
+* run app/run.py
+* open localhost:5000

@@ -19,6 +19,33 @@
 	<!-- Scripts -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>    	
+    
+	<!-- Style -->
+	<style>
+	/* On small screens, set height to 'auto' for sidenav and grid */
+	@media screen and (max-width: 767px) {
+		.row.content {
+			height:auto;
+		}
+
+		.navbar-right{
+			float: left;
+		}
+
+		.navbar-right li{
+			display: inline-block;
+			<!--float: right;-->
+		}
+
+		<!--#drop{-->
+		<!--display: flex;-->
+		<!--}-->
+
+		<!--#drop .nav{-->
+		<!--width: 50px;-->
+		<!--}-->
+	}
+	</style>
 </head>
 <body>	
 	<!-- http://www.w3schools.com/bootstrap/bootstrap_navbar.asp -->
@@ -33,13 +60,14 @@
                 <a class="navbar-brand" href="{{ url_for('main.home') }}"><img src="/static/images/ucd_logo.png" alt="UCD logo"></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav", id="drop">
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">ReSTimator<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li class="active"><a href="{{ url_for('main.home') }}">Home</a></li>
                             <li><a href="{{ url_for('analysis.analysis') }}">Analysis</a></li>
-                            <li><a href="{{ url_for('upload.upload') }}">Upload</a></li>
+                            <li><a href="{{ url_for('upload.upload') }}">Upload WiFi Data</a></li>
+                            <li><a href="{{ url_for('upload.upload_GT') }}">Input Occupancy Info</a></li>
                         </ul>
                         </li>
                 </ul>
