@@ -100,7 +100,8 @@
                         <ul class="dropdown-menu">
                             <li class="active"><a href="{{ url_for('main.home') }}">Home</a></li>
                             <li><a href="{{ url_for('analysis.analysis') }}">Analysis</a></li>
-                            <li><a href="{{ url_for('upload.upload') }}">Upload</a></li>
+                            <li><a href="{{ url_for('upload.upload') }}">Upload WiFi Data</a></li>
+                            <li><a href="{{ url_for('upload.upload_GT') }}">Input Occupancy Info</a></li>
                         </ul>
                         </li>
                 </ul>
@@ -122,7 +123,6 @@
 			</div>
 			<div class="col-sm-8 text-left">
 
-<hr>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul>

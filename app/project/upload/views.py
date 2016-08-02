@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, request, Blueprint
-from .forms import UploadForm
+from .forms import UploadForm, GTForm
 from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
@@ -51,3 +51,16 @@ def upload():
             else:
                 flash('File must be .csv or .zip')
     return render_template("upload.html", pg_name=pg_name, form=form)
+
+@upload_blueprint.route("/add_occupancy", methods=["GET", "POST"])
+@login_required
+def upload_GT():
+    '''Upload Ground Truth view'''
+    pg_name = "Input Occupancy Data"
+    form = GTForm()
+    query = ""
+    print(request.date)
+    if request.method == "POST" and form.validate_on_submit():
+        pass
+#         query = Results.query.filter_by(room=form.room.data, day=form.day.data, time=form.time.data).all()
+    return render_template("add_occupancy.html", pg_name=pg_name, form=form, query=query)
