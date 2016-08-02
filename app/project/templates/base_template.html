@@ -74,26 +74,38 @@
 </head>
 <body>	
 	<!-- http://www.w3schools.com/bootstrap/bootstrap_navbar.asp -->
-	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
-			<div class="navbar-header"><a class="navbar-brand" href="{{ url_for('main.home') }}">ReSTimator Logo</a></div>
-
-			<ul class="nav navbar-nav">
-				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ReSTimator <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li class="active"><a href="{{ url_for('main.home') }}">Home</a></li>
-						<li><a href="{{ url_for('analysis.analysis') }}">Analysis</a></li>
-						<li><a href="{{ url_for('upload.upload') }}">Upload</a></li>
-					</ul>
-				</li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{{ url_for('users.sign_up') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-				<li><a href="{{ url_for('users.login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				<li><a href="{{ url_for('users.logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-			</ul>
-		</div>
-	</nav>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>                        
+                </button>
+                <a class="navbar-brand" href="{{ url_for('main.home') }}">ReSTimator Logo</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">ReSTimator<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="active"><a href="{{ url_for('main.home') }}">Home</a></li>
+                            <li><a href="{{ url_for('analysis.analysis') }}">Analysis</a></li>
+                            <li><a href="{{ url_for('main.about') }}">About</a></li>
+                            <li><a href="{{ url_for('main.data') }}">Data</a></li>
+                            <li><a href="{{ url_for('main.upload') }}">Upload</a></li>
+                            <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+                        </ul>
+                        </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+				    <li><a href="{{ url_for('users.sign_up') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+				    <li><a href="{{ url_for('users.login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				    <li><a href="{{ url_for('users.logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </div>
+      </div>
+    </nav>
 
 	<div class="container-fluid text-center">
 		<div class="row content">
