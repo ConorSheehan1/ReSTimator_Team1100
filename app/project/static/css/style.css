@@ -50,6 +50,10 @@ img {
 	}
 }
 
+.navbar-inverse .navbar-nav .open .dropdown-menu>.active>a {
+	background-color: #00427a;
+}
+
 .col-sm-8 {
     width: 100%;
 }
