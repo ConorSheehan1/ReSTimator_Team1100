@@ -24,14 +24,17 @@ if __name__ == "__main__":
                       module_code=None, occupancy=None)
         db.session.add(logs)
 
-        # if commiting to db fails, get row with integrity constraint and merge, then try to commit
         try:
             db.session.commit()
 
-        # except sqlite3.IntegrityError:
+        # if commiting to db fails, get row which causes integrity constraint
         except sqlalchemy.exc.IntegrityError:
+
+            # remove staged changes which cause error
             db.session.rollback()
-            print("integrity error", row["time"])
+            print("integrity error @", row["room"], row["date"], row["time"])
+            print("trying to update db ...")
+            # get row which causes integrity constraint
             db_row = Occupy.query.filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
 
             # convert the sqlalchemy object and pandas row to dictionaries so they can be merged
@@ -42,10 +45,24 @@ if __name__ == "__main__":
             dict_row["room"] = "B5000"
             print(dict_db_row, "\n", dict_row)
 
-            # overwrite values in dict_row with values already in db
-            # in other words, only add values from row, that are not already in the db
+            # overwrite values in dict_row with values already in dict_db_row
+            # in other words, only add values from row that are not already in the db
             merged = dict(list(dict_row.items()) + list(dict_db_row.items()))
             print(merged)
+
+            updated = logs(room=merged["room"], date=merged["date"], time=merged["time"],
+                           associated_client_count=merged["associated_client_count"],
+                           authenticated_client_count=merged["authenticated_client_count"],
+                           module_code=merged["module_code"], occupancy=merged["occupancy"])
+
+            db.session.add(updated)
+
+            try:
+                db.session.commit()
+            except sqlalchemy.exc.IntegrityError:
+                print("data already in db", dict_row)
+                db.session.rollback()
+                continue
 
             continue
 
