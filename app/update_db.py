@@ -13,39 +13,45 @@ import sqlalchemy
 def update_db(df, table):
     # insert dataframe into db line by line
     for i, row in df.iterrows():
-        logs = table(room=row["room"], date=row["date"], time=row["time"],
-                     associated_client_count=row["associated_client_count"],
-                     authenticated_client_count=row["authenticated_client_count"],
-                     module_code=None, occupancy=None)
+        # get all values from df and put in dictionary
+        existing_args = {column: row[column] for column in df.columns}
+
+        # get all values required to construct table and put in dictionary
+        empty_args = {column: None for column in table.__table__.columns.keys()}
+
+        # merge two dicts, overwrite empty_args with existing_args
+        kwargs = dict(list(empty_args.items()) + list(existing_args.items()))
+        logs = table(**kwargs)
         db.session.add(logs)
 
         try:
             db.session.commit()
             print("row inserted @", row["room"], row["date"], row["time"], "\n")
         except sqlalchemy.exc.IntegrityError:
-            # remove staged changes which cause error
+            # remove staged changes which caused integrity error
             db.session.rollback()
             print("integrity error @", row["room"], row["date"], row["time"], "\ntrying to update db...")
 
-            # get row which causes integrity constraint
+            # get row which causes integrity error
             db_row = db.session.query(table).filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
 
-            # convert the sqlalchemy object and pandas row to dictionaries so they can be merged
+            # convert the sqlalchemy object to a dictionary so it can be merged with row dictionary (existing_args)
             dict_db_row = dict((column, getattr(db_row, column)) for column in db_row.__table__.columns.keys())
-            dict_row = dict((column, row[column]) for column in df.columns)
 
-            # overwrite values in dict_row with values already in dict_db_row
-            # in other words, only add values from row that are not already in the db
-            merged = dict(list(dict_row.items()) + list(dict_db_row.items()))
+            # overwrite values in existing_args with values already in dict_db_row
+            # in other words, only add values from the df row that are not already in the db
+            merged = dict(list(existing_args.items()) + list(dict_db_row.items()))
 
+            # test to see that function does update rows
+            # merged["occupancy"] = None
             # merged["occupancy"] = 9000
 
-            # if the merge doesn't have any new values, don't bother commiting to the db
+            # if the merge doesn't have any new values, don't bother committing to the db
             if merged == dict_db_row:
                 print("no new values to commit @", row["room"], row["date"], row["time"], "\n")
                 continue
 
-            # update sqlalchemy object to be committed
+            # update attributes of sqlalchemy object to be committed
             for column in merged:
                 setattr(db_row, column, merged[column])
 
