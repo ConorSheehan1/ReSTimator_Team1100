@@ -5,37 +5,37 @@
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 
 		<div class="form-group">
-			<p>
+			<p class="form-inputs">
 				{{ form.username(placeholder="Username") }}
 				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
 			</p>
-			<p>
+			<p class="form-inputs">
 				{{ form.password(placeholder="Password") }}
 				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
 			</p>
-			<p>
+			<p class="form-inputs">
 				{{ form.confirm(placeholder="Repeat Password") }}
 				{% for error in form.confirm.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
 			</p>
-			<p>
-				Accept Terms and Conditions: {{ form.accept_terms() }}
+			<p class="form-inputs">
+				Accept Terms and Conditions: {{ form.accept_terms() }} <a href="http://www.ucd.ie/privacy.htm" target="_blank">UCD Privacy Statement</a>
 				{% for error in form.accept_terms.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
-			<p>
+			<p class="form-inputs">
 				{% for error in form.recaptcha.errors %}
 					{{ error }}
 				{% endfor %}
 				{{ form.recaptcha }}
 			</p>			
-			<p><input type="submit" value="Register" class="btn btn-default"></p>
+			<p class="form-inputs"><input type="submit" value="Register" class="btn btn-default"></p>
 		</div>
 	</form>
 {% endblock %}

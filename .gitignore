@@ -23,8 +23,6 @@ config
 # keep outer zip and xlsx, but not inner zips and csvs
 
 # images
-*.png
-*.jpg
 
 * ipynb
 .ipynb_checkpoints

@@ -1,6 +1,10 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
+    <h1>Admin Area</h1>
+    <hr />
+    <h2>Upload WiFi Data</h2>
+
 	<form class="form-horizontal" role="form" action="/upload" method="POST" enctype="multipart/form-data" name="upload">
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 		
@@ -9,7 +13,7 @@
 			<input type="file" name="file"><br /><br />
 		</div>
 
-		<p><input type="submit" value="Upload" class="btn btn-default"></p>
+		<p><input type="submit" value="Upload" class="btn btn-primary"></p>
 	</form>
 <!--    {% if filename != "" %}-->
 <!--        <p>Uploaded {{ filename }}</p>-->

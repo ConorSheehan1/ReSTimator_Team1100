@@ -1,11 +1,21 @@
 from flask import render_template, flash, redirect, request, Blueprint
-from .forms import UploadForm
+from .forms import UploadForm, GTForm
 from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
+from project import db
+from project.models import *
+from sqlalchemy import exists
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
 
+@upload_blueprint.route("/admin", methods=["GET", "POST"])
+@login_required
+def admin_options():
+    '''Administrator options view'''
+    
+    pg_name = "Admin Options"
+    return render_template("admin_options.html", pg_name=pg_name)
 
 @upload_blueprint.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -51,3 +61,49 @@ def upload():
             else:
                 flash('File must be .csv or .zip')
     return render_template("upload.html", pg_name=pg_name, form=form)
+
+@upload_blueprint.route("/add_occupancy", methods=["GET", "POST"])
+@login_required
+def upload_GT():
+    '''Upload Ground Truth view'''
+    
+    pg_name = "Input Occupancy Data"
+    form = GTForm()
+    
+    if request.method == "POST" and form.validate_on_submit():
+        # get date in same format as date in database
+        date = str(form.date.data.strftime('%x'))
+        date = int('20' + date[6:] + date[0:2] + date[3:5])
+        occupancy = float(form.occupancy.data)
+        # Check if row already exists in database
+        q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data)
+        (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
+        if not already_exists:
+            # prepare SQLAlchemy statement
+            row = Occupy(room = form.room.data, date = date, time = form.time.data, occupancy = occupancy,
+                         module_code = form.module_code.data, associated_client_count = None, authenticated_client_count = None)
+            db.session.add(row)
+            db.session.commit() # committing data to database
+            print('row added')
+            flash('Thank you! Your data has been recorded.')
+        else:
+            print('row already exists')
+            flash('Your data has already been recorded. Please check that you selected the correct information for Room, Date and Time.')
+    return render_template("add_occupancy.html", pg_name=pg_name, form=form)
+
+@upload_blueprint.route("/add_module", methods=["GET", "POST"])
+@login_required
+def add_module():
+    '''Administrator add module information view'''
+    
+    pg_name = "Add Module Info"
+    return render_template("add_module.html", pg_name=pg_name)
+
+@upload_blueprint.route("/add_location", methods=["GET", "POST"])
+@login_required
+def add_location():
+    '''Administrator add location information view'''
+    
+    pg_name = "Add Location Info"
+    return render_template("add_location.html", pg_name=pg_name)
+

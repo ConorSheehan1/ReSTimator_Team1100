@@ -8,53 +8,22 @@
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 
-	<title> ReSTimator - {{ pg_name }} </title>
+	<title>ReSTimator - {{ pg_name }} </title>
+	<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/1470162041.ico') }}">
 
 	<!-- style sheets -->
-	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
 	<!-- Scripts -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>    
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>    	
     
 	<!-- Style -->
 	<style>
-	.form-horizontal {
-		padding: 10px;
-	}
-	/* Remove the navbar's default margin-bottom and rounded borders */
-	.navbar {
-		margin-bottom: 0;
-		border-radius: 0;
-	}
-
-	/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-	.row.content {
-		height: 450px
-	}
-
-	/* Set gray background color and 100% height */
-	.sidenav {
-		padding-top: 20px;
-		background-color: #f1f1f1;
-		height: 100%;
-	}
-
-	/* Set black background color, white text and some padding */
-	footer {
-		background-color: #555;
-		color: white;
-		padding: 15px;
-	}
-
 	/* On small screens, set height to 'auto' for sidenav and grid */
 	@media screen and (max-width: 767px) {
-		.sidenav {
-			height: auto;
-			padding: 15px;
-		}
 		.row.content {
 			height:auto;
 		}
@@ -75,10 +44,7 @@
 		<!--#drop .nav{-->
 		<!--width: 50px;-->
 		<!--}-->
-
 	}
-
-
 	</style>
 </head>
 <body>	
@@ -91,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>                        
                 </button>
-                <a class="navbar-brand" href="{{ url_for('main.home') }}">ReSTimator Logo</a>
+                <a class="navbar-brand" href="{{ url_for('main.home') }}"><img src="/static/images/ucd_logo.png" alt="UCD logo"></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav", id="drop">
@@ -100,7 +66,8 @@
                         <ul class="dropdown-menu">
                             <li class="active"><a href="{{ url_for('main.home') }}">Home</a></li>
                             <li><a href="{{ url_for('analysis.analysis') }}">Analysis</a></li>
-                            <li><a href="{{ url_for('upload.upload') }}">Upload</a></li>
+                            <li><a href="{{ url_for('upload.upload_GT') }}">Input Occupancy Info</a></li>
+                            <li><a href="{{ url_for('upload.admin_options') }}">Admin Area</a></li>
                         </ul>
                         </li>
                 </ul>
@@ -115,40 +82,21 @@
 
 	<div class="container-fluid text-center">
 		<div class="row content">
-			<div class="col-sm-2 sidenav">
-				<p><a href="#">Link</a></p>
-				<p><a href="#">Link</a></p>
-				<p><a href="#">Link</a></p>
-			</div>
 			<div class="col-sm-8 text-left">
-
-<hr>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul>
-{% for message in messages %}
-<li>{{ message }} </li>
-{% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						<ul id="flash">
+						{% for message in messages %}
+							<li>{{ message }} </li>
+						{% endfor %}
+						</ul>
+					{% endif %}
+				{% endwith %}
 				<!-- child template -->
 				{% block content %}{% endblock %} <!-- Block control statement: where other templates can insert themselves -->
 			</div>
-			<div class="col-sm-2 sidenav">
-				<div class="well">
-					<p>DIV</p>
-				</div>
-				<div class="well">
-					<p>DIV</p>
-				</div>
-			</div>
 		</div>
 	</div>
-		
-	<footer class="container-fluid text-center">
-  		<p>Footer Text</p>
-	</footer>
 
 	<!-- Main script -->
 	<script type="text/javascript" src="/static/scripts/main.js"></script>

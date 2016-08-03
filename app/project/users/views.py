@@ -13,6 +13,7 @@ def login():
     pg_name = "Login"
     error = None
     form = LoginForm(request.form) # create instance of LoginForm request.form
+    flash("Please log in")
     if request.method == "POST" and form.validate_on_submit():
         user = Users.query.filter_by(username=request.form["username"]).first()
         if user is not None: 
@@ -38,6 +39,7 @@ def sign_up():
     '''Sign up view'''
     pg_name = "Sign Up" 
     form = SignUpForm() # create instance of RegistrationForm
+    flash("Please Register")
     if request.method == "POST" and form.validate_on_submit():
         user = Users(username=form.username.data, password=form.password.data) 
         db.session.add(user)
