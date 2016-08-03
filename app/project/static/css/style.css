@@ -1,5 +1,18 @@
 .form-horizontal {
-	padding: 10px;
+	padding: 1%;
+	padding-bottom: 5%;
+}
+
+.form-group {
+    width:35%;
+}
+
+.form-group select, input {
+    float: right;
+}
+
+input[type=submit] {
+    float: left;
 }
 
 /* Remove the navbar's default margin-bottom and rounded borders */

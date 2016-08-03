@@ -17,7 +17,9 @@ y = df_regression["min_occ_reg"] # dependent variable
 lm = LinearRegression(fit_intercept=False) # create linear regression object
 lm.fit(X, y) # fit the model 
 df_regression["predicted_occupancy"] = pd.Series(lm.predict(X), index=df_regression.index) # add predictions to df
-df_regression = df_regression[["room", "date", "time", "module_code", "day", "associated_client_count", "authenticated_client_count", "occupancy", "reg_students", "campus", "building", "capacity", "predicted_occupancy"]]
+df_regression = df_regression[["room", "date", "time", "module_code", "day", "associated_client_count",
+							   "authenticated_client_count", "occupancy", "reg_students", "campus", "building",
+							   "capacity", "predicted_occupancy"]]
 
 try:
 	df_regression.to_sql(name="results", flavor="sqlite", con=conn, if_exists="append", index=False)
