@@ -15,5 +15,7 @@ class AnalysisForm(Form):
     def __init__(self, *args, **kwargs):
         super(AnalysisForm, self).__init__(*args, **kwargs)
         self.room.choices = [(i.room, i.room) for i in db.session.query(Results.room).distinct().order_by(Results.room)]
-        self.day.choices = [(i.day, i.day) for i in db.session.query(Results.day).distinct().order_by(Results.day)]
         self.time.choices = [(i.time, i.time) for i in db.session.query(Results.time).distinct().order_by(Results.time)]
+        days_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        days = [i.day for i in db.session.query(Results.day).distinct()]
+        self.day.choices = [(day, day) for day in sorted(days, key=lambda o: days_order.index(o))]
