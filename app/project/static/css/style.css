@@ -1,10 +1,9 @@
 .form-horizontal {
-	padding: 1%;
-	padding-bottom: 5%;
+	padding: 0%, 1%, 5%, 1%;
 }
 
 .form-group {
-    width:35%;
+    width:40%;
 }
 
 .form-group select, input {
@@ -57,10 +56,18 @@ img {
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
-@media screen and (max-width: 100%) {
+@media only screen and (max-width: 767px) {
 	.row.content {
 		height:auto;
 	}
+
+	.form-group {
+        width: 500px;
+    }
+
+    .form-horizontal {
+        width: 100%;
+    }
 }
 
 .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a {
