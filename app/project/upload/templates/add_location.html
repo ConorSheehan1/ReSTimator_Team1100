@@ -1,13 +1,8 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
-	<h1>Home</h1>
+    <h1>Admin Area</h1>
     <hr />
-
-	<ul>
-	{% for r in random %}
-		<li> {{ r.username }} - {{ r.password }} </li>
-	{% endfor %}
-	</ul>
-
+    <h2>Add Location Information</h2>
+        
 {% endblock %}

@@ -9,6 +9,13 @@ from sqlalchemy import exists
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
 
+@upload_blueprint.route("/admin", methods=["GET", "POST"])
+@login_required
+def admin_options():
+    '''Administrator options view'''
+    
+    pg_name = "Admin Options"
+    return render_template("admin_options.html", pg_name=pg_name)
 
 @upload_blueprint.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -83,3 +90,20 @@ def upload_GT():
             print('row already exists')
             flash('Your data has already been recorded. Please check that you selected the correct information for Room, Date and Time.')
     return render_template("add_occupancy.html", pg_name=pg_name, form=form)
+
+@upload_blueprint.route("/add_module", methods=["GET", "POST"])
+@login_required
+def add_module():
+    '''Administrator add module information view'''
+    
+    pg_name = "Add Module Info"
+    return render_template("add_module.html", pg_name=pg_name)
+
+@upload_blueprint.route("/add_location", methods=["GET", "POST"])
+@login_required
+def add_location():
+    '''Administrator add location information view'''
+    
+    pg_name = "Add Location Info"
+    return render_template("add_location.html", pg_name=pg_name)
+
