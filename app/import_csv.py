@@ -34,6 +34,22 @@ if __name__ == "__main__":
             print("integrity error", row["time"])
             db_row = Occupy.query.filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
 
+            # convert the sqlalchemy object and pandas row to dictionaries so they can be merged
+            dict_db_row = dict((column, getattr(db_row, column)) for column in db_row.__table__.columns.keys())
+            dict_row = dict((column, row[column]) for column in df.columns)
+
+            # test that rows are updated correctly
+            dict_row["room"] = "B5000"
+            print(dict_db_row, "\n", dict_row)
+
+            # overwrite values in dict_row with values already in db
+            # in other words, only add values from row, that are not already in the db
+            merged = dict(list(dict_row.items()) + list(dict_db_row.items()))
+            print(merged)
+
+            continue
+
+
             # df_copy = row.copy(deep=True)
             # print(df_copy)
 
@@ -42,34 +58,3 @@ if __name__ == "__main__":
             # print(db_row.time)
             # values = [val for val in dir(db_row) if val in df.columns]
             # print(values)
-
-            db_row_dict = dict((col, getattr(db_row, col)) for col in db_row.__table__.columns.keys())
-            print(db_row_dict)
-
-            continue
-
-
-
-
-
-    #     sql = 'update table set column = %s where column = %s'
-    #     cur.execute(sql, (tup['whatver'], tup['something']))
-    # conn.commit()
-
-
-
-
-'''
-    for tup in logs.itertuples():
-        logs = Occupy(room=tup[1], date=int(tup[2]), time=tup[3], associated_client_count=int(tup[4]),
-                      authenticated_client_count=int(tup[5]), module_code=None, occupancy=None)
-        db.session.add(logs)
-
-        # if commiting to db fails, get row with integrity constraint and merge, then try to commit
-        try:
-            db.session.commit()
-
-        # except sqlite3.IntegrityError:
-        except sqlalchemy.exc.IntegrityError:
-            print("integrity error")
-                '''
