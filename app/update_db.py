@@ -10,13 +10,13 @@ from project.models import *
 import sqlalchemy
 
 
-def update_db(df):
+def update_db(df, table):
     # insert dataframe into db line by line
     for i, row in df.iterrows():
-        logs = Occupy(room=row["room"], date=row["date"], time=row["time"],
-                      associated_client_count=row["associated_client_count"],
-                      authenticated_client_count=row["authenticated_client_count"],
-                      module_code=None, occupancy=None)
+        logs = table(room=row["room"], date=row["date"], time=row["time"],
+                     associated_client_count=row["associated_client_count"],
+                     authenticated_client_count=row["authenticated_client_count"],
+                     module_code=None, occupancy=None)
         db.session.add(logs)
 
         try:
@@ -28,7 +28,7 @@ def update_db(df):
             print("integrity error @", row["room"], row["date"], row["time"], "\ntrying to update db...")
 
             # get row which causes integrity constraint
-            db_row = db.session.query(Occupy).filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
+            db_row = db.session.query(table).filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
 
             # convert the sqlalchemy object and pandas row to dictionaries so they can be merged
             dict_db_row = dict((column, getattr(db_row, column)) for column in db_row.__table__.columns.keys())
@@ -38,17 +38,16 @@ def update_db(df):
             # in other words, only add values from row that are not already in the db
             merged = dict(list(dict_row.items()) + list(dict_db_row.items()))
 
+            # merged["occupancy"] = 9000
+
+            # if the merge doesn't have any new values, don't bother commiting to the db
+            if merged == dict_db_row:
+                print("no new values to commit @", row["room"], row["date"], row["time"], "\n")
+                continue
+
             # update sqlalchemy object to be committed
             for column in merged:
                 setattr(db_row, column, merged[column])
-
-            # db_row.date = merged["date"]
-            # db_row.time = merged["time"]
-            # db_row.room = merged["room"]
-            # db_row.module_code = merged["module_code"]
-            # db_row.occupancy = merged["occupancy"]
-            # db_row.associated_client_count = merged["associated_client_count"]
-            # db_row.authenticated_client_count = merged["authenticated_client_count"]
 
             # this can't fail integrity because it is updating a row already in the db
             db.session.commit()
@@ -56,4 +55,4 @@ def update_db(df):
             continue
 
 if __name__ == "__main__":
-    update_db(log_df("./data/temp_csv/"))
+    update_db(log_df("./data/temp_csv/"), Occupy)
