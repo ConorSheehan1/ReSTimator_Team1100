@@ -1,6 +1,7 @@
 '''
 http://stackoverflow.com/questions/16947276/flask-sqlalchemy-iterate-column-values-on-a-single-row
 http://stackoverflow.com/questions/270879/efficiently-updating-database-using-sqlalchemy-orm
+http://docs.sqlalchemy.org/en/latest/orm/session_basics.html
 '''
 
 from data.extract_log_data import *
@@ -12,7 +13,6 @@ import sqlalchemy
 def update_db(df):
     # insert dataframe into db line by line
     for i, row in df.iterrows():
-
         logs = Occupy(room=row["room"], date=row["date"], time=row["time"],
                       associated_client_count=row["associated_client_count"],
                       authenticated_client_count=row["authenticated_client_count"],
@@ -21,16 +21,13 @@ def update_db(df):
 
         try:
             db.session.commit()
-
-        # if commiting to db fails, get row which causes integrity constraint
+            print("row inserted @", row["room"], row["date"], row["time"], "\n")
         except sqlalchemy.exc.IntegrityError:
-
             # remove staged changes which cause error
             db.session.rollback()
-            print("integrity error @", row["room"], row["date"], row["time"])
-            print("trying to update db ...")
+            print("integrity error @", row["room"], row["date"], row["time"], "\ntrying to update db...")
+
             # get row which causes integrity constraint
-            # db_row = Occupy.query.filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
             db_row = db.session.query(Occupy).filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
 
             # convert the sqlalchemy object and pandas row to dictionaries so they can be merged
@@ -40,18 +37,22 @@ def update_db(df):
             # overwrite values in dict_row with values already in dict_db_row
             # in other words, only add values from row that are not already in the db
             merged = dict(list(dict_row.items()) + list(dict_db_row.items()))
-            print(merged)
-            merged["module_code"] = "asdf"
 
-            db_row.module_code = merged["module_code"]
+            # update sqlalchemy object to be committed
+            for column in merged:
+                setattr(db_row, column, merged[column])
 
-            try:
-                db.session.commit()
-                print("db updated")
-            except sqlalchemy.exc.IntegrityError:
-                print("data already in db", dict_row)
-                db.session.rollback()
-                continue
+            # db_row.date = merged["date"]
+            # db_row.time = merged["time"]
+            # db_row.room = merged["room"]
+            # db_row.module_code = merged["module_code"]
+            # db_row.occupancy = merged["occupancy"]
+            # db_row.associated_client_count = merged["associated_client_count"]
+            # db_row.authenticated_client_count = merged["authenticated_client_count"]
+
+            # this can't fail integrity because it is updating a row already in the db
+            db.session.commit()
+            print("db updated @", row["room"], row["date"], row["time"], "\n")
             continue
 
 if __name__ == "__main__":
