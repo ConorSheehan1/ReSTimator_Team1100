@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, request, Blueprint
-from .forms import UploadForm, GTForm
+from .forms import UploadForm, GTForm, ModuleForm, LocationForm
 from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
@@ -97,7 +97,23 @@ def add_module():
     '''Administrator add module information view'''
     
     pg_name = "Add Module Info"
-    return render_template("add_module.html", pg_name=pg_name)
+    form = ModuleForm()
+    
+    if request.method == "POST" and form.validate_on_submit():
+        # Check if row already exists in database
+        q = Module.query.filter_by(module_code = form.module.data)
+        (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
+        if not already_exists:
+            # prepare SQLAlchemy statement
+            row = Module(module_code = form.module.data, reg_students = form.students.data)
+            db.session.add(row)
+            db.session.commit() # committing data to database
+            print('row added')
+            flash('Thank you! Your data has been recorded.')
+        else:
+            print('row already exists')
+            flash('Your data has already been recorded. Please check that you selected the correct information for Module Code.')
+    return render_template("add_module.html", pg_name=pg_name, form=form)
 
 @upload_blueprint.route("/add_location", methods=["GET", "POST"])
 @login_required
@@ -105,5 +121,21 @@ def add_location():
     '''Administrator add location information view'''
     
     pg_name = "Add Location Info"
-    return render_template("add_location.html", pg_name=pg_name)
-
+    form = LocationForm()
+    
+    if request.method == "POST" and form.validate_on_submit():
+        # Check if row already exists in database
+        q = Location.query.filter_by(campus = form.campus.data, building = form.building.data, room = form.room.data)
+        (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
+        if not already_exists:
+            # prepare SQLAlchemy statement
+            row = Location(campus = form.campus.data, building = form.building.data, room = form.room.data, capacity = form.capacity.data)
+            db.session.add(row)
+            db.session.commit() # committing data to database
+            print('row added')
+            flash('Thank you! Your data has been recorded.')
+        else:
+            print('row already exists')
+            flash('Your data has already been recorded. Please check that you selected the correct information for \
+            Campus, Building, and Room.')
+    return render_template("add_location.html", pg_name=pg_name, form=form)
