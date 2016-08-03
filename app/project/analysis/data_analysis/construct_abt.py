@@ -15,7 +15,7 @@ def occupy_df(conn):
 	# Condition 2: quarter past the hour <= time <= quarter past the hour
 	df_occupy_1["condition2"] = df_occupy_1["time"].apply(lambda x: "true" if 45 >= int(x[-2:]) >= 15 else "false")
 	df_occupy_1 = df_occupy_1[df_occupy_1["condition2"] == "true"]
-	# Reformat time (exclude minutes)
+	# Reformat time (exclude minutes) - for merging purposes
 	df_occupy_1["time"] = df_occupy_1["time"].apply(lambda x: x[0:3] + "00")
 	# Delete condition columns
 	del df_occupy_1["condition1"]
@@ -51,19 +51,6 @@ def location_df(conn):
 	df_location = pd.read_sql(sql="SELECT * FROM location", con=conn)
 	return df_location
 
-# def bin(r):
-# 	'''Bin client counts into percintle categories'''
-# 	if r < .125:
-# 		return .0
-# 	elif r < .375: 
-# 		return .25
-# 	elif r < .625:
-# 		return .5
-# 	elif r < .875:
-# 		return .75
-# 	else:
-# 		return 1.0 
-
 def get_day(date_int):
     """Takes date int in format yyyymmdd and returns weekday string."""
     date_int = str(date_int)
@@ -71,7 +58,6 @@ def get_day(date_int):
     month = date_int[4:6]
     day = date_int[6: 8] 
     return datetime.strptime(year + "," + month + "," + day, "%Y,%m,%d").strftime('%A')
-
 
 def abt(conn):
 	'''Construct ABT'''
@@ -83,19 +69,12 @@ def abt(conn):
 	df_abt = pd.merge(left = df_occupy, right = df_module, how="outer", on=["module_code"]) 
 	df_abt = pd.merge(left = df_abt, right = df_location, how="outer", on=["room"]) 
 
+	df_abt = df_abt[df_abt["reg_students"] != 0] # Remove rows without registered students i.e. no class
+
 	df_abt["occupancy_number"] = df_abt["occupancy"] * df_abt["capacity"] # create occupancy_number column
+	df_abt["min_occ_reg"] = df_abt.loc[:, ['occupancy_number', 'reg_students']].min(axis=1) # Take min between re. students and occupancy to remove errors in gt measurement
 
-	# Issue: ground truth says there are more students than what is registered
-	df_abt = df_abt[(df_abt["reg_students"] - df_abt["occupancy_number"]) / df_abt["capacity"] >= -0.1] # remove those that have an error larger than 10%
-
-	# Adjust occupancy number within 10% error range (bring occupancy down to the max registered)
-	df_abt["reg_students_less_occ"] = df_abt["reg_students"] - df_abt["occupancy_number"]
-	df_abt["adjustment"] = df_abt["reg_students_less_occ"].apply(lambda x: x if x <= 0 else 0)
-	df_abt["occupancy_number_adj"] = df_abt["adjustment"] + df_abt["occupancy_number"]
 	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x))
-
-
-	# Need to figure out how to handle 0% gt number but clearly has clients and classes (some are correct though based on client count)
 
 	return df_abt
 
