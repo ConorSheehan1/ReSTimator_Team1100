@@ -4,5 +4,27 @@
     <h1>Admin Area</h1>
     <hr />
     <h2>Add Module Information</h2>
+
+    <form class="form-horizontal" role="form" action="" method="post" name="add_module">
+        
+		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
+		
+		<div class="form-group">
+			<p>
+				Module Code: {{ form.module() }}
+				{% for error in form.module.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+			<p>
+				Amount of Registered Students: {{ form.students() }}
+				{% for error in form.students.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+		</div>
+
+		<p><input type="submit" value="Submit" class="btn btn-primary"></p>
+	</form>
         
 {% endblock %}

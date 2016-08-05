@@ -24,7 +24,7 @@
 
 ## Initial set up
 * run app/create_db.py
-* run app/data/legacy_into_db.py
-* run app/project/analysis.py
+* run app/legacy_into_db.py
+* run app/project/analysis/analysis.py
 * run app/run.py
 * open localhost:5000

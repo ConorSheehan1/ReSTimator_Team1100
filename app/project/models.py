@@ -2,10 +2,10 @@ from project import db # import database object
 from werkzeug.security import generate_password_hash, check_password_hash # http://flask.pocoo.org/snippets/54/
 
 '''The baseclass for all your models is called db.Model. 
-It’s stored on the SQLAlchemy instance you have to create. 
+It's stored on the SQLAlchemy instance you have to create. 
 
 Some parts that are required in SQLAlchemy are optional in Flask-SQLAlchemy i.e.
-Table name is automatically set for you unless overridden (derived from the class name converted to lowercase and with “CamelCase” converted to “camel_case”)
+Table name is automatically set for you unless overridden (derived from the class name converted to lowercase and with "CamelCase" converted to "camel_case")
 Column to define a column (named after variable name)
 Types: Integer / String (size) / Text -	longer unicode text / DateTime - expressed as Python datetime object / Float / Boolean / PickleType / LargeBinary	
 Primary keys are marked with primary_key=True
@@ -76,7 +76,7 @@ class Location(db.Model):
 	campus = db.Column(db.String(45), primary_key=True)
 	building = db.Column(db.String(45), primary_key=True)
 	room = db.Column(db.String(10), primary_key=True)
-	capacity = db.Column(db.Integer, primary_key=True)
+	capacity = db.Column(db.Integer)
 	occupy = db.relationship("Occupy", backref="location", lazy="dynamic") 
 
 	def __init__(self, campus, building, room, capacity):
