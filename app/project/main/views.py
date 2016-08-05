@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint
 from flask.ext.login import login_required
-# from project import db
-# from project.models import *
+from project import db
+from project.models import *
 # from werkzeug import secure_filename
 # from .upload import UploadForm
 # from project import restimatorApp
@@ -24,6 +24,22 @@ def home():
     return render_template("home.html", pg_name=pg_name)
     # function takes a template filename and a variable list of template args and returns the rendered template
     #  (invokes Jinja2 templating engine)
+
+
+@main_blueprint.route("/api", methods=["GET", "POST"])
+@login_required
+def api():
+    usage = ["Usage:", "Add the name of the table you want to query to the url.", "List of available tables:"]
+    list_of_options = [table for table in db.metadata.tables.keys()]
+    list_of_options.remove("users")
+    return render_template("api.html", pg_name="api", usage=usage, list_of_options=list_of_options)
+
+
+@main_blueprint.route("/api/<table_name>", methods=["GET", "POST"])
+@login_required
+def api_results(table_name):
+
+    return
 
 
 # @csrf.error_handler
