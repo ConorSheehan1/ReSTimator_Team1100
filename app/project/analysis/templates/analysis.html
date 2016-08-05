@@ -36,9 +36,19 @@
 		</div>
 		<p><input type="submit" value="Display" class="btn btn-default"></p>
 
+	{% if model_pred != "" %}
+	<p><b>Predicted Occupancy
+		{% if cate_model == True or svc == True %}
+			Percentage: </b> {{ " " + model_pred|string + "%" }}
+		{% else %}
+			: </b> {{ " " + model_pred|round|int|string + " students" }}
+		{% endif %}
+	</p>
+	{% endif %}
+
 	<ul>
 	{% for a in accuracy %}
-		<li> <b>{{ a }}</b>: {{ accuracy[a] }} </li>
+		<li> <b>{{ a }}</b>: {{ '%0.2f' % (accuracy[a]) }} </li>
 	{% endfor %}
 	</ul>
 

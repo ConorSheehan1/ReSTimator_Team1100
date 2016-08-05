@@ -29,6 +29,7 @@ def analysis():
     pg_name = "Analysis"
     
     form = AnalysisForm()
+    model_pred = ""
     accuracy = ""
     df_model = ""
     cate_model = False
@@ -68,10 +69,16 @@ def analysis():
             svc = True
         
         df_model["predicted"] = pd.Series(model, index=df_model.index)
-        print(df_model[df_model["predicted"] != 25])
+        # print(df_model[df_model["predicted"] != 25])
         df_model["predicted"] = df_model["predicted"].apply(lambda x: round(x, 2))
+
+        try:
+            model_pred = df_model[(df_model["room"] == form.room.data) & (df_model["day"] == form.day.data) & (df_model["time"] == form.time.data)].copy().values[0][-1]
+        except IndexError:
+            model_pred = "N/A"
+            
         df_model = df_model.sort_values(by="time", ascending=1)
 
         df_model = df_model[(df_model["room"] == form.room.data) & (df_model["day"] == form.day.data)].to_dict("records")
 
-    return render_template("analysis.html", pg_name=pg_name, form=form, accuracy=accuracy, df_model=df_model, cate_model=cate_model, svc=svc)
+    return render_template("analysis.html", pg_name=pg_name, form=form, model_pred=model_pred, accuracy=accuracy, df_model=df_model, cate_model=cate_model, svc=svc)
