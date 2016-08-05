@@ -13,7 +13,6 @@ def login():
     pg_name = "Login"
     error = None
     form = LoginForm(request.form) # create instance of LoginForm request.form
-    flash("Please log in")
     if request.method == "POST" and form.validate_on_submit():
         user = Users.query.filter_by(username=request.form["username"]).first()
         if user is not None: 
