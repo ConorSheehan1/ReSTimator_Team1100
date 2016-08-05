@@ -31,6 +31,7 @@ list_of_tables = [table for table in db.metadata.tables.keys()]
 # make sure not to show that a users table exists
 list_of_tables.remove("users")
 
+
 @main_blueprint.route("/api", methods=["GET", "POST"])
 @login_required
 def api():
@@ -42,11 +43,20 @@ def api():
 @login_required
 def api_results(table_name):
     if table_name not in list_of_tables:
-        error = ["We didn't recognise that table name", "Please try one of these:"]
-        return render_template('404.html', error=error, list_of_tables=list_of_tables), 404
-    # data = db.session.table_name
-    return table_name
+        error = ["We didn't recognise that table name.", "Please try one of these:"]
+        return render_template('404.html', pg_name="error", error=error, list_of_tables=list_of_tables), 404
 
+    # # capitalise first letter
+    table_name = table_name[0].upper() + table_name[1:]
+
+    # convert string into variable
+    table = exec("%s" % table_name)
+    print("\n\n\n\n\n!!!!!!!!!!!!!!!!!!!!\n\n\n", table_name, table)
+
+    # data = db.session.query(Occupy).all()
+    data = {c.name: getattr(table, c.name) for c in table.__table__.columns}
+    print(data)
+    return json.dumps(data)
 
 # @csrf.error_handler
 # def csrf_error(reason):
