@@ -55,7 +55,7 @@ def analysis():
         # Get predictions from model
         if "Linear" not in form.model_type.data and "Support" not in form.model_type.data:
             cate_model = True
-            groups = [0, 25, 50, 75, 100]
+            groups = [0, 25, 50, 75, 100] # need to make this dynamic (if we decide to have more percentage groups)
             group_index = model.predict_proba(X).argmax(axis=1)
             m = []
             for i in group_index:
