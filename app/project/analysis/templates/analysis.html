@@ -37,13 +37,17 @@
 		<p><input type="submit" value="Display" class="btn btn-default"></p>
 
 	{% if model_pred != "" %}
-	<p><b>Predicted Occupancy
-		{% if cate_model == True or svc == True %}
-			Percentage: </b> {{ " " + model_pred|string + "%" }}
+		{% if model_pred == "N/A" %}
+			<p><b>Predicted Occupancy:</b> {{ model_pred }}</p>
 		{% else %}
-			: </b> {{ " " + model_pred|round|int|string + " students" }}
+			<p><b>Predicted Occupancy
+				{% if cate_model == True or svc == True %}
+					Percentage: </b> {{ " " + model_pred|string + "%" }}
+				{% else %}
+					: </b> {{ " " + model_pred|round|int|string + " students" }}
+				{% endif %}
+			</p>
 		{% endif %}
-	</p>
 	{% endif %}
 
 	<ul>
