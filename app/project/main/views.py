@@ -2,6 +2,7 @@ from flask import render_template, Blueprint
 from flask.ext.login import login_required
 from project import db
 from project.models import *
+import json
 # from werkzeug import secure_filename
 # from .upload import UploadForm
 # from project import restimatorApp
@@ -25,21 +26,26 @@ def home():
     # function takes a template filename and a variable list of template args and returns the rendered template
     #  (invokes Jinja2 templating engine)
 
+# make list of tables available to all routes
+list_of_tables = [table for table in db.metadata.tables.keys()]
+# make sure not to show that a users table exists
+list_of_tables.remove("users")
 
 @main_blueprint.route("/api", methods=["GET", "POST"])
 @login_required
 def api():
     usage = ["Usage:", "Add the name of the table you want to query to the url.", "List of available tables:"]
-    list_of_options = [table for table in db.metadata.tables.keys()]
-    list_of_options.remove("users")
-    return render_template("api.html", pg_name="api", usage=usage, list_of_options=list_of_options)
+    return render_template("api.html", pg_name="api", usage=usage, list_of_tables=list_of_tables)
 
 
 @main_blueprint.route("/api/<table_name>", methods=["GET", "POST"])
 @login_required
 def api_results(table_name):
-
-    return
+    if table_name not in list_of_tables:
+        error = ["We didn't recognise that table name", "Please try one of these:"]
+        return render_template('404.html', error=error, list_of_tables=list_of_tables), 404
+    # data = db.session.table_name
+    return table_name
 
 
 # @csrf.error_handler

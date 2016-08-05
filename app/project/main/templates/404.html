@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
-	<h1>{{usage[0]}}</h1>
-    {% for value in usage[1:] %}
-        <p>{{value}}</p>
+    {% for e in error %}
+	    <p style="color: red;">{{e}}</p>
     {% endfor %}
 
     <ul>
-        {% for tables in list_of_tables %}
-            <li>{{ tables }}</li>
-        {% endfor %}
+    {% for table in list_of_tables %}
+        <li>{{table}}</li>
+    {% endfor %}
     </ul>
 
 {% endblock %}
