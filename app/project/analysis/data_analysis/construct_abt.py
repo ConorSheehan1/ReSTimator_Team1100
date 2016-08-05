@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import calendar
 
@@ -23,7 +24,6 @@ def occupy_df(conn):
 
 	# Set up occupy table (Part 2)
 	df_occupy_2 = pd.read_sql(sql="SELECT room, date, time, module_code, occupancy FROM occupy", con=conn)
-	df_occupy_2 = df_occupy_2.dropna() # drop rows without ground truth data
 
 	# Merge occupy tables
 	df_occupy_merge = pd.merge(left = df_occupy_1, right = df_occupy_2, how="outer", on=["room", "date", "time"])
@@ -51,19 +51,6 @@ def location_df(conn):
 	df_location = pd.read_sql(sql="SELECT * FROM location", con=conn)
 	return df_location
 
-# def bin(r):
-# 	'''Bin client counts into percintle categories'''
-# 	if r < .125:
-# 		return .0
-# 	elif r < .375: 
-# 		return .25
-# 	elif r < .625:
-# 		return .5
-# 	elif r < .875:
-# 		return .75
-# 	else:
-# 		return 1.0 
-
 def get_day(date_int):
     """Takes date int in format yyyymmdd and returns weekday string."""
     date_int = str(date_int)
@@ -72,8 +59,21 @@ def get_day(date_int):
     day = date_int[6: 8] 
     return datetime.strptime(year + "," + month + "," + day, "%Y,%m,%d").strftime('%A')
 
+def normalize(df, feature):
+    '''Normalize data'''
+    return (df[feature] - df[feature].mean()) / df[feature].std()
 
-def abt(conn):
+def removeOutliers(df, feature):
+    '''Remove outliers (more than 3 std devs from mean)'''
+    return df[np.abs(df[feature] - df[feature].mean()) <= (3 * df[feature].std())]
+
+def convert_perc_int(df):
+    ''''''
+    df["occupancy"] = df["occupancy"].apply(lambda x: x * 100)
+    df["occupancy"] = df["occupancy"].astype(int)
+    return df
+
+def abt(conn, normal=True, convert=False):
 	'''Construct ABT'''
 	# create dfs
 	df_occupy = occupy_df(conn) 
@@ -83,19 +83,26 @@ def abt(conn):
 	df_abt = pd.merge(left = df_occupy, right = df_module, how="outer", on=["module_code"]) 
 	df_abt = pd.merge(left = df_abt, right = df_location, how="outer", on=["room"]) 
 
+	df_abt = df_abt[df_abt["reg_students"] != 0] # Remove rows without registered students i.e. no class
+
 	df_abt["occupancy_number"] = df_abt["occupancy"] * df_abt["capacity"] # create occupancy_number column
+	df_abt["min_occ_reg"] = df_abt.loc[:, ['occupancy_number', 'reg_students']].min(axis=1) # Take min between occupancy gt and reg students to remove error in gt measurement
+	df_abt = df_abt.dropna() 
 
-	# Issue: ground truth says there are more students than what is registered
-	df_abt = df_abt[(df_abt["reg_students"] - df_abt["occupancy_number"]) / df_abt["capacity"] >= -0.1] # remove those that have an error larger than 10%
+	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x)) # Insert day
 
-	# Adjust occupancy number within 10% error range (bring occupancy down to the max registered)
-	df_abt["reg_students_less_occ"] = df_abt["reg_students"] - df_abt["occupancy_number"]
-	df_abt["adjustment"] = df_abt["reg_students_less_occ"].apply(lambda x: x if x <= 0 else 0)
-	df_abt["occupancy_number_adj"] = df_abt["adjustment"] + df_abt["occupancy_number"]
-	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x))
+	if normal:
+		df_abt["min_occ_reg_NORM"] = normalize(df_abt, "min_occ_reg")
+		df_abt = removeOutliers(df_abt, "min_occ_reg_NORM")
+		df_abt["auth_client_count_NORM"] = normalize(df_abt, "authenticated_client_count")
+		df_abt = removeOutliers(df_abt, "auth_client_count_NORM")
+		del df_abt["min_occ_reg_NORM"] 
+		del df_abt["auth_client_count_NORM"] 
+		# df_abt = df_abt[["min_occ_reg", "authenticated_client_count"]]
 
+	if convert:
+		df_abt = convert_perc_int(df_abt)
 
-	# Need to figure out how to handle 0% gt number but clearly has clients and classes (some are correct though based on client count)
 
 	return df_abt
 

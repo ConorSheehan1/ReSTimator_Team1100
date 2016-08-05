@@ -2,48 +2,50 @@
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
     <h1>Analysis</h1>
-    <hr />
+    <hr/>
 
-	<form class="form-horizontal" role="form" action="" method="post" name="login">
+    <form class="form-horizontal" role="form" action="" method="post" name="x">
 
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 		
 		<div class="form-group">
 			<p>
 				Room: {{ form.room() }}
-				{% for error in form.room.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				{% for error in form.room.errors %} error message: for loop that renders any errors added by the validators attached to field
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 			<p>
 				Day: {{ form.day() }}
-				{% for error in form.day.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				{% for error in form.day.errors %} error message: for loop that renders any errors added by the validators attached to field
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 			<p>
 				Time: {{ form.time() }}
-				{% for error in form.time.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				{% for error in form.time.errors %} error message: for loop that renders any errors added by the validators attached to field
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+			<p>
+				Model: {{ form.model_type() }}
+				{% for error in form.model_type.errors %}
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}<br>
 			</p>
 		</div>
-
 		<p><input type="submit" value="Display" class="btn btn-default"></p>
-		
 	</form>
-
-	<h2>Analysis Results</h2>
-
 	<ul>
-	{% for q in query %}
-		<li> {{ q.date }} Predicted Occupancy: {{ "{0:.0f}".format(q.predicted_occupancy) }} ({{ "{0:.2f}".format((q.predicted_occupancy / q.capacity) * 100) }}% of {{ q.capacity }} seats occupied) </li>
+	{% for a in accuracy %}
+		<li> <b>{{ a }}</b>: {{ accuracy[a] }} </li>
 	{% endfor %}
 	</ul>
+
     <!-- CHARTS-->
     <div id="chart"></div>
     <!-- <div id="chart_perc"></div> -->
-    {% if chart_query != "" %}
+    {% if df_model != "" %}
         <!-- Google Chart -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script>
@@ -53,18 +55,21 @@
             // Set a callback to run when the Google Visualization API is loaded.
             google.charts.setOnLoadCallback(function() {
                 var results = []; // array to contain data for chart
-                // var results_perc = []; // array to contain data for chart
-                {% for q in chart_query %}
+                {% for i in df_model %}
                     // add objects for chart
-                    results.push({time:"{{ q.time }}", occupancy:{{ q.predicted_occupancy }}});
-                    // results_perc.push({time:"{{ q.time }}", occupancy:{{ (q.predicted_occupancy / q.capacity) * 100 }}});
+                    results.push({time:"{{ i.time }}", predicted:{{ i.predicted }}, occupancy_number:
+                    	{% if cate_model == False and svc == False %}
+                    		{{ i.occupancy_number }}});
+                    	{% else %}
+                    		{{ i.occupancy * 100 }}});
+            			{% endif %}
                 {% endfor %}
-    //            console.log(results[0]);
-                test();
+               console.log(results[0]);
+                // test();
                 drawChart(results);
-                // drawChart_perc(results_perc);
             });
         </script>
+
 	{% endif %}
         
 {% endblock %}

@@ -60,43 +60,15 @@ class Users(db.Model):
 
 class Results(db.Model):
 	'''Database object'''
-	room = db.Column(db.String(10), primary_key=True)
-	date = db.Column(db.Integer, primary_key=True)
-	time = db.Column(db.String(10), primary_key=True)
-	module_code = db.Column(db.String(10), primary_key=True)
-	day = db.Column(db.String(10))
-	associated_client_count = db.Column(db.Integer)
-	authenticated_client_count = db.Column(db.Integer)
-	occupancy = db.Column(db.Integer)
-	reg_students = db.Column(db.Integer)
-	campus = db.Column(db.String(30))
-	building = db.Column(db.String(30), primary_key=True)
-	capacity = db.Column(db.Integer)
-	predicted_occupancy = db.Column(db.Integer)
+	model_type = db.Column(db.String(10), primary_key=True)
+	model = db.Column(db.PickleType)
+	accuracy = db.Column(db.String(200))
 
-	# infer day from date
-	# infer occupancy count from occupancy
-	# infer prediction % from prediction and capacity
-
-	def __init__(self, room, date, time, module_code, day, associated_client_count, authenticated_client_count, occupancy, reg_students, campus, building, capacity, predicted_occupancy):
+	def __init__(self, model_type, model, accuracy):
 		'''instance attributes'''
-		self.room = room
-		self.date = db.Column(db.Integer)
-		self.time = time
-		self.module_code = module_code
-		self.day = day
-		self.associated_client_count = db.Column(db.Integer)
-		self.authenticated_client_count = db.Column(db.Integer)
-		self.occupancy = db.Column(db.Integer)
-		self.reg_students = db.Column(db.Integer)
-		self.campus = campus
-		self.building = building
-		self.capacity = capacity
-		self.predicted_occupancy = predicted_occupancy
-
-	def __repr__(self):
-		'''object representation'''
-		return "{} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {} - {}".format(self.room, self.module_code, self.day, self.hourly_time, self.date, self.capacity, self.reg_students, self.occupancy, self.associated_client_count, self.authenticated_client_count, self.cli_cnt_cap, self.predicted_occupancy, self.binned_predicted) 
+		self.model_type = model_type
+		self.model = model
+		self.accuracy = accuracy
 
 
 class Location(db.Model):
