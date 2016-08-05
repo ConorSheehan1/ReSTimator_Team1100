@@ -11,6 +11,10 @@ import sqlalchemy
 
 
 def update_db(df, table):
+    # get list of primary key(s)
+    pk_list = [key.name for key in sqlalchemy.inspect(table).primary_key]
+    print(pk_list)
+
     # insert dataframe into db line by line
     for i, row in df.iterrows():
         # get all values from df and put in dictionary
@@ -21,19 +25,29 @@ def update_db(df, table):
 
         # merge two dicts, overwrite empty_args with existing_args
         kwargs = dict(list(empty_args.items()) + list(existing_args.items()))
-        logs = table(**kwargs)
-        db.session.add(logs)
+        data = table(**kwargs)
+        db.session.add(data)
 
         try:
             db.session.commit()
-            print("row inserted @", row["room"], row["date"], row["time"], "\n")
+            print("row inserted @", end="")
+            for value in pk_list:
+                print("", row[value], end="")
+            print("\n")
         except sqlalchemy.exc.IntegrityError:
             # remove staged changes which caused integrity error
             db.session.rollback()
-            print("integrity error @", row["room"], row["date"], row["time"], "\ntrying to update db...")
+
+            print("integrity error @", end="")
+            for value in pk_list:
+                print("", row[value], end="")
+            print("\ntrying to update db...")
+
+            # create dictionary of primary key values which caused integrity error
+            primary_key_kwargs = dict((value, row[value]) for value in pk_list)
 
             # get row which causes integrity error
-            db_row = db.session.query(table).filter_by(date=row["date"], time=row["time"], room=row["room"]).first()
+            db_row = db.session.query(table).filter_by(**primary_key_kwargs).first()
 
             # convert the sqlalchemy object to a dictionary so it can be merged with row dictionary (existing_args)
             dict_db_row = dict((column, getattr(db_row, column)) for column in db_row.__table__.columns.keys())
