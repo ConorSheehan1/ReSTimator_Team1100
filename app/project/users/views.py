@@ -3,6 +3,7 @@ from .forms import LoginForm, SignUpForm
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
 from project import db
+import sqlalchemy
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates")
 
