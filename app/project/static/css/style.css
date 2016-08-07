@@ -70,10 +70,20 @@ img {
 	    padding-top: 2.5%;
         width: 100%;
     }
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+        color: #00427a;
+    }
 }
 
-.navbar-inverse .navbar-nav .open .dropdown-menu>.active>a {
+
+/* .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a {
 	background-color: #00427a;
+} */
+
+.dropdown-menu, .dropdown-menu li a {
+    background-color: #007eba;
+    color: white;
 }
 
 .col-sm-8 {
