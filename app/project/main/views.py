@@ -45,36 +45,18 @@ def api_results(table_name):
         error = ["We didn't recognise that table name.", "Please try one of these:"]
         return render_template('404.html', pg_name="error", error=error, list_of_tables=list_of_tables), 404
 
-    def convert_to_json(obj):
-        # sort of works
-        # data = dict((column, str(getattr(obj, column))) for column in obj.__table__.columns.keys())
-        nested_dicts = []
-
+    def convert_to_nested_dict(obj):
+        # get all keys in table
         keys = obj.__table__.columns.keys()
+
+        # get all rows in table
         data = db.session.query(obj).all()
 
-        print("?????????\n", list((getattr(data[0], column)) for column in obj.__table__.columns.keys()))
+        # for every row in the table, create a dictionary entry which is itself a dictionary of values for that row
+        nested_dicts = {i: {key: getattr(data[i], key) for key in keys} for i in range(len(data))}
+        return nested_dicts
 
-        print("!!!!!!!\n", type(data), len(data), type(data[0]))
-        for i in range(len(data)):
-            # for every row in db, convert that row to a dictionary, then jsonify it
-            # nested_dicts.append({key: getattr(data[i], key) for key in keys})
-
-            nested_dicts.append(jsonify({key: getattr(data[i], key) for key in keys}))
-
-        print(nested_dicts)
-        return jsonify(nested_dicts)
-
-        # data = dict((column, getattr(obj, column)) for column in obj.__table__.columns.keys())
-        # for key in data.keys():
-        #     print("!!!", data[key].all())
-        # return data
-
-    print(convert_to_json(Location))
-    # print(db.session.query(Occupy).all())
-    # return jsonify(convert_to_dict(Occupy))
-
-    return jsonify(dict((column, str(getattr(Location, column))) for column in Location.__table__.columns.keys()))
+    return jsonify(convert_to_nested_dict(Location))
 
 # # capitalise first letter
 # table_name = table_name[0].upper() + table_name[1:]
