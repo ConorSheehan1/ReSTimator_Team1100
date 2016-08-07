@@ -1,12 +1,3 @@
-# key
-*.pem
-
-# Contribution text
-contribution.txt
-
-# Sample database
-
-
 # virtual environment
 venv
 
@@ -14,18 +5,13 @@ venv
 .idea
 *.iml
 __pycache__/
-
-config
+*.pyc
 
 # pytest 
 .cache
 
-# files too large to push
-*.csv
-*csv.zip
-# keep outer zip and xlsx, but not inner zips and csvs
-
-# images
-
 * ipynb
 .ipynb_checkpoints
+
+# databse
+*.db
