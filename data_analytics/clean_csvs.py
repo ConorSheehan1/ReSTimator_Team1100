@@ -115,8 +115,8 @@ def concat_log_dfs(list_of_paths, do_print=False):
         df_logs = pd.concat([df_logs, logs_iter2[0]])
         df_location = pd.concat([df_location, logs_iter2[2]])
 
-    # if do_print:
-    #     print(df_logs, df_location)
+    if do_print:
+        print(df_logs, df_location)
     return df_logs, df_location
 
 if __name__ == "__main__":
