@@ -1,8 +1,7 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, jsonify
 from flask.ext.login import login_required
 from project import db
 from project.models import *
-import json
 # from werkzeug import secure_filename
 # from .upload import UploadForm
 # from project import restimatorApp
@@ -46,17 +45,58 @@ def api_results(table_name):
         error = ["We didn't recognise that table name.", "Please try one of these:"]
         return render_template('404.html', pg_name="error", error=error, list_of_tables=list_of_tables), 404
 
-    # # capitalise first letter
-    table_name = table_name[0].upper() + table_name[1:]
+    def convert_to_json(obj):
+        # sort of works
+        # data = dict((column, str(getattr(obj, column))) for column in obj.__table__.columns.keys())
+        nested_dicts = []
 
-    # convert string into variable
-    table = exec("%s" % table_name)
-    print("\n\n\n\n\n!!!!!!!!!!!!!!!!!!!!\n\n\n", table_name, table)
+        keys = obj.__table__.columns.keys()
+        data = db.session.query(obj).all()
 
-    # data = db.session.query(Occupy).all()
-    data = {c.name: getattr(table, c.name) for c in table.__table__.columns}
-    print(data)
-    return json.dumps(data)
+        print("?????????\n", list((getattr(data[0], column)) for column in obj.__table__.columns.keys()))
+
+        print("!!!!!!!\n", type(data), len(data), type(data[0]))
+        for i in range(len(data)):
+            # for every row in db, convert that row to a dictionary, then jsonify it
+            # nested_dicts.append({key: getattr(data[i], key) for key in keys})
+
+            nested_dicts.append(jsonify({key: getattr(data[i], key) for key in keys}))
+
+        print(nested_dicts)
+        return jsonify(nested_dicts)
+
+        # data = dict((column, getattr(obj, column)) for column in obj.__table__.columns.keys())
+        # for key in data.keys():
+        #     print("!!!", data[key].all())
+        # return data
+
+    print(convert_to_json(Location))
+    # print(db.session.query(Occupy).all())
+    # return jsonify(convert_to_dict(Occupy))
+
+    return jsonify(dict((column, str(getattr(Location, column))) for column in Location.__table__.columns.keys()))
+
+# # capitalise first letter
+# table_name = table_name[0].upper() + table_name[1:]
+
+# # convert string into variable
+# table = exec("%s" % table_name)
+# print("\n\n\n\n\n!!!!!!!!!!!!!!!!!!!!\n\n\n", table_name, table)
+
+# data = db.session.query(Occupy).all()
+
+# sort of works
+# data = {c.name: str(getattr(Occupy, c.name)) for c in Occupy.__table__.columns}
+
+
+# data = jsonify({c.name: str(getattr(Occupy, c.name)) for c in Occupy.__table__.columns})
+# print("!!!!!!!!!!!!!!!!!!!!!!!!\n", data)
+# return data
+# # return json.dumps(dict(data))
+
+
+# __andy's stuff__
+
 
 # @csrf.error_handler
 # def csrf_error(reason):

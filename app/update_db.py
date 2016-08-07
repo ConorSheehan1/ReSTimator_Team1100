@@ -52,13 +52,13 @@ def update_db(df, table):
             # convert the sqlalchemy object to a dictionary so it can be merged with row dictionary (existing_args)
             dict_db_row = dict((column, getattr(db_row, column)) for column in db_row.__table__.columns.keys())
 
-            # overwrite values in existing_args with values already in dict_db_row
-            # in other words, only add values from the df row that are not already in the db
-            merged = dict(list(existing_args.items()) + list(dict_db_row.items()))
-
             # test to see that function does update rows
-            # merged["occupancy"] = None
-            # merged["occupancy"] = 9000
+            # existing_args["occupancy"] = None
+            # existing_args["occupancy"] = 9000
+
+            # overwrite values in dict_db_row with existing_args
+            # in other words, overwrite any data in the db with new data provided at the row which cause integrity error
+            merged = dict(list(dict_db_row.items()) + list(existing_args.items()))
 
             # if the merge doesn't have any new values, don't bother committing to the db
             if merged == dict_db_row:
