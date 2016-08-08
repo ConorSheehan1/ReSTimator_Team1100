@@ -5,6 +5,7 @@ http://docs.sqlalchemy.org/en/latest/orm/session_basics.html
 '''
 
 from data.extract_log_data import *
+from data.extract_legacy import *
 from project import db # import database object
 from project.models import *
 import sqlalchemy
@@ -14,7 +15,7 @@ import pandas as pd
 def update_db(df, table):
     # get list of primary key(s)
     pk_list = [key.name for key in sqlalchemy.inspect(table).primary_key]
-    print(pk_list)
+    print("primary keys:", pk_list, "\n")
 
     # insert dataframe into db line by line
     for i, row in df.iterrows():
@@ -52,6 +53,7 @@ def update_db(df, table):
 
             # convert the sqlalchemy object to a dictionary so it can be merged with row dictionary (existing_args)
             dict_db_row = dict((column, getattr(db_row, column)) for column in db_row.__table__.columns.keys())
+            # print(dict_db_row)
 
             # test to see that function does update rows
             # existing_args["occupancy"] = None
@@ -80,17 +82,24 @@ def update_db(df, table):
             for value in pk_list:
                 print("", row[value], end="")
             print("\n")
-            continue
 
 if __name__ == "__main__":
+    # # --WIFI LOGS---
     # print(log_df("./data/temp_csv/"))
-    # print(Location)
     # update_db(log_df("./data/temp_csv/"), Occupy)
-    # df = pd.DataFrame.from_dict(my_dict, orient="columns", index=None)
 
-    sample = {'0': {'campus': "test", 'building': "test", 'room': "test", 'capacity': 100000},
-              '1': {'campus': "test", 'building': "test", 'room': "test", 'capacity': 110000}}
-    df = pd.DataFrame(sample)
-    df = df.T
-    print(df, "\n")
-    update_db(df, Location)
+    # # ----LOCATION---
+    # # write new values in dictionary and merge into existing location dataframe.
+    # # check if db is update correctly
+    # data = {'0': {'campus': "Belfield", 'building': "Computer Science", 'room': "B-004", 'capacity': 100000},
+    #         '1': {'campus': "test", 'building': "test", 'room': "test", 'capacity': 110000}}
+    # df_test_data = pd.DataFrame(data)
+    # df_test_data = df_test_data.T
+
+    # get location data
+    df_location = extract("./data/legacy_data/legacy_data.xlsx", "location")
+    # # merge with test data
+    # df_location = pd.merge(df_test_data, df_location, how="outer")
+
+    print(df_location)
+    update_db(df_location, Location)
