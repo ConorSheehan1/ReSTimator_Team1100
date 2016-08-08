@@ -1,11 +1,13 @@
 from project import db # import database object
 from project.models import *
+# import datetime
 
 # create database and tables
 db.create_all() # initializes db based on the schema in the tables.py file
 
 # User Table Testing
-user = Users(username="admin@ucd.ie", password="admin") 
+user = Users(username="admin@ucd.ie", password="admin")
+# user = Users(username= "admin@ucd.ie", password="admin", admin=True, confirmed=True, confirmed_on=datetime.datetime.now())
 db.session.add(user)
 db.session.commit()
 

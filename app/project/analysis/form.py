@@ -3,9 +3,7 @@ from sqlalchemy import *
 from flask_wtf import Form
 from wtforms import SelectField
 from project.models import Results, Location, Occupy
-# from project.analysis.data_analysis import get_day
 from wtforms.validators import DataRequired
-# from wtforms.validators import DataRequired, Email, EqualTo # validator,
 # a function that can be attached to a field to perform validation on the data submitted by the user.
 
 class AnalysisForm(Form):

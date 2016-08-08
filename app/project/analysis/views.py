@@ -35,23 +35,24 @@ def analysis():
     cate_model = False
     svc = False
     if request.method == "POST" and form.validate_on_submit():
+        # Dictionary: accuracy score
         query = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.accuracy).all() # Query to get accuracy scores of model
         # Convert response into json
-        print(query[0])
         for r in query[0]:
         	accuracy = r
         json_acceptable_string = accuracy.replace("'", "\"")
         # json_acceptable_string = query[0][0].replace("'", "\"")
         accuracy = json.loads(json_acceptable_string) # accuracy dictionary
 
+        # Model
         query_model = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.model).all() # Query to get model object
         model = pickle.loads(query_model[0][0])
 
         conn = sqlite3.connect("./project/sample.db") # db connection
         df_model = abt(conn).copy() # ABT
         conn.close() # close db connection
-        
         X = df_model["authenticated_client_count"].reshape(len(df_model["authenticated_client_count"]), 1)
+        
         # Get predictions from model
         if "Linear" not in form.model_type.data and "Support" not in form.model_type.data:
             cate_model = True
@@ -69,7 +70,6 @@ def analysis():
             svc = True
         
         df_model["predicted"] = pd.Series(model, index=df_model.index)
-        # print(df_model[df_model["predicted"] != 25])
         df_model["predicted"] = df_model["predicted"].apply(lambda x: round(x, 2))
 
         try:

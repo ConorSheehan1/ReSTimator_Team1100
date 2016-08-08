@@ -16,7 +16,7 @@ def login():
     form = LoginForm(request.form) # create instance of LoginForm request.form
     if request.method == "POST" and form.validate_on_submit():
         user = Users.query.filter_by(username=request.form["username"]).first()
-        if user is not None: 
+        if user is not None and user.check_password(form.password.data): 
             login_user(user) # function manages session cookie. User model needs to be updated to allow user to be considered active
             flash("User %s logged in successfully" % (form.username.data)) # returns a message on next page to user
             return redirect(url_for("main.home")) # redirect tells the client web browser to navigate to a different page
@@ -42,6 +42,7 @@ def sign_up():
     # flash("Please Register")
     if request.method == "POST" and form.validate_on_submit():
         user = Users(username=form.username.data, password=form.password.data) 
+        # user = Users(username=form.username.data, password=form.password.data, confirmed=False) 
         db.session.add(user)
         db.session.commit()
         login_user(user)
