@@ -3,6 +3,7 @@
 }
 
 .form-group {
+    padding-top: 1%;
     width:40%;
 }
 
@@ -61,17 +62,28 @@ img {
 		height:auto;
 	}
 
-	.form-group {
-        width: 500px;
-    }
-
     .form-horizontal {
         width: 100%;
     }
+
+	.form-group {
+	    padding-top: 2.5%;
+        width: 100%;
+    }
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+        color: #00427a;
+    }
 }
 
-.navbar-inverse .navbar-nav .open .dropdown-menu>.active>a {
+
+/* .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a {
 	background-color: #00427a;
+} */
+
+.dropdown-menu, .dropdown-menu li a {
+    background-color: #007eba;
+    color: white;
 }
 
 .col-sm-8 {

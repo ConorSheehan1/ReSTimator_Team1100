@@ -3,6 +3,7 @@ from .forms import LoginForm, SignUpForm
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
 from project import db
+import sqlalchemy
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates")
 
@@ -38,7 +39,7 @@ def sign_up():
     '''Sign up view'''
     pg_name = "Sign Up" 
     form = SignUpForm() # create instance of RegistrationForm
-    flash("Please Register")
+    # flash("Please Register")
     if request.method == "POST" and form.validate_on_submit():
         user = Users(username=form.username.data, password=form.password.data) 
         db.session.add(user)

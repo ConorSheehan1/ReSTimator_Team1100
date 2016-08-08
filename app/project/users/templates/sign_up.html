@@ -1,5 +1,18 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
+
+<!--override style in style.css-->
+<style>
+	input {
+		display: block;
+		float: none;
+	}
+
+	.form-group{
+		width: 100%
+	}
+
+</style>
 	<form class="form-horizontal" role="form" action="" method="post" name="register">
 		
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
