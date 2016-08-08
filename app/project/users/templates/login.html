@@ -22,13 +22,13 @@
 			<p class="form-inputs">
 				{{ form.username(placeholder="Username") }}
 				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
-					<span style="color: red; float: right;">* {{ error }}</span>
+					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
 			</p>
 			<p class="form-inputs">
 				{{ form.password(placeholder="Password") }}
 				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
-					<span style="color: red; float: right">* {{ error }}</span>
+					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
 			</p>
 			<br>
