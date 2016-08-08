@@ -8,6 +8,7 @@ from data.extract_log_data import *
 from project import db # import database object
 from project.models import *
 import sqlalchemy
+import pandas as pd
 
 
 def update_db(df, table):
@@ -62,7 +63,10 @@ def update_db(df, table):
 
             # if the merge doesn't have any new values, don't bother committing to the db
             if merged == dict_db_row:
-                print("no new values to commit @", row["room"], row["date"], row["time"], "\n")
+                print("no new values to commit @", end="")
+                for value in pk_list:
+                    print("", row[value], end="")
+                print("\n")
                 continue
 
             # update attributes of sqlalchemy object to be committed
@@ -71,8 +75,22 @@ def update_db(df, table):
 
             # this can't fail integrity because it is updating a row already in the db
             db.session.commit()
-            print("db updated @", row["room"], row["date"], row["time"], "\n")
+
+            print("db updated @", end="")
+            for value in pk_list:
+                print("", row[value], end="")
+            print("\n")
             continue
 
 if __name__ == "__main__":
-    update_db(log_df("./data/temp_csv/"), Occupy)
+    # print(log_df("./data/temp_csv/"))
+    # print(Location)
+    # update_db(log_df("./data/temp_csv/"), Occupy)
+    # df = pd.DataFrame.from_dict(my_dict, orient="columns", index=None)
+
+    sample = {'0': {'campus': "test", 'building': "test", 'room': "test", 'capacity': 100000},
+              '1': {'campus': "test", 'building': "test", 'room': "test", 'capacity': 110000}}
+    df = pd.DataFrame(sample)
+    df = df.T
+    print(df, "\n")
+    update_db(df, Location)
