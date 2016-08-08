@@ -4,8 +4,11 @@ from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
 from project import db
+from project import restimatorApp
 from project.models import *
 from sqlalchemy import exists
+from legacy_into_db import legacy
+from analysis import analysis
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
 
@@ -57,6 +60,10 @@ def upload():
             if allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(restimatorApp.config['UPLOAD_FOLDER'], filename))
+                # Add to database
+                legacy()
+                # Do analysis for results table
+                analysis("../../project/sample.db")
                 flash('Uploaded ' + filename)
             else:
                 flash('File must be .csv or .zip')
