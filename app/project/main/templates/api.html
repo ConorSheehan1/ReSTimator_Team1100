@@ -9,8 +9,8 @@
     {% endfor %}
 
     <ul>
-        {% for tables in list_of_tables %}
-            <li>{{ tables }}</li>
+        {% for table in list_of_tables %}
+            <li><a href="./api/{{ table }}">{{table}}</a></li>
         {% endfor %}
     </ul>
 
