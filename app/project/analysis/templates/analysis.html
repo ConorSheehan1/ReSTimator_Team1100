@@ -91,16 +91,16 @@ input[type=submit] {
 			</div>
 
 			<div>
-				{% if day_pred != "" %}
+				{% if model_pred != "" %}
 					
-					{% if day_pred == "N/A" %}
-						<p><b>Predicted Occupancy:</b> {{ day_pred }}</p>
+					{% if model_pred == "N/A" %}
+						<p><b>Predicted Occupancy:</b> {{ model_pred }}</p>
 					{% else %}
 						<p><b>Predicted Occupancy
 						{% if cate_model == True or svc == True %}
-							Percentage: </b> {{ " " + day_pred|string + "%" }}
+							Percentage: </b> {{ " " + model_pred|string + "%" }}
 						{% else %}
-							: </b> {{ " " + day_pred|round|int|string + " students" }}
+							: </b> {{ " " + model_pred|round|int|string + " students" }}
 						{% endif %}
 					</p>
 					{% endif %}
