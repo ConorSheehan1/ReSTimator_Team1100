@@ -98,7 +98,6 @@ def abt(conn, normal=True, convert=False):
 		df_abt = removeOutliers(df_abt, "auth_client_count_NORM")
 		del df_abt["min_occ_reg_NORM"] 
 		del df_abt["auth_client_count_NORM"] 
-		# df_abt = df_abt[["min_occ_reg", "authenticated_client_count"]]
 
 	if convert:
 		df_abt = convert_perc_int(df_abt)
