@@ -46,7 +46,11 @@ def analysis():
         query_model = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.model).all() # Query to get model object
         model = pickle.loads(query_model[0][0]) # load pickled object form db
 
-        conn = sqlite3.connect("./project/sample.db") # db connection
+        # try and except to allow connection when module is ran by itself or function called by other module
+        try:
+            conn = sqlite3.connect("../../project/sample.db") # db connection
+        except sqlite3.OperationalError:
+            conn = sqlite3.connect("./project/sample.db")
         df_model = abt(conn).copy() # ABT
         conn.close() # close db connection
         X = df_model["authenticated_client_count"].reshape(len(df_model["authenticated_client_count"]), 1) # Explanatory variable

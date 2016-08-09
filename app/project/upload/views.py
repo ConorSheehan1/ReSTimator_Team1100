@@ -79,11 +79,14 @@ def upload_GT():
     
     if request.method == "POST" and form.validate_on_submit():
         # get date in same format as date in database
-        date = str(form.date.data.strftime('%x'))
-        date = int('20' + date[6:] + date[0:2] + date[3:5])
+        date = form.date.data
+        print(date)
+        date = int(date[6:] + date[3:5] + date[0:2])
+        print(date)
         occupancy = float(form.occupancy.data)
         # Check if row already exists in database
         q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data)
+        print(q)
         (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
         if not already_exists:
             # prepare SQLAlchemy statement
