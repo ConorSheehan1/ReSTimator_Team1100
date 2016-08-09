@@ -1,5 +1,7 @@
 .form-horizontal {
 	padding: 0%, 1%, 5%, 1%;
+	/* fix admin area forms for desktop*/
+	width: 40%;
 }
 
 .form-group {

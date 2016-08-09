@@ -47,7 +47,8 @@ def home():
 @main_blueprint.route("/api", methods=["GET", "POST"])
 @login_required
 def api():
-    usage = ["How to use:", "Add the name of the table you want to query to the url.", "List of available tables:"]
+    usage = ["How to use:", "Add api followed by name of the table you want to query to the url, or use the links below.",
+             "List of available tables:"]
     return render_template("api.html", pg_name="api", usage=usage, list_of_tables=list_of_tables)
 
 
