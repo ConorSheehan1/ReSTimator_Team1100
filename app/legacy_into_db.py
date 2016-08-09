@@ -1,8 +1,7 @@
 from data import *
 import sqlite3
 
-
-if __name__ == "__main__":
+def legacy():
 	path_cd = os.path.dirname(os.path.abspath(__file__))
 
 	try:
@@ -41,3 +40,6 @@ if __name__ == "__main__":
 		delete_csvs()
 	except KeyError:
 		print("No zip file in directory (or format of csvs has changed)")
+		
+if __name__ == "__main__":
+	legacy()
