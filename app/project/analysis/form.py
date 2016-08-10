@@ -1,8 +1,8 @@
 from project import db
 from sqlalchemy import *
 from flask_wtf import Form
-from wtforms import SelectField, SubmitField
-from wtforms.fields.html5 import DateField
+from wtforms import SelectField, SubmitField, StringField
+# from wtforms.fields.html5 import DateField
 from project.models import Results, Location, Occupy
 from wtforms.validators import DataRequired
 
@@ -11,10 +11,8 @@ class AnalysisForm(Form):
     campus = SelectField("Campus", validators=[DataRequired()])
     building = SelectField("Building", validators=[DataRequired()])
     room = SelectField("Room", validators=[DataRequired()])
-    # day = SelectField("Day", validators=[DataRequired()])
     time = SelectField("Time", validators=[DataRequired()])
-    # date = DateField('Pick a Date', validators=[DataRequired()], format="%Y-%m-%d")
-    date = DateField("Date", format="%Y-%m-%d")
+    date = StringField('Pick a Date', validators=[DataRequired()])
 
 
     def __init__(self, *args, **kwargs):
@@ -23,5 +21,4 @@ class AnalysisForm(Form):
         self.campus.choices = [(i.campus, i.campus) for i in db.session.query(Location.campus).distinct().order_by(Location.campus)]
         self.building.choices = [(i.building, i.building) for i in db.session.query(Location.building).distinct().order_by(Location.building)]
         self.room.choices = [(i.room, i.room) for i in db.session.query(Location.room).distinct().order_by(Location.room)]
-        # self.day.choices = [("Monday", "Monday"), ("Tuesday", "Tuesday"), ("Wednesday", "Wednesday"), ("Thursday", "Thursday"), ("Friday", "Friday")]
         self.time.choices = [(i.time, i.time) for i in db.session.query(Occupy.time).distinct().order_by(Occupy.time) if int(i.time[0:2]) >= 9 and int(i.time[0:2]) <= 16 and i.time[3:5] == "00"]

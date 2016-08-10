@@ -14,7 +14,7 @@ input[type=submit] {
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script>
     $( function() {
-        $( ".datepicker" ).datepicker();
+        $( ".datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
     } );
 </script>
 
@@ -201,8 +201,6 @@ input[type=submit] {
 		</div>
 	</div>
 </div>
-
-<!-- CHARTS-->
 
 <!-- CHARTS-->
 {% if df_chart_1 != "" %}

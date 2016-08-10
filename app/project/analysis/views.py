@@ -50,7 +50,12 @@ def analysis():
         query_model = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.model).all() # Query to get model object
         model = pickle.loads(query_model[0][0]) # load pickled object form db
 
-        conn = sqlite3.connect("./project/sample.db") # db connection
+        # try and except to allow connection when module is ran by itself or function called by other module
+        try:
+            conn = sqlite3.connect("../../project/sample.db") # db connection
+        except sqlite3.OperationalError:
+            conn = sqlite3.connect("./project/sample.db")
+
         df_model = abt(conn).copy() # ABT
         conn.close() # close db connection
         X = df_model["authenticated_client_count"].reshape(len(df_model["authenticated_client_count"]), 1) # Explanatory variable
@@ -77,8 +82,10 @@ def analysis():
         room = form.room.data
         df_location = df_model[(df_model["campus"] == form.campus.data) & (df_model["building"] == form.building.data) & (df_model["room"] == room)].copy() # DF based on location selected
 
-        date = str(form.date.data.strftime('%x'))
-        date = '20' + date[6:] + "-" + date[0:2] + "-" + date[3:5]
+        date = str(form.date.data)
+        # date = '20' + date
+        print(date)
+
         df_date = df_location[(df_location["date"] == date)].copy()
         day = df_date["day"].values[0]
         df_chart_2 = df_location[(df_location["day"] == day)].copy()
