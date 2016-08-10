@@ -51,12 +51,11 @@ def location_df(conn):
 	df_location = pd.read_sql(sql="SELECT * FROM location", con=conn)
 	return df_location
 
-def get_day(date_int):
-    """Takes date int in format yyyymmdd and returns weekday string."""
-    date_int = str(date_int)
-    year = date_int[0:4] 
-    month = date_int[4:6]
-    day = date_int[6: 8] 
+def get_day(date_string):
+    """Takes date in format yyyy-mm-dd and returns weekday string."""
+    year = date_string[:4] 
+    month = date_string[5:7]
+    day = date_string[8:] 
     return datetime.strptime(year + "," + month + "," + day, "%Y,%m,%d").strftime('%A')
 
 def normalize(df, feature):

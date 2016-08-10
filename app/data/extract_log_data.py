@@ -1,6 +1,7 @@
 import os, zipfile, glob, csv, sqlite3, shutil
 import pandas as pd
 import calendar
+import datetime
 
 def convert_month(month_string):
     '''Input: abbreviated month name
@@ -53,11 +54,15 @@ def delete_zips():
     for file in glob.glob("*.zip"):
         os.remove(file)
 
-def leading_zero(date_string):
-    '''add leading zero to day of month for date format'''
+def format(date_string):
+    '''Input: date string
+
+    Output: formated date string
+    '''
     if len(date_string) == 7:
-        date_string = date_string[:6] + "0" + date_string[-1]
-    return date_string
+        date_string = "0" + date_string
+    date_string = date_string[4:] + "-" + date_string[2:4] + "-" + date_string[:2]
+    return str(date_string)
 
 # include varibale path, default value is empty string
 def log_df(path=""):
@@ -82,8 +87,8 @@ def log_df(path=""):
     # extract relevant information for db
     df["day"], df["month"], df["month_day"], df["time"], df["GMT"], df["year"] = zip(*df["Event_Time"].apply(lambda x: x.split(" ", 5))) # split out Event_Time column
     df["month"] = df["month"].apply(lambda x: convert_month(x)) # convert month abbreviation into numerical value
-    df["date"] = df[["year", "month", "month_day"]].apply(lambda x: "".join(x.dropna().astype(int).astype(str)), axis=1) # join year, month and date into single value to represent time
-    df["date"] = df["date"].apply(lambda x: int(leading_zero(x)))
+    df["date"] = df[["month_day", "month", "year"]].apply(lambda x: "".join(x.dropna().astype(int).astype(str)), axis=1) # join year, month and date into single value to represent time
+    df["date"] = df["date"].apply(lambda x: format(x))
 
     # delete redundant information
     df["time"] = df["time"].apply(lambda x: x[:-3])

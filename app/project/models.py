@@ -120,7 +120,7 @@ class Module(db.Model):
 class Occupy(db.Model):
 	'''Database object'''
 	room = db.Column(db.String(10), db.ForeignKey("location.room"), primary_key=True)
-	date = db.Column(db.Integer, primary_key=True)
+	date = db.Column(db.String(10), primary_key=True)
 	time = db.Column(db.String(20), primary_key=True)
 	occupancy = db.Column(db.Integer)
 	module_code = db.Column(db.String(10), db.ForeignKey("module.module_code"))

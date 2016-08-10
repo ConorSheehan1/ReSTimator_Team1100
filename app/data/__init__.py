@@ -1,4 +1,4 @@
-from .extract_legacy import extract
+from .extract_legacy import *
 from .extract_log_data import *
 import os
 

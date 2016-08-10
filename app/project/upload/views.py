@@ -80,7 +80,7 @@ def upload_GT():
     if request.method == "POST" and form.validate_on_submit():
         # get date in same format as date in database
         date = str(form.date.data.strftime('%x'))
-        date = int('20' + date[6:] + date[0:2] + date[3:5])
+        date = '20' + date[6:] + "-" + date[0:2] + "-" + date[3:5]
         occupancy = float(form.occupancy.data)
         # Check if row already exists in database
         q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data)

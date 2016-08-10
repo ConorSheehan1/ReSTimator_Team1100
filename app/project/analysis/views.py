@@ -32,11 +32,15 @@ def analysis():
 
     accuracy = ""
     model_pred = ""
+    model_cap = ""
+    model_auth = ""
     df_chart_1 = ""
+    df_chart_2 = ""
+    day = ""
+    room = ""
 
     cate_model = False
     svc = False
-
     if form.validate_on_submit():
         query_scores = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.accuracy).all() # Query to get accuracy scores dictionary of model
 
@@ -70,14 +74,37 @@ def analysis():
         df_model["predicted"] = df_model["predicted"].apply(lambda x: round(x, 2))
         df_model = df_model.sort_values(by="time", ascending=1)
 
-        df_location = df_model[(df_model["campus"] == form.campus.data) & (df_model["building"] == form.building.data) & (df_model["room"] == form.room.data)].copy() # DF based on location selected
+        room = form.room.data
+        df_location = df_model[(df_model["campus"] == form.campus.data) & (df_model["building"] == form.building.data) & (df_model["room"] == room)].copy() # DF based on location selected
+
+        date = str(form.date.data.strftime('%x'))
+        date = '20' + date[6:] + "-" + date[0:2] + "-" + date[3:5]
+        df_date = df_location[(df_location["date"] == date)].copy()
+        day = df_date["day"].values[0]
+        df_chart_2 = df_location[(df_location["day"] == day)].copy()
+        df_chart_2 = df_chart_2.groupby(["room", "time"], as_index=False).mean().to_dict("records")
 
         try:
-            model_pred = df_location[(df_location["day"] == form.day.data) & (df_location["time"] == form.time.data)].copy().values[0][-1]
+            df_time = df_date[(df_date["time"] == form.time.data)].copy()
+            model_pred = df_time["predicted"].values[0] # Report Variable
+            model_cap = df_time["capacity"].values[0] # Report Variable
+            model_auth = df_time["authenticated_client_count"].values[0] # Report Variable
         except IndexError:
             model_pred = "N/A"
-        
-        # Chart
-        df_chart_1 = df_location[df_location["day"] == form.day.data].to_dict("records") # DF based on day selected
+    
+        df_chart_1 = df_location[df_location["date"] == date].to_dict("records") # DF based on day selected
+    return render_template("analysis.html", pg_name=pg_name, form=form, df_chart_1=df_chart_1, df_chart_2=df_chart_2, accuracy=accuracy, model_pred=model_pred, model_cap=model_cap, model_auth=model_auth, cate_model=cate_model, svc=svc, day=day, room=room)
 
-    return render_template("analysis.html", pg_name=pg_name, form=form, df_chart_1=df_chart_1, accuracy=accuracy, model_pred=model_pred, cate_model=cate_model, svc=svc)
+
+# def modify_chart_date(df):
+# #     ''''''
+#     if len(df) != 7:
+#         times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"] # dynamic list from gt
+#         for i in times:
+#             if i not in 
+
+
+
+
+
+
