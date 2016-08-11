@@ -1,6 +1,6 @@
 import unittest
 from flask.ext.testing import TestCase
-from project import restimatorApp, db
+from project import app, db
 from project.models import *
 
 
@@ -9,8 +9,8 @@ class BaseTest(TestCase):
 
 	def create_app(self):
 		''''''
-		restimatorApp.config.from_object("config.TestingConfig")
-		return restimatorApp
+		app.config.from_object("config.TestingConfig")
+		return app
 
 	def set_db_up(self):
 		''''''

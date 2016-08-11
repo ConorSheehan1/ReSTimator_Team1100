@@ -1,0 +1,19 @@
+# files not necessary for running app on Heroku
+
+create_db.py
+tests.py
+
+# virtual environment
+venv
+
+# Pycharm project files
+.idea
+*.iml
+__pycache__/
+*.pyc
+
+# pytest 
+.cache
+
+* ipynb
+.ipynb_checkpoints

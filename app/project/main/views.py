@@ -4,7 +4,7 @@ from project import db
 from project.models import *
 # from werkzeug import secure_filename
 # from .upload import UploadForm
-# from project import restimatorApp
+# from project import app
 
 # values accessable by all pages
 main_blueprint = Blueprint("main", __name__, template_folder="templates")

@@ -4,7 +4,7 @@ from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
 from project import db
-from project import restimatorApp
+from project import app
 from project.models import *
 from sqlalchemy import exists
 from legacy_into_db import legacy
@@ -34,15 +34,15 @@ def upload():
 #         print(form.upload)
 #         print(request.files['file'].filename)
 #         filename = secure_filename(form.upload.data.filename)
-#         print(filename, restimatorApp.config['UPLOAD_FOLDER'])
-#         form.upload.data.save(os.path.join(restimatorApp.config['UPLOAD_FOLDER'], filename))
+#         print(filename, app.config['UPLOAD_FOLDER'])
+#         form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 #         image_data = request.FILES[form.image.name].read()
 #         open(os.path.join(UPLOAD_PATH, form.image.data), 'w').write(image_data)
 #     return render_template('upload.html', pg_name=pg_name, form=form, filename=filename)
     # For a given file, return whether it's an allowed type or not
     def allowed_file(filename):
         return '.' in filename and \
-            filename.rsplit('.', 1)[1] in restimatorApp.config['ALLOWED_EXTENSIONS']
+            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
     filename = ''
     if request.method == 'POST':
@@ -59,7 +59,7 @@ def upload():
         if file:
             if allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(restimatorApp.config['UPLOAD_FOLDER'], filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 # Add to database
                 legacy()
                 # Do analysis for results table
