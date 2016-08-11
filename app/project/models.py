@@ -1,6 +1,6 @@
 from project import db # import database object
 from werkzeug.security import generate_password_hash, check_password_hash # http://flask.pocoo.org/snippets/54/
-# import datetime
+import datetime
 
 '''The baseclass for all your models is called db.Model. 
 It's stored on the SQLAlchemy instance you have to create. 
@@ -18,20 +18,20 @@ class Users(db.Model):
 	# __tablename__ = "users" # can specify table name here if needed
 	username = db.Column(db.String(80), primary_key=True, nullable=False) # Column to define a column
 	password = db.Column(db.String(120), nullable=False)
-	# registered_on = db.Column(db.DateTime, nullable=False)
-	# admin = db.Column(db.Boolean, nullable=False, default=False)
-	# confirmed = db.Column(db.Boolean, nullable=False, default=False)
-	# confirmed_on = db.Column(db.DateTime, nullable=True)
+	registered_on = db.Column(db.DateTime, nullable=False)
+	admin = db.Column(db.Boolean, nullable=False, default=False)
+	confirmed = db.Column(db.Boolean, nullable=False, default=False)
+	confirmed_on = db.Column(db.DateTime, nullable=True)
 
-	def __init__(self, username, password):
-	# def __init__(self, username, password, confirmed, paid=False, admin=False, confirmed_on=None):
+	# def __init__(self, username, password):
+	def __init__(self, username, password, confirmed=False, paid=False, admin=False, confirmed_on=None):
 		'''instance attributes'''
 		self.username = username
 		self.password = self.set_password(password)
-        # self.registered_on = datetime.datetime.now()
-        # self.admin = admin
-        # self.confirmed = confirmed
-        # self.confirmed_on = confirmed_on
+		self.registered_on = datetime.datetime.now()
+		self.admin = admin
+		self.confirmed = confirmed
+		self.confirmed_on = confirmed_on
 
 
 	def __repr__(self):
