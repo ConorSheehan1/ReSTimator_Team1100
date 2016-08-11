@@ -18,6 +18,28 @@ class BaseConfig():
 	# RECAPTCHA_API_SERVER = ? # recaptcha api server
 	RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
+	# main config
+	SECURITY_PASSWORD_SALT = 'salty_salt'
+	BCRYPT_LOG_ROUNDS = 13
+	WTF_CSRF_ENABLED = True
+	DEBUG_TB_ENABLED = False
+	DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+	# mail settings
+	MAIL_DEFAULT_SENDER = 'ucd.restimator@gmail.com'
+	MAIL_SERVER = 'smtp.googlemail.com'
+	MAIL_PORT = 465
+	MAIL_USE_TLS = False
+	MAIL_USE_SSL = True
+
+	# gmail authentication
+	# # firstname = restimator last name= app
+	# MAIL_USERNAME = os.environ['APP_MAIL_USERNAME']
+	# MAIL_PASSWORD = os.environ['APP_MAIL_PASSWORD']
+
+	MAIL_USERNAME = 'ucd.restimator'
+	MAIL_PASSWORD = 'give_it_a_rest'
+
 
 class DevelopmentConfig(BaseConfig):
 	''''''

@@ -3,6 +3,9 @@ from .forms import LoginForm, SignUpForm
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
 from project import db
+from project.token import generate_confirmation_token, confirm_token
+from project.email import send_email
+import datetime
 import sqlalchemy
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates")
@@ -41,11 +44,38 @@ def sign_up():
     form = SignUpForm() # create instance of RegistrationForm
     # flash("Please Register")
     if request.method == "POST" and form.validate_on_submit():
-        user = Users(username=form.username.data, password=form.password.data) 
-        # user = Users(username=form.username.data, password=form.password.data, confirmed=False) 
+        # user = Users(username=form.username.data, password=form.password.data)
+        user = Users(username=form.username.data, password=form.password.data, confirmed=False)
         db.session.add(user)
         db.session.commit()
+
+        token = generate_confirmation_token(user.username)
+        confirm_url = url_for('users.confirm_email', token=token, _external=True)
+        html = render_template('activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.username, subject, html)
+
         login_user(user)
-        flash("Successfully Registered")
+        flash('A confirmation email has been sent. Please check your inbox and spam folder', 'success')
+        # flash("Successfully Registered")
         return redirect(url_for("main.home"))
     return render_template("sign_up.html", pg_name=pg_name, form=form)
+
+
+@users_blueprint.route('/confirm/<token>')
+@login_required
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    user = Users.query.filter_by(username=email).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.confirmed = True
+        user.confirmed_on = datetime.datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('main.home'))

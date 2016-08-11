@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import LoginManager
 from flask.ext.heroku import Heroku
+from flask.ext.mail import Mail
 
 # CONFIGURATION
 app = Flask(__name__) # application object
@@ -13,7 +14,10 @@ app.config.from_object("config.DevelopmentConfig") # read and use config file
 heroku = Heroku(app)
 db = SQLAlchemy(app) # sqlalchemy database object
 app.config['UPLOAD_FOLDER'] = './data/log_data' # This is the path to the upload directory
-app.config['ALLOWED_EXTENSIONS'] = set(['zip', 'xlsx', 'csv']) # These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = {'zip', 'xlsx', 'csv'} # These are the extension that we are accepting to be uploaded
+
+# mail stuff
+mail = Mail(app)
 
 from project.users.views import users_blueprint
 from project.analysis.views import analysis_blueprint

@@ -9,7 +9,9 @@ from project.models import Users
 
 def ucd_email(form, field):
     # only accept emails ending in @ucd.ie
-    if not field.data.endswith('@ucd.ie'):
+    # temporarily break
+    # if not field.data.endswith('@ucd.ie'):
+    if not field.data.endswith('ie'):
         raise ValidationError('Please use a ucd staff email (example@ucd.ie)')
 
 
