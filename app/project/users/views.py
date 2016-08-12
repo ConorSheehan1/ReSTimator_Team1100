@@ -1,9 +1,10 @@
-from flask import Flask, render_template, flash, redirect, url_for, request, Blueprint
+from flask import Flask, render_template, flash, redirect, url_for, request, Blueprint, Response, session, abort
 from .forms import LoginForm, SignUpForm
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
-from project import db
+from project import db, app
 import sqlalchemy
+from flask.ext.principal import Identity, RoleNeed, UserNeed, Permission, identity_changed, identity_loaded
 
 users_blueprint = Blueprint("users", __name__, template_folder="templates")
 
@@ -18,6 +19,8 @@ def login():
         user = Users.query.filter_by(username=request.form["username"]).first()
         if user is not None and user.check_password(form.password.data): 
             login_user(user) # function manages session cookie. User model needs to be updated to allow user to be considered active
+            # Tell Flask-Principal the identity changed
+            identity_changed.send(app, identity=Identity(user.username))
             flash("User %s logged in successfully" % (form.username.data)) # returns a message on next page to user
             return redirect(url_for("main.home")) # redirect tells the client web browser to navigate to a different page
         else:
@@ -30,6 +33,9 @@ def login():
 def logout():
     ''''''
     logout_user() # logs out user and cleans out session cookie
+    # Remove session keys set by Flask-Principal
+    for key in ('identity.name', 'identity.auth_type'):
+        session.pop(key, None)
     flash("User logged out")
     return redirect(url_for("users.login"))
 
