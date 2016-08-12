@@ -1,0 +1,42 @@
+{% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
+{% block content %} <!-- the linked templates have matching block statements named "content" -->
+
+    <h1>Admin Area</h1>
+    <hr />
+    <h2>Add New User</h2>
+
+    <form class="form-horizontal" role="form" action="" method="post" name="add_user">
+        
+		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
+		
+		<div class="form-group">
+			<p>
+				Username: {{ form.username() }}
+				{% for error in form.username.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+			<p>
+				Role: {{ form.role() }}
+				{% for error in form.role.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+            <p>
+				Password: {{ form.password() }}
+				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+            <p>
+				Repeat Password: {{ form.confirm() }}
+				{% for error in form.confirm.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+					<span style="color: red;">* {{ error }}</span>
+				{% endfor %}<br>
+			</p>
+		</div>
+
+		<p><input type="submit" value="Submit" class="btn btn-primary"></p>
+	</form>
+        
+{% endblock %}

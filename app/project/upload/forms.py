@@ -2,9 +2,10 @@ from project import db
 from project.models import Location, Module
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import SelectField, StringField, IntegerField, validators
+from wtforms import SelectField, StringField, IntegerField, PasswordField, validators
 # from wtforms.validators import DataRequired
 from wtforms.fields.html5 import DateField
+from project.users.forms import ucd_email, already_signed_up
 
 class UploadForm(Form):
     upload = FileField('file', validators=[
@@ -36,4 +37,9 @@ class LocationForm(Form):
     building = StringField('Building', [validators.DataRequired()])
     room = StringField('Room', [validators.DataRequired()])
     capacity = IntegerField('Capacity', [validators.DataRequired()])
-    
+
+class AddUserForm(Form):
+    username = StringField('Email Address', [validators.DataRequired(), validators.Email(), ucd_email, already_signed_up])
+    role = SelectField("Role", [validators.DataRequired()], choices = [("normal", "Normal"), ("admin", "Admin")])
+    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords need to match')])
+    confirm = PasswordField('Repeat Password')

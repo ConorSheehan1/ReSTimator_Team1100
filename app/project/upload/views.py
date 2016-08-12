@@ -1,10 +1,9 @@
 from flask import render_template, flash, redirect, request, Blueprint
-from .forms import UploadForm, GTForm, ModuleForm, LocationForm
+from .forms import UploadForm, GTForm, ModuleForm, LocationForm, AddUserForm
 from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
-from project import db
-from project import app
+from project import db, app, admin_permission, normal_permission
 from project.models import *
 from sqlalchemy import exists
 from legacy_into_db import legacy
@@ -14,6 +13,7 @@ upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
 
 @upload_blueprint.route("/admin", methods=["GET", "POST"])
 @login_required
+@admin_permission.require(http_exception=403)
 def admin_options():
     '''Administrator options view'''
     
@@ -22,6 +22,7 @@ def admin_options():
 
 @upload_blueprint.route("/upload", methods=["GET", "POST"])
 @login_required
+@admin_permission.require(http_exception=403)
 def upload():
     """Upload view"""
     
@@ -80,6 +81,7 @@ def upload_GT():
     if request.method == "POST" and form.validate_on_submit():
         # get date in same format as date in database
         date = form.date.data
+        date = date[6:] + date[2:6] + date[0:2]
         occupancy = float(form.occupancy.data)
         # Check if row already exists in database
         q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data)
@@ -99,6 +101,7 @@ def upload_GT():
 
 @upload_blueprint.route("/add_module", methods=["GET", "POST"])
 @login_required
+@admin_permission.require(http_exception=403)
 def add_module():
     '''Administrator add module information view'''
     
@@ -123,6 +126,7 @@ def add_module():
 
 @upload_blueprint.route("/add_location", methods=["GET", "POST"])
 @login_required
+@admin_permission.require(http_exception=403)
 def add_location():
     '''Administrator add location information view'''
     
@@ -145,3 +149,19 @@ def add_location():
             flash('Your data has already been recorded. Please check that you selected the correct information for \
             Campus, Building, and Room.')
     return render_template("add_location.html", pg_name=pg_name, form=form)
+
+@upload_blueprint.route("/add_user", methods=["GET", "POST"])
+@login_required
+@admin_permission.require(http_exception=403)
+def add_user():
+    '''Add user view'''
+    pg_name = "Add User"
+    form = AddUserForm() # create instance of RegistrationForm
+    # flash("Please Register")
+    if request.method == "POST" and form.validate_on_submit():
+        user = Users(username=form.username.data, password=form.password.data, role=form.role.data) 
+        # user = Users(username=form.username.data, password=form.password.data, confirmed=False) 
+        db.session.add(user)
+        db.session.commit()
+        flash("Successfully Registered New User")
+    return render_template("add_user.html", pg_name=pg_name, form=form)

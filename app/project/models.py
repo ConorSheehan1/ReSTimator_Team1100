@@ -18,16 +18,18 @@ class Users(db.Model):
 	# __tablename__ = "users" # can specify table name here if needed
 	username = db.Column(db.String(80), primary_key=True, nullable=False) # Column to define a column
 	password = db.Column(db.String(120), nullable=False)
+	role = db.Column(db.String(8), nullable=False)
 	# registered_on = db.Column(db.DateTime, nullable=False)
 	# admin = db.Column(db.Boolean, nullable=False, default=False)
 	# confirmed = db.Column(db.Boolean, nullable=False, default=False)
 	# confirmed_on = db.Column(db.DateTime, nullable=True)
 
-	def __init__(self, username, password):
+	def __init__(self, username, password, role='normal'):
 	# def __init__(self, username, password, confirmed, paid=False, admin=False, confirmed_on=None):
 		'''instance attributes'''
 		self.username = username
 		self.password = self.set_password(password)
+		self.role = role
         # self.registered_on = datetime.datetime.now()
         # self.admin = admin
         # self.confirmed = confirmed
