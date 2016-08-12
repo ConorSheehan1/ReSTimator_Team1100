@@ -63,7 +63,7 @@ def upload():
                 # Add to database
                 legacy()
                 # Do analysis for results table
-                analysis("../../project/sample.db")
+                analysis()
                 flash('Uploaded ' + filename)
             else:
                 flash('File must be .csv or .zip')

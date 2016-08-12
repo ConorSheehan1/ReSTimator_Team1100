@@ -2,14 +2,18 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import calendar
+from project.models import Occupy, Module, Location
+from project import db
 
-def occupy_df(conn):
+def occupy_df():
 	'''Input: database connection
 
 	Output: occupy dataframe
 	'''
 	# Set up occupy table (Part 1)
-	df_occupy_1 = pd.read_sql(sql="SELECT room, date, time, associated_client_count, authenticated_client_count FROM occupy", con=conn)
+	query_occ_1 = db.session.query(Occupy.room, Occupy.date, Occupy.time, Occupy.associated_client_count, Occupy.authenticated_client_count)
+	c = query_occ_1.statement.compile(query_occ_1.session.bind)
+	df_occupy_1 = pd.read_sql(c.string, query_occ_1.session.bind, params=c.params)
 	# Condition 1: time between 9:00 and 17:00
 	df_occupy_1["condition1"] = df_occupy_1["time"].apply(lambda x: "true" if 16 >= int(x[0:2]) >= 9 else "false")
 	df_occupy_1 = df_occupy_1[df_occupy_1["condition1"] == "true"]
@@ -23,7 +27,9 @@ def occupy_df(conn):
 	del df_occupy_1["condition2"]
 
 	# Set up occupy table (Part 2)
-	df_occupy_2 = pd.read_sql(sql="SELECT room, date, time, module_code, occupancy FROM occupy", con=conn)
+	query_occ_2 = db.session.query(Occupy.room, Occupy.date, Occupy.time, Occupy.module_code, Occupy.occupancy)
+	c = query_occ_2.statement.compile(query_occ_2.session.bind)
+	df_occupy_2 = pd.read_sql(c.string, query_occ_2.session.bind, params=c.params)
 
 	# Merge occupy tables
 	df_occupy_merge = pd.merge(left = df_occupy_1, right = df_occupy_2, how="outer", on=["room", "date", "time"])
@@ -32,23 +38,28 @@ def occupy_df(conn):
 	df_occupy = df_occupy_merge.groupby(["room", "date", "time", "module_code"], as_index=False).mean() # df with average auth / assoc client counts
 	df_occupy = df_occupy.dropna() # drop rows without both client count and ground truth
 
-	# close db connection
 	return df_occupy
 
-def module_df(conn):
+def module_df():
 	'''Input: database connection
 
 	Output: module dataframe
 	'''
-	df_module = pd.read_sql(sql="SELECT * FROM module", con=conn)
+	query_mod = db.session.query(Module)
+	c = query_mod.statement.compile(query_mod.session.bind)
+	df_module = pd.read_sql(c.string, query_mod.session.bind, params=c.params)
 	return df_module
 
-def location_df(conn):
+# def location_df(conn):
+def location_df():
 	'''Input: database connection
 
 	Output: location dataframe
 	'''
-	df_location = pd.read_sql(sql="SELECT * FROM location", con=conn)
+	# df_location = pd.read_sql(sql="SELECT * FROM location", con=conn)
+	query_loc = db.session.query(Location)
+	c = query_loc.statement.compile(query_loc.session.bind)
+	df_location = pd.read_sql(c.string, query_loc.session.bind, params=c.params)
 	return df_location
 
 def get_day(date_string):
@@ -72,12 +83,13 @@ def convert_perc_int(df):
     df["occupancy"] = df["occupancy"].astype(int)
     return df
 
-def abt(conn, normal=True, convert=False):
+# def abt(conn, normal=True, convert=False):
+def abt(normal=True, convert=False):
 	'''Construct ABT'''
 	# create dfs
-	df_occupy = occupy_df(conn) 
-	df_module = module_df(conn)
-	df_location = location_df(conn)
+	df_occupy = occupy_df() 
+	df_module = module_df()
+	df_location = location_df()
 	# merge dfs
 	df_abt = pd.merge(left = df_occupy, right = df_module, how="outer", on=["module_code"]) 
 	df_abt = pd.merge(left = df_abt, right = df_location, how="outer", on=["room"]) 
@@ -101,7 +113,4 @@ def abt(conn, normal=True, convert=False):
 	if convert:
 		df_abt = convert_perc_int(df_abt)
 
-
 	return df_abt
-
-
