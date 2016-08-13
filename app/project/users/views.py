@@ -56,7 +56,7 @@ def sign_up():
         send_email(user.username, subject, html)
 
         login_user(user)
-        flash('A confirmation email has been sent. Please check your inbox and spam folder', 'success')
+        flash('A confirmation email has been sent. Please check your inbox', 'success')
         # flash("Successfully Registered")
         return redirect(url_for("main.home"))
     return render_template("sign_up.html", pg_name=pg_name, form=form)

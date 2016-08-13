@@ -2,16 +2,15 @@
 from flask_wtf import Form, RecaptchaField
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from project import db
+from project import db, app
 from project.models import Users
+from flask import render_template
 # validator, a function that can be attached to a field to perform validation on the data submitted by the user.
 
 
 def ucd_email(form, field):
-    # only accept emails ending in @ucd.ie
-    # temporarily break
     # if not field.data.endswith('@ucd.ie'):
-    if not field.data.endswith('ie'):
+    if not field.data.endswith(app.config["ACCEPTABLE_SUFFIX"]):
         raise ValidationError('Please use a ucd staff email (example@ucd.ie)')
 
 
@@ -19,11 +18,20 @@ def already_signed_up(form, field):
     # if the email is already in the database raise an exception
     # is not doesn't work for some reason so use !=[]
     if db.session.query(Users).filter(Users.username == field.data).all() !=[]:
-        raise ValidationError('This email is already signed up')
+        raise ValidationError('This email is already signed up.')
+
+
+def verified(form, field):
+    # if email is not in db
+    if not db.session.query(Users).filter(Users.username == field.data).first():
+        raise ValidationError("Please register your email using the sign up page")
+    # if email is not confirmed
+    elif not db.session.query(Users).filter(Users.username == field.data).first().confirmed:
+        raise ValidationError("Please verify your email")
 
 
 class LoginForm(Form):
-    username = StringField('Username', validators=[DataRequired(), Email(), ucd_email])
+    username = StringField('Username', validators=[DataRequired(), Email(), ucd_email, verified])
     # Required validator checks that the field is not submitted empty.
     # There are many more validators included with Flask-WTF
     password = PasswordField('Password', validators=[DataRequired()])

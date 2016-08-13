@@ -46,11 +46,15 @@ class DevelopmentConfig(BaseConfig):
 	DEBUG = True
 	# SQLALCHEMY_ECHO = True
 
+	ACCEPTABLE_SUFFIX = ".ie"
+
 
 class TestingConfig(BaseConfig):
 	''''''
 	DEBUG = True
 	TESTING = True
 	WTF_CSRF_ENABLED = False
+
+	ACCEPTABLE_SUFFIX = "@ucd.ie"
 
 # class ProductionConfig(BaseConfig):
