@@ -6,8 +6,9 @@ from project.models import *
 db.create_all() # initializes db based on the schema in the tables.py file
 
 # User Table Testing
-user1 = Users(username="admin@ucd.ie", password="admin", role='admin')
-user2 = Users(username="lecturer@ucd.ie", password="lecturer")
+user1 = Users(username="admin@ucd.ie", password="admin", confirmed=True, role='admin')
+user2 = Users(username="lecturer@ucd.ie", password="lecturer", confirmed=True)
+
 # user = Users(username= "admin@ucd.ie", password="admin", admin=True, confirmed=True, confirmed_on=datetime.datetime.now())
 db.session.add(user1)
 db.session.add(user2)

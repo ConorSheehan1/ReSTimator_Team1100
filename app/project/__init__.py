@@ -3,7 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.login import LoginManager, current_user
 from flask.ext.heroku import Heroku
+from flask.ext.mail import Mail
 from flask.ext.principal import Identity, Principal, RoleNeed, UserNeed, Permission, identity_changed, identity_loaded
+
 
 # CONFIGURATION
 app = Flask(__name__) # application object
@@ -22,7 +24,10 @@ admin_permission = Permission(admin_role)
 Principal(app)
 
 app.config['UPLOAD_FOLDER'] = './data/log_data' # This is the path to the upload directory
-app.config['ALLOWED_EXTENSIONS'] = set(['zip', 'xlsx', 'csv']) # These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = {'zip', 'xlsx', 'csv'} # These are the extension that we are accepting to be uploaded
+
+# mail stuff
+mail = Mail(app)
 
 from project.users.views import users_blueprint
 from project.analysis.views import analysis_blueprint
@@ -47,19 +52,19 @@ def load_user(user_id):
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
 	# Set the identity user object
-    identity.user = current_user
+	identity.user = current_user
 
-    # Add the UserNeed to the identity
-    if hasattr(current_user, 'username'):
-        identity.provides.add(UserNeed(current_user.username))
+	# Add the UserNeed to the identity
+	if hasattr(current_user, 'username'):
+		identity.provides.add(UserNeed(current_user.username))
 
-    # Assuming the User model has a list of roles, update the
-    # identity with the roles that the user provides
-    if current_user.role == 'admin':
-    	identity.provides.add(normal_role)
-    	identity.provides.add(admin_role)
-    else:
-        identity.provides.add(normal_role)
+	# Assuming the User model has a list of roles, update the
+	# identity with the roles that the user provides
+	if current_user.role == 'admin':
+		identity.provides.add(normal_role)
+		identity.provides.add(admin_role)
+	else:
+		identity.provides.add(normal_role)
     
 @app.errorhandler(403)
 def need_permission(e):
