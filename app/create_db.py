@@ -6,7 +6,7 @@ from project.models import *
 db.create_all() # initializes db based on the schema in the tables.py file
 
 # User Table Testing
-user = Users(username="admin@ucd.ie", password="admin")
+user = Users(username="admin@ucd.ie", password="admin", confirmed=True, admin=True)
 # user = Users(username= "admin@ucd.ie", password="admin", admin=True, confirmed=True, confirmed_on=datetime.datetime.now())
 db.session.add(user)
 db.session.commit()
