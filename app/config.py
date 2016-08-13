@@ -14,9 +14,12 @@ class BaseConfig():
 
 	SECRET_KEY = "\xc6\xbb\x98e3\xc7W\xe8\x81\xe3\xcfB\xb0*g^\xca\xfe\x19\x92\x8e\xd2#\x02" # used to create a cryptographic token to validate form
 
-	RECAPTCHA_PUBLIC_KEY = '6LeYIbsSAAAAACRPIllxA7wvXjIE411PfdB2gt2J'
-	RECAPTCHA_PRIVATE_KEY = '6LeYIbsSAAAAAJezaIq3Ft_hSTo0YtyeFG-JgRtu'
+	# RECAPTCHA_PUBLIC_KEY = '6LeYIbsSAAAAACRPIllxA7wvXjIE411PfdB2gt2J'
+	# RECAPTCHA_PRIVATE_KEY = '6LeYIbsSAAAAAJezaIq3Ft_hSTo0YtyeFG-JgRtu'
 	# RECAPTCHA_API_SERVER = ? # recaptcha api server
+
+	RECAPTCHA_PUBLIC_KEY = '6LdXiycTAAAAACbhoxsHDKqVD57LW51bmvssm2CZ'
+	RECAPTCHA_PRIVATE_KEY = '6LdXiycTAAAAAHka12ZKw6TPTeE4edUZJ2VkQHvB'
 	RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
 	# main config
