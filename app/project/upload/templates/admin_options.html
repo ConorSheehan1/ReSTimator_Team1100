@@ -1,4 +1,5 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
+
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
     <h1>Admin Area</h1>
@@ -8,5 +9,6 @@
     <p><a href="{{ url_for('upload.upload') }}"><img class="adminicon" src="/static/images/wifiicon.png" alt="Wifi Icon">Upload WiFi Data</a></p>
     <p><a href="{{ url_for('upload.add_location') }}"><img class="adminicon" src="/static/images/locationicon.png" alt="Location Icon">Add Location Information</a></p>
     <p><a href="{{ url_for('upload.add_module') }}"><img class="adminicon" src="/static/images/moduleicon.png" alt="Module Icon">Add Module Information</a></p>
+    <p><a href="{{ url_for('upload.add_user') }}"><img class="adminicon" src="/static/images/moduleicon.png" alt="User Icon">Add New User</a></p>
         
 {% endblock %}

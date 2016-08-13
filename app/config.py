@@ -8,6 +8,7 @@ class BaseConfig():
 	DEBUG = False # debugger and helpful for auto reload when changes are made to the code
 
 	SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "project/sample.db") # sqlite db location
+	# SQLALCHEMY_DATABASE_URI = "postgresql://yourusername:yourpassword@localhost/yournewdb"
 
 	SQLALCHEMY_TRACK_MODIFICATIONS = False # disabled for the time being
 

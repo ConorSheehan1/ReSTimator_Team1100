@@ -2,7 +2,6 @@ from project import db
 from project.models import Results
 from project.analysis.data_analysis import *
 import pandas as pd
-import sqlite3
 import numpy as np
 import pickle
     
@@ -15,17 +14,13 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
-def analysis(path = "./project/sample.db"):
-    conn = sqlite3.connect(path) # db connection
+def analysis():
     # ABTs for each model
-    df_lr = abt(conn).copy() # y: occupancy number, X: auth. client count
-    df_log = abt(conn, normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
-    df_gnb = abt(conn, normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
-    df_knn = abt(conn, normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
-    df_svm = abt(conn, normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
-    
-    conn.close() # close db connection
-    
+    df_lr = abt().copy() # y: occupancy number, X: auth. client count
+    df_log = abt(normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
+    df_gnb = abt(normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
+    df_knn = abt(normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
+    df_svm = abt(normal=False, convert=True).copy() # y: occupancy category, X: auth. client count
     
     ##### Model 1: Simple Linear Regression #####
     lr = LinearRegression()
