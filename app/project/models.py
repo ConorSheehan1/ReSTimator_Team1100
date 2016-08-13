@@ -69,12 +69,14 @@ class Users(db.Model):
 
 class Results(db.Model):
 	'''Database object'''
+	abt = db.Column(db.PickleType)
 	model_type = db.Column(db.String(10), primary_key=True)
 	model = db.Column(db.PickleType)
 	accuracy = db.Column(db.String(200))
 
-	def __init__(self, model_type, model, accuracy):
+	def __init__(self, abt, model_type, model, accuracy):
 		'''instance attributes'''
+		self.abt = abt
 		self.model_type = model_type
 		self.model = model
 		self.accuracy = accuracy
