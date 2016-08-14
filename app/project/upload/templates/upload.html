@@ -10,13 +10,13 @@
 		
 		<div class="form-group">
             Please select a file to upload:
-			<input type="file" name="file"><br /><br />
+			{{ form.upload }}
+			{% for error in form.upload.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
+				<span style="color: red;">* {{ error }}</span>
+			{% endfor %}<br>
 		</div>
 
 		<p><input type="submit" value="Upload" class="btn btn-primary"></p>
 	</form>
-<!--    {% if filename != "" %}-->
-<!--        <p>Uploaded {{ filename }}</p>-->
-<!--	{% endif %}-->
         
 {% endblock %}

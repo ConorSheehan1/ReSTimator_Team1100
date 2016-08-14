@@ -10,9 +10,16 @@ from project import db # import database object
 from project.models import *
 import sqlalchemy
 import pandas as pd
+from flask import flash
 
 
-def update_db(df, table):
+def update_db(df, table, gt=False):
+    """
+    Updates the database with user data.
+    
+    gt is whether or not the user is inputting a single row of ground truth data
+    """
+    
     # get list of primary key(s)
     pk_list = [key.name for key in sqlalchemy.inspect(table).primary_key]
     print("primary keys:", pk_list, "\n")
@@ -36,6 +43,8 @@ def update_db(df, table):
             for value in pk_list:
                 print("", row[value], end="")
             print("\n")
+            if gt:
+                flash("Thank you. Your data has been recorded.")
         except sqlalchemy.exc.IntegrityError:
             # remove staged changes which caused integrity error
             db.session.rollback()
@@ -69,6 +78,9 @@ def update_db(df, table):
                 for value in pk_list:
                     print("", row[value], end="")
                 print("\n")
+                if gt:
+                    flash("Your data has already been recorded. Please check that you selected the correct \
+                    information for Room, Date and Time.")
                 continue
 
             # update attributes of sqlalchemy object to be committed
@@ -82,6 +94,8 @@ def update_db(df, table):
             for value in pk_list:
                 print("", row[value], end="")
             print("\n")
+            if gt:
+                flash("Thank you. Your data has been recorded.")
 
 if __name__ == "__main__":
     # # --WIFI LOGS---
