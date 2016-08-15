@@ -10,10 +10,33 @@
         } );
     </script>
 
+	<style>
+	    ul {
+	        list-style:disc;
+	        margin-left: 20px;
+	    }
+	    
+	    input {
+	    	margin-right: 15px;
+	    }
+	</style>
+
     <h1>Input Occupancy Information</h1>
     <hr />
-
-	<form class="form-horizontal" role="form" action="" method="post" name="add_occupancy">
+    <h2><span style="color: red;">Are you sure?</span></h2>
+	<p>Data already exists for room {{ old_row.room }} at {{ old_row.time }} on {{ date }}.</p>
+	<strong>Existing Data:</strong><br />
+	<ul>
+		<li>Room: {{ old_row.room }}</li>
+		<li>Date: {{ date }}</li>
+		<li>Time: {{ old_row.time }}</li>
+		<li>Module Code: {{ old_row.module_code }}</li>
+		<li>Occupancy: {{ old_row.occupancy }}</li>
+	</ul>
+	
+	<h2>Please Confirm Your Choices:</h2>
+	
+	<form class="form-horizontal" role="form" action="" method="post" name="confirm">
         
 		{{ form.hidden_tag() }} <!-- template arg replaced with hidden field that implements the CSRF prevention -->
 		
@@ -49,8 +72,11 @@
 				{% endfor %}<br>
 			</p>
 		</div>
-
-		<p><input type="submit" name="button" value="Submit" class="btn btn-primary"></p>
+		
+		<p><input type="submit" name="button" value="Confirm" class="btn btn-primary"></p>
+		
 	</form>
+	
+	
         
 {% endblock %}

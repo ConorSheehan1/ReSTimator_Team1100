@@ -79,8 +79,7 @@ def update_db(df, table, gt=False):
                     print("", row[value], end="")
                 print("\n")
                 if gt:
-                    flash("Your data has already been recorded. Please check that you selected the correct \
-                    information for Room, Date and Time.")
+                    flash("Your data has already been recorded. Please check that you selected the correct information.")
                 continue
 
             # update attributes of sqlalchemy object to be committed
