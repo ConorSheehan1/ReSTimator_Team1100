@@ -33,7 +33,6 @@ def convert_to_nested_dict(obj):
 
 @main_blueprint.route("/")
 @main_blueprint.route("/home", methods=["GET", "POST"])
-@login_required
 def home():
     '''home view'''
     pg_name = "Home" 
