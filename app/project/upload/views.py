@@ -8,6 +8,8 @@ from project.models import *
 from sqlalchemy import exists
 from legacy_into_db import legacy
 from analysis import analysis
+from update_db import update_db
+import pandas as pd
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
 
@@ -28,46 +30,17 @@ def upload():
     
     pg_name = "Upload"
     form = UploadForm()
-#     filename = ""
-#     print("test1")
-#     if request.method == "POST" and form.validate_on_submit():
-#         print('test2')
-#         print(form.upload)
-#         print(request.files['file'].filename)
-#         filename = secure_filename(form.upload.data.filename)
-#         print(filename, app.config['UPLOAD_FOLDER'])
-#         form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#         image_data = request.FILES[form.image.name].read()
-#         open(os.path.join(UPLOAD_PATH, form.image.data), 'w').write(image_data)
-#     return render_template('upload.html', pg_name=pg_name, form=form, filename=filename)
-    # For a given file, return whether it's an allowed type or not
-    def allowed_file(filename):
-        return '.' in filename and \
-            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-
-    filename = ''
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No file selected. Please select a file to upload.')
-            return redirect(request.url)
-        if file:
-            if allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                # Add to database
-                legacy()
-                # Do analysis for results table
-                analysis()
-                flash('Uploaded ' + filename)
-            else:
-                flash('File must be .csv or .zip')
+    filename = ""
+    
+    if request.method == "POST" and form.validate_on_submit():
+        filename = secure_filename(form.upload.data.filename)
+        form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        # add to the database
+        legacy()
+        # do analysis for results table
+        analysis()
+        flash("Uploaded " + filename)
     return render_template("upload.html", pg_name=pg_name, form=form)
 
 @upload_blueprint.route("/add_occupancy", methods=["GET", "POST"])
@@ -83,20 +56,29 @@ def upload_GT():
         date = form.date.data
         date = date[6:] + date[2:6] + date[0:2]
         occupancy = float(form.occupancy.data)
+        
+        # make a dictionary of new data to be put into database. Need to have variables in lists for creating df.
+        # (http://stackoverflow.com/questions/17839973/construct-pandas-dataframe-from-values-in-variables)
+        new_data = {'room':[form.room.data], 'date':[date], 'time':[form.time.data], 'occupancy':[occupancy],
+                'module_code':[form.module_code.data]}
+        new_data_df = pd.DataFrame.from_dict(new_data)
+        update_db(new_data_df, Occupy, True)
+        
+        # IN CASE WE DON'T WANT TO BE ABLE TO EDIT OCCUPANCY INFO
         # Check if row already exists in database
-        q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data)
-        (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
-        if not already_exists:
+#         q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data, occupancy != None, module_code != None)
+#         (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
+#         if not already_exists:
             # prepare SQLAlchemy statement
-            row = Occupy(room = form.room.data, date = date, time = form.time.data, occupancy = occupancy,
-                         module_code = form.module_code.data, associated_client_count = None, authenticated_client_count = None)
-            db.session.add(row)
-            db.session.commit() # committing data to database
-            print('row added')
-            flash('Thank you! Your data has been recorded.')
-        else:
-            print('row already exists')
-            flash('Your data has already been recorded. Please check that you selected the correct information for Room, Date and Time.')
+#             row = Occupy(room = form.room.data, date = date, time = form.time.data, occupancy = occupancy,
+#                          module_code = form.module_code.data, associated_client_count = None, authenticated_client_count = None)
+#             db.session.add(row)
+#             db.session.commit() # committing data to database
+#             print('row added')
+#             flash('Thank you! Your data has been recorded.')
+#         else:
+#             print('row already exists')
+#             flash('Your data has already been recorded. Please check that you selected the correct information for Room, Date and Time.')
     return render_template("add_occupancy.html", pg_name=pg_name, form=form)
 
 @upload_blueprint.route("/add_module", methods=["GET", "POST"])

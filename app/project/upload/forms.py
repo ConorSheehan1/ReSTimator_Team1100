@@ -9,8 +9,8 @@ from project.users.forms import ucd_email, already_signed_up
 
 class UploadForm(Form):
     upload = FileField('file', validators=[
-#         FileRequired('Please select a file to upload'),
-        FileAllowed(['txt', 'csv', 'xlsx'], 'File type not allowed')
+        FileRequired('You have not selected a file to upload. Please select a file.'),
+        FileAllowed(['zip', 'csv', 'xlsx'], 'File type not allowed')
     ])
     
 class GTForm(Form):
