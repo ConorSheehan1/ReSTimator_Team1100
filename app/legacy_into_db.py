@@ -1,13 +1,12 @@
 from data import *
 import sqlite3
-from app.update_db import update_db
-from project.models import *
-from data.extract_legacy import *
-from project import db
+# from app.update_db import update_db
+# from project.models import *
+# from data.extract_legacy import *
+# from project import db
+
 
 def legacy():
-	path_cd = os.path.dirname(os.path.abspath(__file__))
-
 	try:
 		df_mod = extract(path_legacy_xl, "modules")
 		populate_db(df_mod, "module", path_db)
@@ -36,14 +35,8 @@ def legacy():
 		df_merge = pd.merge(left=df_gt, right=df_logs, how="outer", on=["room", "date", "time"])
 		populate_db(df_merge, "occupy", path_db)
 		delete_csvs(path_logs)
-
 	except sqlite3.IntegrityError:
 		print("Constraint Error: occupy table")
-		try:
-			update_db(db, df_logs, Occupy)
-			delete_csvs(path_logs)
-		except:
-			print("Could not update db")
 	except sqlite3.OperationalError:
 		print("Unable to open database")
 	except KeyError:

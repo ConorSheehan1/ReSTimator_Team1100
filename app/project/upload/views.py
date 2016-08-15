@@ -71,7 +71,7 @@ def upload_GT():
             return render_template("confirm.html", pg_name=pg_name, old_row=old_row, date=form.date.data,
                                    module_code=form.module_code.data, occupancy=form.occupancy.data, form=form)
             
-        update_db(new_data_df, Occupy, True)
+        update_db(db, new_data_df, Occupy, True)
 
     if request.method == "POST" and form.validate_on_submit() and request.form['button']=="Confirm":
         print('Confirmed')
@@ -83,7 +83,7 @@ def upload_GT():
         new_data = {'room':[form.room.data], 'date':[date], 'time':[form.time.data], 'occupancy':[occupancy],
                 'module_code':[form.module_code.data]}
         new_data_df = pd.DataFrame.from_dict(new_data)
-        update_db(new_data_df, Occupy, True)
+        update_db(db, new_data_df, Occupy, True)
         
     return render_template("add_occupancy.html", pg_name=pg_name, form=form)
 
