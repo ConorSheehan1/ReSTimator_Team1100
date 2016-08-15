@@ -1,5 +1,9 @@
 from data import *
 import sqlite3
+from app.update_db import update_db
+from project.models import *
+from data.extract_legacy import *
+from project import db
 
 def legacy():
 	path_cd = os.path.dirname(os.path.abspath(__file__))
@@ -20,27 +24,28 @@ def legacy():
 		# Extract ground truth
 		df_gt = extract(path_legacy_xl, "ground_truth")
 		df_gt["date"] = df_gt["date"].apply(lambda x: str(x)[:10])
-		print(df_gt["date"])
-		df_gt["time"] = df_gt["time"].apply(lambda x: x.strftime("%H:%M")) # format time	
+		print("gt:", df_gt["date"])
+		df_gt["time"] = df_gt["time"].apply(lambda x: x.strftime("%H:%M")) # format time
+
 		# Extract log data from csvs
 		extract_csvs(path_logs)
-		df_logs = log_df()
-		print(df_logs["date"])
+		df_logs = log_df(path_logs)
+		print("logs:", df_logs["date"])
+
 		# Combine dfs
-		df_merge = pd.merge(left = df_gt, right = df_logs, how="outer", on=["room", "date", "time"]) 
-		os.chdir(path_cd)
+		df_merge = pd.merge(left=df_gt, right=df_logs, how="outer", on=["room", "date", "time"])
 		populate_db(df_merge, "occupy", path_db)
-		os.chdir(path_logs)
-		delete_zips()
-		delete_csvs()
+		delete_csvs(path_logs)
+
 	except sqlite3.IntegrityError:
 		print("Constraint Error: occupy table")
-		delete_zips()
-		delete_csvs()
+		try:
+			update_db(db, df_logs, Occupy)
+			delete_csvs(path_logs)
+		except:
+			print("Could not update db")
 	except sqlite3.OperationalError:
 		print("Unable to open database")
-		delete_zips()
-		delete_csvs()
 	except KeyError:
 		print("No zip file in directory (or format of csvs has changed)")
 		
