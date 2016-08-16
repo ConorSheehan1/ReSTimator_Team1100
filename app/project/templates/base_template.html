@@ -43,7 +43,15 @@
 			display: inline-block;
 			<!--float: right;-->
 		}
+
+		.navbar-right li a {
+			margin: 0px;
+			padding-left: 10px;
+		}
+
 	}
+
+
 	{% block style %}{% endblock %}
 	</style>
 
@@ -78,6 +86,7 @@
 				    <li><a href="{{ url_for('users.sign_up') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 				    <li><a href="{{ url_for('users.login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 				    <li><a href="{{ url_for('users.logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+					<li><a href="{{ url_for('users.reset') }}"><span class="glyphicon glyphicon-retweet"></span> Reset</a></li>
                 </ul>
             </div>
       </div>

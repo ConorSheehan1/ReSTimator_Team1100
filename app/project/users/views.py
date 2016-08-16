@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, Blueprint, Response, session, abort
-from .forms import LoginForm, SignUpForm
+from .forms import LoginForm, SignUpForm, ResetForm
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
 from project import db, app
@@ -56,7 +56,7 @@ def sign_up():
 
         token = generate_confirmation_token(user.username)
         confirm_url = url_for('users.confirm_email', token=token, _external=True)
-        html = render_template('activate.html', confirm_url=confirm_url)
+        html = render_template('activate_email.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_email(user.username, subject, html)
 
@@ -82,4 +82,35 @@ def confirm_email(token):
         db.session.add(user)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('main.home'))
+
+
+@users_blueprint.route('/reset', methods=["GET", "POST"])
+def reset():
+    pg_name = 'reset'
+    form = ResetForm()
+    if request.method == "POST" and form.validate_on_submit():
+        token = generate_confirmation_token(form.username.data + "..." + form.password.data)
+        confirm_url = url_for('users.reset_email', token=token, _external=True)
+        html = render_template('reset_email.html', confirm_url=confirm_url)
+        subject = "Reset password"
+        send_email(form.username.data, subject, html)
+        flash('A reset link has been sent to your email address. The link will expire in one hour.', 'success')
+    return render_template("reset.html", pg_name=pg_name, form=form)
+
+
+@users_blueprint.route('/reset_password/<token>')
+def reset_password(token):
+    try:
+        data_list = confirm_token(token).split("...")
+        email = data_list[0]
+        password = data_list[1]
+    except:
+        flash('The reset link is invalid or has expired.', 'danger')
+    user = Users.query.filter_by(username=email).first_or_404()
+    user.password = password
+    user.reset_on = datetime.datetime.now()
+    db.session.add(user)
+    db.session.commit()
+    flash('You have reset your password!', 'success')
     return redirect(url_for('main.home'))
