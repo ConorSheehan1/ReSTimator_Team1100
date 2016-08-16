@@ -49,8 +49,8 @@ def sign_up():
     form = SignUpForm() # create instance of RegistrationForm
     # flash("Please Register")
     if request.method == "POST" and form.validate_on_submit():
-        # user = Users(username=form.username.data, password=form.password.data)
-        user = Users(username=form.username.data, password=form.password.data, confirmed=False)
+        # don't need to pass confirmed=False because it's the default
+        user = Users(username=form.username.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
 
@@ -65,6 +65,21 @@ def sign_up():
         # flash("Successfully Registered")
         return redirect(url_for("main.home"))
     return render_template("sign_up.html", pg_name=pg_name, form=form)
+
+
+@users_blueprint.route('/reset', methods=["GET", "POST"])
+def reset():
+    pg_name = 'reset'
+    form = ResetForm()
+    if request.method == "POST" and form.validate_on_submit():
+        token = generate_confirmation_token(form.username.data + "+" + form.password.data)
+        reset_url = url_for('users.reset_password', token=token, _external=True)
+        html = render_template('reset_email.html', reset_url=reset_url)
+        subject = "Reset password"
+        send_email(form.username.data, subject, html)
+
+        flash('A reset link has been sent to your email address. The link will expire in one hour.', 'success')
+    return render_template("reset.html", pg_name=pg_name, form=form)
 
 
 @users_blueprint.route('/confirm/<token>')
@@ -85,32 +100,23 @@ def confirm_email(token):
     return redirect(url_for('main.home'))
 
 
-@users_blueprint.route('/reset', methods=["GET", "POST"])
-def reset():
-    pg_name = 'reset'
-    form = ResetForm()
-    if request.method == "POST" and form.validate_on_submit():
-        token = generate_confirmation_token(form.username.data + "..." + form.password.data)
-        confirm_url = url_for('users.reset_email', token=token, _external=True)
-        html = render_template('reset_email.html', confirm_url=confirm_url)
-        subject = "Reset password"
-        send_email(form.username.data, subject, html)
-        flash('A reset link has been sent to your email address. The link will expire in one hour.', 'success')
-    return render_template("reset.html", pg_name=pg_name, form=form)
-
-
 @users_blueprint.route('/reset_password/<token>')
 def reset_password(token):
     try:
-        data_list = confirm_token(token).split("...")
+        data_string = confirm_token(token)
+        data_list = data_string.split("+")
         email = data_list[0]
         password = data_list[1]
     except:
         flash('The reset link is invalid or has expired.', 'danger')
-    user = Users.query.filter_by(username=email).first_or_404()
-    user.password = password
-    user.reset_on = datetime.datetime.now()
-    db.session.add(user)
-    db.session.commit()
-    flash('You have reset your password!', 'success')
+    try:
+        user = Users.query.filter_by(username=email).first_or_404()
+        user.password = user.set_password(password)
+        # user.reset_on = datetime.datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash('You have reset your password!', 'success')
+        login_user(user)
+    except:
+        flash('Error resetting password', 'danger')
     return redirect(url_for('main.home'))

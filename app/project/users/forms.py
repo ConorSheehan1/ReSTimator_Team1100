@@ -23,7 +23,7 @@ def already_signed_up(form, field):
 
 
 def not_signed_up(form, field):
-    if db.session.query(Users).filter(Users.username == field.data).all():
+    if db.session.query(Users).filter(Users.username == field.data).all() == []:
         raise ValidationError('This email is not signed up yet.')
 
 
