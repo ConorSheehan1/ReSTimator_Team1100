@@ -5,13 +5,7 @@ from werkzeug import secure_filename
 import os
 from project import db, app, admin_permission, normal_permission
 from project.models import *
-<<<<<<< HEAD
-from sqlalchemy import exists
-from analysis import analysis
-from update_db import update_db
-=======
 from .update_db import update_db
->>>>>>> fbfc58a4610d30d74e059c55f052bf5a55d01de7
 import pandas as pd
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
@@ -41,11 +35,7 @@ def upload():
         filename = secure_filename(form.upload.data.filename)
         # save the uploaded file using secure filename
         form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> fbfc58a4610d30d74e059c55f052bf5a55d01de7
         flash("Uploaded " + filename)
     return render_template("upload.html", pg_name=pg_name, form=form)
 
