@@ -8,12 +8,16 @@ from wtforms.fields.html5 import DateField
 from project.users.forms import ucd_email, already_signed_up
 
 class UploadForm(Form):
+    """Form for allowing user to upload files."""
+    
     upload = FileField('file', validators=[
         FileRequired('You have not selected a file to upload. Please select a file.'),
         FileAllowed(['zip', 'csv', 'xlsx'], 'File type not allowed')
     ])
     
 class GTForm(Form):
+    """Form allowing user to add single record of Ground Truth data to database"""
+    
     room = SelectField("Room", [validators.DataRequired()])
     date = StringField('Pick a Date', [validators.DataRequired()])
     time = SelectField("Time", [validators.DataRequired()], choices = [("09:00", "09:00"), ("10:00", "10:00"), ("11:00", "11:00"),
@@ -29,16 +33,22 @@ class GTForm(Form):
         self.module_code.choices = [(i.module_code, i.module_code) for i in db.session.query(Module.module_code).distinct().order_by(Module.module_code)]
     
 class ModuleForm(Form):
+    """Form allowing user to add Module details to database"""
+    
     module = StringField('Module Code', [validators.Length(min=7, max=12)])
     students = IntegerField('Registered Students', [validators.DataRequired()])
     
 class LocationForm(Form):
+    """Form allowing user to add Location details to database"""
+    
     campus = StringField('Campus', [validators.DataRequired()])
     building = StringField('Building', [validators.DataRequired()])
     room = StringField('Room', [validators.DataRequired()])
     capacity = IntegerField('Capacity', [validators.DataRequired()])
 
 class AddUserForm(Form):
+    """Form allowing user to add new user to database"""
+    
     username = StringField('Email Address', [validators.DataRequired(), validators.Email(), ucd_email, already_signed_up])
     role = SelectField("Role", [validators.DataRequired()], choices = [("normal", "Normal"), ("admin", "Admin")])
     password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords need to match')])

@@ -25,7 +25,7 @@
 				{% endfor %}
 			</p>
 			<p class="form-inputs">
-				{{ form.password(placeholder="Password") }}
+				{{ form.password(placeholder="New Password") }}
 				{% for error in form.password.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
 					<span style="color: red;">* {{ error }}</span>
 				{% endfor %}
@@ -37,18 +37,12 @@
 				{% endfor %}
 			</p>
 			<p class="form-inputs">
-				Accept Terms and Conditions: {{ form.accept_terms() }} <a href="http://www.ucd.ie/privacy.htm" target="_blank">UCD Privacy Statement</a>
-				{% for error in form.accept_terms.errors %} <!-- error message: for loop that renders any errors added by the validators attached to field -->
-					<span style="color: red;">* {{ error }}</span>
-				{% endfor %}<br>
-			</p>
-			<p class="form-inputs">
 				{% for error in form.recaptcha.errors %}
 					{{ error }}
 				{% endfor %}
 				{{ form.recaptcha }}
 			</p>			
-			<p class="form-inputs"><input type="submit" value="Register" class="btn btn-default"></p>
+			<p class="form-inputs"><input type="submit" value="Reset" class="btn btn-default"></p>
 		</div>
 	</form>
 {% endblock %}

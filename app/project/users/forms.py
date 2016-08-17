@@ -1,5 +1,6 @@
 # source: http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms 
 from flask_wtf import Form, RecaptchaField
+from flask import redirect, url_for
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from project import db, app
@@ -21,6 +22,11 @@ def already_signed_up(form, field):
         raise ValidationError('This email is already signed up.')
 
 
+def not_signed_up(form, field):
+    if db.session.query(Users).filter(Users.username == field.data).all() == []:
+        raise ValidationError('This email is not signed up yet.')
+
+
 def verified(form, field):
     # if email is not in db
     if not db.session.query(Users).filter(Users.username == field.data).first():
@@ -39,7 +45,16 @@ class LoginForm(Form):
 
 class SignUpForm(Form):
     username = StringField('Email Address', [DataRequired(), Email(), ucd_email, already_signed_up])
-    password = PasswordField('New Password', [DataRequired(), EqualTo('confirm', message='Passwords need to match')])
+    password = PasswordField('Password', [DataRequired(), EqualTo('confirm', message='Passwords need to match')])
     confirm = PasswordField('Repeat Password')
     accept_terms = BooleanField('I accept the terms and conditions', [DataRequired()])
     recaptcha = RecaptchaField()
+
+
+class ResetForm(Form):
+    # need to be verified to reset?
+    username = StringField('Email Address', [DataRequired(), Email(), ucd_email, not_signed_up])
+    password = PasswordField('New Password', [DataRequired(), EqualTo('confirm', message='Passwords need to match')])
+    confirm = PasswordField('Repeat Password')
+    recaptcha = RecaptchaField()
+

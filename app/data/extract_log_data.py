@@ -8,8 +8,13 @@ def convert_month(month_string):
 
     Output: numerical month representation
     '''
-    abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
-    return abbr_to_num[month_string]
+    # abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
+    # return abbr_to_num[month_string]
+    month = list(calendar.month_abbr).index(month_string)
+    if month < 10:
+        return "0" + str(month)
+    return str(list(calendar.month_abbr).index(month_string))
+
 
 def count_bad_lines(path):
     '''Input: file path
@@ -26,32 +31,39 @@ def count_bad_lines(path):
                 count += 1
     return count
 
-def extract_csvs(path):
-    '''Input: path where zip file is
 
+def extract_csvs(path):
+    '''
+    Input: path where zip file is
     Extract zips from master zip and extract csv files from zips
     '''
-    os.chdir(path)
-    for file in glob.glob("*.zip"):
-        zipfile.ZipFile(file).extractall()
+    absolute_path = os.path.abspath(path)
 
-    for file in glob.glob("*.csv.zip"):
-        zipfile.ZipFile(file).extractall()
+    # while there are things in the folder other than csvs
+    while [file for file in glob.glob(path + "*") if file not in glob.glob(path + "*.csv")]:
 
-def delete_csvs():
+        # iterate over every file
+        for file in glob.glob(path + "*"):
+
+            # if the file is a zip, extract and then delete it
+            if file.endswith(".zip"):
+                zipfile.ZipFile(file).extractall(path)
+                os.remove(file)
+
+            # if the file is a directory, move files out of it, then delete it
+            elif os.path.isdir(file):
+                # add / because file is really a directory
+                for sub_file in glob.glob(file + "/*"):
+                    file_name = os.path.basename(sub_file)
+                    shutil.move(sub_file, absolute_path + "/" + file_name)
+                os.rmdir(file)
+
+def delete_csvs(path):
     '''Input: directory containing csvs
 
     Delete csv files
     '''
-    for file in glob.glob("*.csv"):
-        os.remove(file)
-
-def delete_zips():
-    '''Input: directory containing zips
-
-    Delete zip files
-    '''
-    for file in glob.glob("*.zip"):
+    for file in glob.glob(path + "*.csv"):
         os.remove(file)
 
 def format(date_string):
@@ -87,7 +99,7 @@ def log_df(path=""):
     # extract relevant information for db
     df["day"], df["month"], df["month_day"], df["time"], df["GMT"], df["year"] = zip(*df["Event_Time"].apply(lambda x: x.split(" ", 5))) # split out Event_Time column
     df["month"] = df["month"].apply(lambda x: convert_month(x)) # convert month abbreviation into numerical value
-    df["date"] = df[["month_day", "month", "year"]].apply(lambda x: "".join(x.dropna().astype(int).astype(str)), axis=1) # join year, month and date into single value to represent time
+    df["date"] = df[["month_day", "month", "year"]].apply(lambda x: "".join(x.dropna().astype(str)), axis=1) # join year, month and date into single value to represent time
     df["date"] = df["date"].apply(lambda x: format(x))
 
     # delete redundant information
@@ -102,5 +114,4 @@ def log_df(path=""):
 if __name__ == "__main__":
     extract_csvs("./log_data")
     print(log_df())
-    delete_zips()
     delete_csvs()

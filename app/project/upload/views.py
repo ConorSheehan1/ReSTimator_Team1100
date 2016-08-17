@@ -30,16 +30,17 @@ def upload():
     
     pg_name = "Upload"
     form = UploadForm()
-    filename = ""
     
     if request.method == "POST" and form.validate_on_submit():
+        # make sure there are no malicious filenames
         filename = secure_filename(form.upload.data.filename)
+        # save the uploaded file using secure filename
         form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
         # add to the database
-        legacy()
+#         legacy()
         # do analysis for results table
-        analysis()
+#         analysis()
         flash("Uploaded " + filename)
     return render_template("upload.html", pg_name=pg_name, form=form)
 
@@ -50,8 +51,7 @@ def upload_GT():
     
     pg_name = "Input Occupancy Data"
     form = GTForm()
-    
-    if request.method == "POST" and form.validate_on_submit():
+    if request.method == "POST" and form.validate_on_submit() and request.form['button']=="Submit":
         # get date in same format as date in database
         date = form.date.data
         date = date[6:] + date[2:6] + date[0:2]
@@ -62,23 +62,29 @@ def upload_GT():
         new_data = {'room':[form.room.data], 'date':[date], 'time':[form.time.data], 'occupancy':[occupancy],
                 'module_code':[form.module_code.data]}
         new_data_df = pd.DataFrame.from_dict(new_data)
-        update_db(new_data_df, Occupy, True)
         
-        # IN CASE WE DON'T WANT TO BE ABLE TO EDIT OCCUPANCY INFO
         # Check if row already exists in database
-#         q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data, occupancy != None, module_code != None)
-#         (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
-#         if not already_exists:
-            # prepare SQLAlchemy statement
-#             row = Occupy(room = form.room.data, date = date, time = form.time.data, occupancy = occupancy,
-#                          module_code = form.module_code.data, associated_client_count = None, authenticated_client_count = None)
-#             db.session.add(row)
-#             db.session.commit() # committing data to database
-#             print('row added')
-#             flash('Thank you! Your data has been recorded.')
-#         else:
-#             print('row already exists')
-#             flash('Your data has already been recorded. Please check that you selected the correct information for Room, Date and Time.')
+        q = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data)
+        (already_exists, ), = db.session.query(q.exists()).all() # unpacking the list and tuple into the variable
+        if already_exists:
+            [old_row] = Occupy.query.filter_by(room = form.room.data, date = date, time = form.time.data).all()
+            return render_template("confirm.html", pg_name=pg_name, old_row=old_row, date=form.date.data,
+                                   module_code=form.module_code.data, occupancy=form.occupancy.data, form=form)
+            
+        update_db(db, new_data_df, Occupy, True)
+
+    if request.method == "POST" and form.validate_on_submit() and request.form['button']=="Confirm":
+        print('Confirmed')
+        date = form.date.data
+        date = date[6:] + date[2:6] + date[0:2]
+        occupancy = float(form.occupancy.data)
+        
+        # make a dictionary of new data to be put into database. Need to have variables in lists for creating df.
+        new_data = {'room':[form.room.data], 'date':[date], 'time':[form.time.data], 'occupancy':[occupancy],
+                'module_code':[form.module_code.data]}
+        new_data_df = pd.DataFrame.from_dict(new_data)
+        update_db(db, new_data_df, Occupy, True)
+        
     return render_template("add_occupancy.html", pg_name=pg_name, form=form)
 
 @upload_blueprint.route("/add_module", methods=["GET", "POST"])

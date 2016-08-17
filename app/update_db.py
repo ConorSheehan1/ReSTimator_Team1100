@@ -4,16 +4,16 @@ http://stackoverflow.com/questions/270879/efficiently-updating-database-using-sq
 http://docs.sqlalchemy.org/en/latest/orm/session_basics.html
 '''
 
-from data.extract_log_data import *
-from data.extract_legacy import *
-from project import db # import database object
-from project.models import *
+# from data.extract_log_data import *
+# from data.extract_legacy import *
+# from project import db # import database object
+# from project.models import *
 import sqlalchemy
 import pandas as pd
 from flask import flash
 
 
-def update_db(df, table, gt=False):
+def update_db(db, df, table, gt=False):
     """
     Updates the database with user data.
     
@@ -79,8 +79,7 @@ def update_db(df, table, gt=False):
                     print("", row[value], end="")
                 print("\n")
                 if gt:
-                    flash("Your data has already been recorded. Please check that you selected the correct \
-                    information for Room, Date and Time.")
+                    flash("Your data has already been recorded. Please check that you selected the correct information.")
                 continue
 
             # update attributes of sqlalchemy object to be committed

@@ -3,7 +3,7 @@ from .extract_log_data import *
 import os
 
 path_legacy_xl = "./data/legacy_data/legacy_data.xlsx"
-path_logs = "./data/log_data"
+path_logs = "./data/log_data/"
 path_db = "./project/sample.db"
 
 
