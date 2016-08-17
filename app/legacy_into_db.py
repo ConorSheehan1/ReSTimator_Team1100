@@ -29,7 +29,6 @@ def legacy():
 		# Extract log data from csvs
 		extract_csvs(path_logs)
 		df_logs = log_df(path_logs)
-		print("logs:", df_logs["date"])
 
 		# Combine dfs
 		df_merge = pd.merge(left=df_gt, right=df_logs, how="outer", on=["room", "date", "time"])
