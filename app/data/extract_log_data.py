@@ -1,7 +1,6 @@
-import os, zipfile, glob, csv, sqlite3, shutil
+import os, zipfile, glob, shutil
 import pandas as pd
 import calendar
-import datetime
 
 def convert_month(month_string):
     '''Input: abbreviated month name

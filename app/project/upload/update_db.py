@@ -3,13 +3,7 @@ http://stackoverflow.com/questions/16947276/flask-sqlalchemy-iterate-column-valu
 http://stackoverflow.com/questions/270879/efficiently-updating-database-using-sqlalchemy-orm
 http://docs.sqlalchemy.org/en/latest/orm/session_basics.html
 '''
-
-# from data.extract_log_data import *
-# from data.extract_legacy import *
-# from project import db # import database object
-# from project.models import *
 import sqlalchemy
-import pandas as pd
 from flask import flash
 
 
