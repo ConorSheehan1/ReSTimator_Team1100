@@ -32,11 +32,14 @@ class BaseConfig():
 	# gmail authentication
 	MAIL_USERNAME = 'ucd.restimator'
 	MAIL_PASSWORD = 'give_it_a_rest'
+	
+	# path to the upload directory
+	UPLOAD_FOLDER = './data/log_data'
 
 class DevelopmentConfig(BaseConfig):
 	''''''
 	DEBUG = True
-	SQLALCHEMY_ECHO = True
+	# SQLALCHEMY_ECHO = True
 	ACCEPTABLE_SUFFIX = ".ie"
 
 class TestingConfig(BaseConfig):

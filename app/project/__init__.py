@@ -23,9 +23,6 @@ admin_role = RoleNeed('admin')
 admin_permission = Permission(admin_role)
 Principal(app)
 
-app.config['UPLOAD_FOLDER'] = './data/log_data' # This is the path to the upload directory
-app.config['ALLOWED_EXTENSIONS'] = {'zip', 'xlsx', 'csv'} # These are the extension that we are accepting to be uploaded
-
 # mail stuff
 mail = Mail(app)
 
