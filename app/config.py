@@ -1,5 +1,6 @@
 import os 
 
+
 class BaseConfig():
 	''''''
 	basedir = os.path.abspath(os.path.dirname(__file__))
@@ -33,11 +34,13 @@ class BaseConfig():
 	MAIL_USERNAME = 'ucd.restimator'
 	MAIL_PASSWORD = 'give_it_a_rest'
 
+
 class DevelopmentConfig(BaseConfig):
 	''''''
 	DEBUG = True
 	SQLALCHEMY_ECHO = True
 	ACCEPTABLE_SUFFIX = ".ie"
+
 
 class TestingConfig(BaseConfig):
 	''''''
@@ -45,6 +48,7 @@ class TestingConfig(BaseConfig):
 	TESTING = True
 	WTF_CSRF_ENABLED = False
 	ACCEPTABLE_SUFFIX = "@ucd.ie"
+
 
 class ProductionConfig(BaseConfig):
 	''''''

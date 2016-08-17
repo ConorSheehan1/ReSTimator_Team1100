@@ -9,7 +9,6 @@ http://docs.sqlalchemy.org/en/latest/orm/session_basics.html
 # from project import db # import database object
 # from project.models import *
 import sqlalchemy
-import pandas as pd
 from flask import flash
 
 

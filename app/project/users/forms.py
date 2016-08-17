@@ -1,11 +1,9 @@
 # source: http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms 
 from flask_wtf import Form, RecaptchaField
-from flask import redirect, url_for
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from project import db, app
 from project.models import Users
-from flask import render_template
 # validator, a function that can be attached to a field to perform validation on the data submitted by the user.
 
 

@@ -2,9 +2,6 @@ from flask import render_template, Blueprint, jsonify
 from flask.ext.login import login_required
 from project import db
 from project.models import *
-# from werkzeug import secure_filename
-# from .upload import UploadForm
-# from project import app
 
 # values accessable by all pages
 main_blueprint = Blueprint("main", __name__, template_folder="templates")
@@ -54,12 +51,6 @@ def api():
 @main_blueprint.route("/api/<table_name>", methods=["GET", "POST"])
 @login_required
 def api_results(table_name):
-    # if table_name not in list_of_tables:
-    #     error = ["We didn't recognise that table name.", "Please try one of these:"]
-    #     return render_template('404.html', pg_name="error", error=error, list_of_tables=list_of_tables), 404
-
-    # table_name = table_name[0].upper() + table_name[1:]
-    # table = exec("%s" % table_name)
 
     if table_name == "location":
         table = Location
@@ -72,10 +63,3 @@ def api_results(table_name):
         return render_template('404.html', pg_name="error", error=error, list_of_tables=list_of_tables), 404
 
     return jsonify(convert_to_nested_dict(table))
-
-
-# __andy's stuff__
-
-# @csrf.error_handler
-# def csrf_error(reason):
-#     return render_template('csrf_error.html', reason=reason), 400

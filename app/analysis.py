@@ -1,4 +1,3 @@
-from sqlalchemy.exc import IntegrityError
 from project import db
 from project.models import Results
 from project.analysis.data_analysis import *
@@ -14,6 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+
 
 def analysis():
     # Delete existing data in table

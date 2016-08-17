@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, Blueprint, jsonify
+from flask import render_template, Blueprint
 import json
 from flask.ext.login import login_required
 from .form import AnalysisForm
@@ -7,14 +7,9 @@ from project.analysis.data_analysis import *
 import pandas as pd
 import numpy as np
 import pickle
-from sklearn.linear_model import LinearRegression
-from sklearn import metrics
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
 
 analysis_blueprint = Blueprint("analysis", __name__, template_folder="templates")
+
 
 @analysis_blueprint.route("/analysis", methods=["GET", "POST"])
 @login_required
@@ -126,6 +121,7 @@ def analysis():
             ave_pred = day + ": No class on in " + room + " at " + time
 
     return render_template("analysis.html", pg_name=pg_name, form=form, cate_model=cate_model, svc=svc, accuracy=accuracy, pred=pred, hist=hist, model_hist=model_hist, hist_pred=hist_pred, hist_auth=hist_auth, room_cap=room_cap, chart_1=chart_1, chart_2=chart_2, ave_pred=ave_pred, ave_auth=ave_auth, day=day, time=time, room=room, date=date)
+
 
 def get_exp_var(df):
     '''Input: df, Output: Explanatory variable'''
