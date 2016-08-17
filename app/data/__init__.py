@@ -1,5 +1,6 @@
 from .extract_legacy import *
 from .extract_log_data import *
+import sqlite3
 
 path_legacy_xl = "./data/legacy_data/legacy_data.xlsx"
 path_logs = "./data/log_data/"
