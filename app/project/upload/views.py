@@ -6,7 +6,6 @@ import os
 from project import db, app, admin_permission, normal_permission
 from project.models import *
 from sqlalchemy import exists
-from legacy_into_db import legacy
 from analysis import analysis
 from update_db import update_db
 import pandas as pd
@@ -37,10 +36,6 @@ def upload():
         # save the uploaded file using secure filename
         form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
-        # add to the database
-#         legacy()
-        # do analysis for results table
-#         analysis()
         flash("Uploaded " + filename)
     return render_template("upload.html", pg_name=pg_name, form=form)
 

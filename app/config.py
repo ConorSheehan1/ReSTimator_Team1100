@@ -36,7 +36,7 @@ class BaseConfig():
 class DevelopmentConfig(BaseConfig):
 	''''''
 	DEBUG = True
-	SQLALCHEMY_ECHO = True
+	# SQLALCHEMY_ECHO = True
 	ACCEPTABLE_SUFFIX = ".ie"
 
 class TestingConfig(BaseConfig):
