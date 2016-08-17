@@ -1,10 +1,9 @@
 from project import db
-from sqlalchemy import *
 from flask_wtf import Form
-from wtforms import SelectField, SubmitField, StringField
-# from wtforms.fields.html5 import DateField
+from wtforms import SelectField, StringField
 from project.models import Results, Location, Occupy
 from wtforms.validators import DataRequired
+
 
 class AnalysisForm(Form):
     model_type = SelectField("Model", validators=[DataRequired()])  
@@ -13,7 +12,6 @@ class AnalysisForm(Form):
     room = SelectField("Room", validators=[DataRequired()])
     time = SelectField("Time", validators=[DataRequired()])
     date = StringField('Pick a Date', validators=[DataRequired()])
-
 
     def __init__(self, *args, **kwargs):
         super(AnalysisForm, self).__init__(*args, **kwargs)

@@ -1,11 +1,9 @@
-from sqlalchemy.exc import IntegrityError
 from project import db
 from project.models import Results
 from project.analysis.data_analysis import *
 import pandas as pd
 import numpy as np
 import pickle
-    
 from sklearn.linear_model import LinearRegression
 from sklearn.cross_validation import train_test_split
 from sklearn.cross_validation import cross_val_score
@@ -14,6 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+
 
 def analysis():
     # Delete existing data in table

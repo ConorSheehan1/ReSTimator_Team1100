@@ -1,17 +1,15 @@
-from flask import render_template, flash, redirect, request, Blueprint
+from flask import render_template, flash, request, Blueprint
 from .forms import UploadForm, GTForm, ModuleForm, LocationForm, AddUserForm
 from flask.ext.login import login_required
 from werkzeug import secure_filename
 import os
 from project import db, app, admin_permission, normal_permission
 from project.models import *
-from sqlalchemy import exists
-from legacy_into_db import legacy
-from analysis import analysis
-from update_db import update_db
+from .update_db import update_db
 import pandas as pd
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
+
 
 @upload_blueprint.route("/admin", methods=["GET", "POST"])
 @login_required
@@ -21,6 +19,7 @@ def admin_options():
     
     pg_name = "Admin Options"
     return render_template("admin_options.html", pg_name=pg_name)
+
 
 @upload_blueprint.route("/upload", methods=["GET", "POST"])
 @login_required
@@ -36,13 +35,10 @@ def upload():
         filename = secure_filename(form.upload.data.filename)
         # save the uploaded file using secure filename
         form.upload.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
-        # add to the database
-#         legacy()
-        # do analysis for results table
-#         analysis()
+
         flash("Uploaded " + filename)
     return render_template("upload.html", pg_name=pg_name, form=form)
+
 
 @upload_blueprint.route("/add_occupancy", methods=["GET", "POST"])
 @login_required
@@ -86,6 +82,7 @@ def upload_GT():
         update_db(db, new_data_df, Occupy, True)
         
     return render_template("add_occupancy.html", pg_name=pg_name, form=form)
+
 
 @upload_blueprint.route("/add_module", methods=["GET", "POST"])
 @login_required
@@ -137,6 +134,7 @@ def add_location():
             flash('Your data has already been recorded. Please check that you selected the correct information for \
             Campus, Building, and Room.')
     return render_template("add_location.html", pg_name=pg_name, form=form)
+
 
 @upload_blueprint.route("/add_user", methods=["GET", "POST"])
 @login_required

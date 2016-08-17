@@ -3,9 +3,8 @@ from project.models import Location, Module
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SelectField, StringField, IntegerField, PasswordField, validators
-# from wtforms.validators import DataRequired
-from wtforms.fields.html5 import DateField
 from project.users.forms import ucd_email, already_signed_up
+
 
 class UploadForm(Form):
     """Form for allowing user to upload files."""
@@ -14,7 +13,8 @@ class UploadForm(Form):
         FileRequired('You have not selected a file to upload. Please select a file.'),
         FileAllowed(['zip', 'csv', 'xlsx'], 'File type not allowed')
     ])
-    
+
+
 class GTForm(Form):
     """Form allowing user to add single record of Ground Truth data to database"""
     
@@ -31,13 +31,15 @@ class GTForm(Form):
         super(GTForm, self).__init__(*args, **kwargs)
         self.room.choices = [(i.room, i.room) for i in db.session.query(Location.room).distinct().order_by(Location.room)]
         self.module_code.choices = [(i.module_code, i.module_code) for i in db.session.query(Module.module_code).distinct().order_by(Module.module_code)]
-    
+
+
 class ModuleForm(Form):
     """Form allowing user to add Module details to database"""
     
     module = StringField('Module Code', [validators.Length(min=7, max=12)])
     students = IntegerField('Registered Students', [validators.DataRequired()])
-    
+
+
 class LocationForm(Form):
     """Form allowing user to add Location details to database"""
     
@@ -45,6 +47,7 @@ class LocationForm(Form):
     building = StringField('Building', [validators.DataRequired()])
     room = StringField('Room', [validators.DataRequired()])
     capacity = IntegerField('Capacity', [validators.DataRequired()])
+
 
 class AddUserForm(Form):
     """Form allowing user to add new user to database"""

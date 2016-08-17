@@ -1,5 +1,6 @@
 import os 
 
+
 class BaseConfig():
 	''''''
 	basedir = os.path.abspath(os.path.dirname(__file__))
@@ -36,11 +37,13 @@ class BaseConfig():
 	# path to the upload directory
 	UPLOAD_FOLDER = './data/log_data'
 
+
 class DevelopmentConfig(BaseConfig):
 	''''''
 	DEBUG = True
 	# SQLALCHEMY_ECHO = True
 	ACCEPTABLE_SUFFIX = ".ie"
+
 
 class TestingConfig(BaseConfig):
 	''''''
@@ -48,6 +51,7 @@ class TestingConfig(BaseConfig):
 	TESTING = True
 	WTF_CSRF_ENABLED = False
 	ACCEPTABLE_SUFFIX = "@ucd.ie"
+
 
 class ProductionConfig(BaseConfig):
 	''''''

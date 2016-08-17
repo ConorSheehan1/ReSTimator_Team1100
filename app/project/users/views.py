@@ -1,10 +1,10 @@
-from flask import Flask, render_template, flash, redirect, url_for, request, Blueprint, Response, session, abort
+from flask import render_template, flash, redirect, url_for, request, Blueprint, session
 from .forms import LoginForm, SignUpForm, ResetForm
+from .token import generate_confirmation_token, confirm_token
+from .email import send_email
 from flask.ext.login import login_user, login_required, logout_user
 from project.models import Users
 from project import db, app
-from project.token import generate_confirmation_token, confirm_token
-from project.email import send_email
 import datetime
 from flask.ext.principal import Identity, RoleNeed, UserNeed, Permission, identity_changed, identity_loaded
 
