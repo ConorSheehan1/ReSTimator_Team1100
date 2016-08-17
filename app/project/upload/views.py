@@ -5,7 +5,7 @@ from werkzeug import secure_filename
 import os
 from project import db, app, admin_permission, normal_permission
 from project.models import *
-from update_db import update_db
+from .update_db import update_db
 import pandas as pd
 
 upload_blueprint = Blueprint("upload", __name__, template_folder="templates")
