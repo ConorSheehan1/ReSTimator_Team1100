@@ -1,9 +1,5 @@
 from data import *
 import sqlite3
-# from app.update_db import update_db
-# from project.models import *
-# from data.extract_legacy import *
-# from project import db
 
 
 def legacy():

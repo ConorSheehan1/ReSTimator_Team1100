@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import calendar
 from project.models import Occupy, Module, Location
 from project import db
 
