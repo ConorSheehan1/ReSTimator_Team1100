@@ -55,13 +55,14 @@ def on_identity_loaded(sender, identity):
 	if hasattr(current_user, 'username'):
 		identity.provides.add(UserNeed(current_user.username))
 
-	# Assuming the User model has a list of roles, update the
+	# Assuming the User model has a role, update the
 	# identity with the roles that the user provides
-	if current_user.role == 'admin':
-		identity.provides.add(normal_role)
-		identity.provides.add(admin_role)
-	else:
-		identity.provides.add(normal_role)
+	if hasattr(current_user, 'role'):
+		if current_user.role == 'admin':
+			identity.provides.add(normal_role)
+			identity.provides.add(admin_role)
+		else:
+			identity.provides.add(normal_role)
     
 @app.errorhandler(403)
 def need_permission(e):
