@@ -71,6 +71,7 @@ def format(date_string):
     Output: formated date string
     '''
     if len(date_string) == 7:
+        # include leading zero
         date_string = "0" + date_string
     date_string = date_string[4:] + "-" + date_string[2:4] + "-" + date_string[:2]
     return str(date_string)

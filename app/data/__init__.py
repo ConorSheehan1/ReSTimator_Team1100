@@ -4,7 +4,7 @@ import sqlite3
 
 path_legacy_xl = "./data/legacy_data/legacy_data.xlsx"
 path_logs = "./data/log_data/"
-path_db = "./project/sample.db"
+path_db = "./project/restimator.db"
 
 
 def populate_db(df, table_name, db_path):
