@@ -4,6 +4,7 @@ from data import *
 import sqlite3
 from analysis import analysis
 
+
 def legacy():
 	try:
 		df_mod = extract(path_legacy_xl, "modules")

@@ -72,7 +72,7 @@ def reset():
     pg_name = 'reset'
     form = ResetForm()
     if request.method == "POST" and form.validate_on_submit():
-        token = generate_confirmation_token(form.username.data + "+" + form.password.data)
+        token = generate_confirmation_token(form.username.data + ",+," + form.password.data)
         reset_url = url_for('users.reset_password', token=token, _external=True)
         html = render_template('reset_email.html', reset_url=reset_url)
         subject = "Reset password"
@@ -104,7 +104,7 @@ def confirm_email(token):
 def reset_password(token):
     try:
         data_string = confirm_token(token)
-        data_list = data_string.split("+")
+        data_list = data_string.split(",+,")
         email = data_list[0]
         password = data_list[1]
     except:
