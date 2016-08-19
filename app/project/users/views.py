@@ -112,7 +112,8 @@ def reset_password(token):
     try:
         user = Users.query.filter_by(username=email).first_or_404()
         user.password = user.set_password(password)
-        # user.reset_on = datetime.datetime.now()
+        # click
+        user.verified = True
         db.session.add(user)
         db.session.commit()
         flash('You have reset your password!', 'success')

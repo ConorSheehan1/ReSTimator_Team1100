@@ -17,7 +17,13 @@ def already_signed_up(form, field):
     # if the email is already in the database raise an exception
     # is not doesn't work for some reason so use !=[]
     if db.session.query(Users).filter(Users.username == field.data).all() !=[]:
-        raise ValidationError('This email is already signed up.')
+        if Users.query.filter(Users.username == field.data).first().confirmed:
+            raise ValidationError('This email is already signed up and confirmed.')
+        else:
+            # if the user is not confirmed tell them to reset  their password to activate account
+            raise ValidationError('This email is already signed up.'
+                                  ' If your confirmation link has expired,'
+                                  ' please reset you password to activate your account.')
 
 
 def not_signed_up(form, field):
