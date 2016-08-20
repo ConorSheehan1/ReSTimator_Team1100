@@ -40,6 +40,16 @@ def verified(form, field):
         raise ValidationError("Please verify your email")
 
 
+def valid_password_length(form, field):
+    if len(field.data) < 8:
+        raise ValidationError("Please make sure your password is at least 8 characters long")
+
+
+def valid_password_content(form, field):
+    if not any(char.isdigit() for char in field.data):
+        raise ValidationError("Please include at least one number in your password")
+
+
 class LoginForm(Form):
     username = StringField('Username', validators=[DataRequired(), Email(), ucd_email, verified])
     # Required validator checks that the field is not submitted empty.
@@ -49,7 +59,8 @@ class LoginForm(Form):
 
 class SignUpForm(Form):
     username = StringField('Email Address', [DataRequired(), Email(), ucd_email, already_signed_up])
-    password = PasswordField('Password', [DataRequired(), EqualTo('confirm', message='Passwords need to match')])
+    password = PasswordField('Password', [DataRequired(), EqualTo('confirm', message='Passwords need to match'),
+                                          valid_password_length, valid_password_content])
     confirm = PasswordField('Repeat Password')
     accept_terms = BooleanField('I accept the terms and conditions', [DataRequired()])
     recaptcha = RecaptchaField()
