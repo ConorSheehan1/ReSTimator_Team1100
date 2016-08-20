@@ -62,7 +62,6 @@ def analysis():
         room_cap = location["capacity"].values[0]
         # CHART 1: Plot historical predictions against ground truth
         df_chart_1 = location[location["date"] == date]
-        print(df_chart_1["occupancy"])
 
         chart_1 = df_chart_1.to_dict("records") # DF based on date selected & convert df to dict
 
