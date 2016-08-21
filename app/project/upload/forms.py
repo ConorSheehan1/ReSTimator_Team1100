@@ -1,5 +1,6 @@
 from project import db
 from project.models import Location, Module
+from project.users.forms import valid_password_content
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SelectField, StringField, IntegerField, PasswordField, validators
@@ -54,5 +55,6 @@ class AddUserForm(Form):
     
     username = StringField('Email Address', [validators.DataRequired(), validators.Email(), ucd_email, already_signed_up])
     role = SelectField("Role", [validators.DataRequired()], choices = [("normal", "Normal"), ("admin", "Admin")])
-    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords need to match')])
+    password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords need to match'),
+                                              valid_password_content, validators.Length(min=8)])
     confirm = PasswordField('Repeat Password')
