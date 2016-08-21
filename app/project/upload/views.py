@@ -145,7 +145,7 @@ def add_user():
     form = AddUserForm() # create instance of RegistrationForm
     # flash("Please Register")
     if request.method == "POST" and form.validate_on_submit():
-        user = Users(username=form.username.data, password=form.password.data, role=form.role.data) 
+        user = Users(username=form.username.data, password=form.password.data, role=form.role.data, confirmed=1) 
         # user = Users(username=form.username.data, password=form.password.data, confirmed=False) 
         db.session.add(user)
         db.session.commit()
