@@ -10,6 +10,7 @@ class BaseTest(TestCase):
 	def create_app(self):
 		''''''
 		app.config.from_object("config.TestingConfig")
+		# app.config.from_object("config.DevelopmentConfig")
 		return app
 
 	def set_db_up(self):
@@ -122,7 +123,7 @@ class FlaskTest(BaseTest):
 		rows = db.session.query(Module).count()
 		assert rows >= 40
 
-	def test_time_format(self):
+	def test_time_indb(self):
 		'''
 		Hours should be between 00 and 24
 		Minutes should be between 0 and 59
@@ -146,7 +147,7 @@ class FlaskTest(BaseTest):
 		# if all other cases don't fail, test has passed
 		assert True
 
-	def test_date_format(self):
+	def test_date_indb(self):
 		'''
 		year should always be positive
 		month should be between 1 and 12
@@ -174,7 +175,7 @@ class FlaskTest(BaseTest):
 		# if all other cases don't fail, test has passed
 		assert True
 
-	def test_occupany_format(self):
+	def test_occupany_indb(self):
 		'''
 		Occupancy should always be a float between 0 and 1
 		'''
@@ -200,7 +201,7 @@ class FlaskTest(BaseTest):
 				assert False
 		assert True
 
-	def test_room_format(self):
+	def test_room_indb(self):
 		'''
 		room codes should always begin with a letter and end with a number
 		'''
@@ -218,7 +219,7 @@ class FlaskTest(BaseTest):
 				assert False
 		assert True
 
-	def test_capacity_format(self):
+	def test_capacity_indb(self):
 		'''
 		capacity should always be positive integers
 		'''
@@ -228,7 +229,7 @@ class FlaskTest(BaseTest):
 				assert False
 		assert True
 
-	def test_reg_students_format(self):
+	def test_reg_students_indb(self):
 		'''
 		reg_students should always be positive integers
 		'''
@@ -238,7 +239,7 @@ class FlaskTest(BaseTest):
 				assert False
 		assert True
 
-	def test_module_code_format(self):
+	def test_module_code_indb(self):
 		'''
 		module code should always start with a letter and end with a digit,
 		even ones split into p1, p2 and joint modules
@@ -248,6 +249,24 @@ class FlaskTest(BaseTest):
 			if not(tup[0][0].isalpha() and tup[0][-1].isnumeric()):
 				assert False
 		assert True
+
+	def test_password_indb(self):
+		'''
+		hashed passwords should always be 66 characters long
+		'''
+		passwords = db.session.query(Users.password).all()
+		for tup in passwords:
+			assert len(tup[0]) == 66
+
+	def test_email_indb(self):
+		'''
+		all emails should end in the acceptable suffix
+		'''
+		emails = db.session.query(Users.username).all()
+		for tup in emails:
+			print(tup, tup[0].endswith(app.config["ACCEPTABLE_SUFFIX"]))
+			assert tup[0].endswith(app.config["ACCEPTABLE_SUFFIX"])
+
 
 if __name__ == "__main__":
 	unittest.main()
