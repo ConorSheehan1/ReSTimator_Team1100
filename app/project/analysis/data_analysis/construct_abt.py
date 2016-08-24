@@ -82,24 +82,28 @@ def convert_perc_int(df):
     df["occupancy"] = df["occupancy"].astype(int)
     return df
 
-# def abt(conn, normal=True, convert=False):
 def abt(normal=True, convert=False):
 	'''Construct ABT'''
 	# create dfs
 	df_occupy = occupy_df() 
 	df_module = module_df()
 	df_location = location_df()
-	# merge dfs
+	# merge dfs and drop N/A rows
 	df_abt = pd.merge(left = df_occupy, right = df_module, how="outer", on=["module_code"]) 
 	df_abt = pd.merge(left = df_abt, right = df_location, how="outer", on=["room"]) 
-
-	df_abt = df_abt[df_abt["reg_students"] != 0] # Remove rows without registered students i.e. no class
-
-	df_abt["occupancy_number"] = df_abt["occupancy"] * df_abt["capacity"] # create occupancy_number column
-	df_abt["min_occ_reg"] = df_abt.loc[:, ['occupancy_number', 'reg_students']].min(axis=1) # Take min between occupancy gt and reg students to remove error in gt measurement
 	df_abt = df_abt.dropna() 
-
-	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x)) # Insert day
+	# Remove rows without registered students i.e. no class
+	df_abt = df_abt[df_abt["reg_students"] != 0] 
+	# Add occupancy ground truth number to ABT (Capacity * GT%)
+	df_abt["occupancy_number"] = df_abt["occupancy"] * df_abt["capacity"] 
+	# Remove those rows outside an acceptable error range
+	df_abt["Difference"] = df_abt["occupancy_number"] - df_abt["reg_students"]
+	df_abt["max_error"] = df_abt["capacity"].apply(lambda x: x * .125)
+	df_abt = df_abt[df_abt["Difference"] <= df_abt["max_error"]]
+	# Take min between occupancy gt and reg students to remove error in gt measurement
+	df_abt["min_occ_reg"] = df_abt.loc[:, ['occupancy_number', 'reg_students']].min(axis=1) 
+	# Insert day
+	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x)) 
 
 	if normal:
 		df_abt["min_occ_reg_NORM"] = normalize(df_abt, "min_occ_reg")
