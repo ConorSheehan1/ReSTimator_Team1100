@@ -38,12 +38,8 @@ def extract_csvs(path):
     '''
     absolute_path = os.path.abspath(path)
 
-    print("go")
-    print("other", [file for file in glob.glob(path + "*") if file in glob.glob(path + "*.zip") or os.path.isdir(file)])
     # while there are zips or folders in the directory
     while [file for file in glob.glob(path + "*") if file in glob.glob(path + "*.zip") or os.path.isdir(file)]:
-    # while [file for file in glob.glob(path + "*") if file not in glob.glob(path + "*.csv")]:
-        print("really go")
 
         # iterate over every file
         for file in glob.glob(path + "*"):
