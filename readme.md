@@ -1,30 +1,17 @@
-## How to use
-1. Run run.py
-2. Open browser and go to localhost:5000
+## How to set up this project locally
+1. Run create_db.py
+2. Run run.py
+3. Open browser and go to localhost:5000
 
-## Input data  
-1. 0 values should be explicitly put in files sent to this program. Rows with empty values may be dropped.  
-  This occurs in clean_timetable.py for example.
+# Important
+This project is on a public git repository. If you intend to use it:
 
-**data_analytics**
+* Please use your own secret key and salt (change the values in config.py)
+* Please use your own email (change values in config.py)
 
-1. Run relative_unzipper.py to extract logs
-2. Run db_config.py to import all files and load them into the database.
+### Admin users
+Only admin users can create other admin users, so make sure to set up the database with an existing admin user.
 
-**Testing**
-
-* Tests must be run from the test directory in order to pass.
-* Tests take roughly a minute to pass
-* Results may vary depending on whether nosetest or pytest is used. For best results use nose.
-
-**Notes**
-
-* Usage, notes, and references are included in the doc string of each file.
-
-
-## Initial set up
-* run app/create_db.py
-* run app/legacy_into_db.py
-* run app/project/analysis/analysis.py
-* run app/run.py
-* open localhost:5000
+1. Go to create_db.py to do this.
+2. Change the variable user1 or user2 to your email address and password to make yourself the initial admin.
+3. You can then deploy the application and add other admins using the add user feature in the admin section.
