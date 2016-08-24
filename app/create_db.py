@@ -31,7 +31,7 @@ def legacy():
 		# Combine dfs
 		df_merge = pd.merge(left=df_gt, right=df_logs, how="outer", on=["room", "date", "time"])
 		populate_db(df_merge, "occupy", path_db)
-		delete_csvs(path_logs)
+		delete_all(path_logs)
 	except sqlite3.IntegrityError:
 		print("Constraint Error: occupy table")
 	except sqlite3.OperationalError:
