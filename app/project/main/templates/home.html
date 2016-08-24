@@ -1,13 +1,72 @@
 {% extends "base_template.html" %} <!-- extends block establishes the inheritance link between this content and base_template -->
+{% block style %}
+
+
+{% endblock %}
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
 	<h1>Home</h1>
     <hr />
-<!-- 
-	<ul>
-	{% for r in random %}
-		<li> {{ r.username }} - {{ r.password }} </li>
-	{% endfor %}
-	</ul> -->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+				<h3>Simple Linear Model</h3>
+				<p>Simple linear regression function used to estimate specific values rather than classifications.</p>
+				<p>y = α + βx</p>
+				<p>
+				where
+				y is the estimate of the number of people occupying a location,
+				x is the average number of devices connected to an AP from quarter past to quarter to the hour.
+				</p>
+			</div>
+			<div class="col-lg-2 col-md-2 col-xs-12 col-sm-12">
+			</div>
+			<img src="/static/images/linreg.png" alt="Linear Regression">
+			<div class="col-lg-4 col-md-4 col-xs-12 col-sm-12">
+			</div>
+		</div>
+	</div>
+<hr/>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+				<h3>Multinominial Logistic Regression</h3>
+				<p>Probablistic model where the probability is estimated that the outcome variable assumes a certain classification. Multinomial logistic regression used for the multi-class problem of several ground truth classifications. </p>
+			</div>
+			<div class="col-lg-2 col-md-2 col-xs-12 col-sm-12">
+			</div>
+			<div class="col-lg-5 col-md-5 col-xs-12 col-sm-12">
+				<img src="/static/images/mult.png" alt="Logistic Regression"> 
+			</div>
+		</div>
+	</div>
+<hr/>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+			<h3>k-Nearest Neighbour</h3>
+			<p>This supervised learning algorithm is very intuitive. Suppose you want to identify which class the green circle belongs to. In this example, the circle belongs to one of two classes. This algorithm takes a vote from the circle’s nearest neighbours. For instance, if you set k to 3, it looks for the three closest occurrences and decides that the circle is a red triangle.</p>
+			</div>
+			<div class="col-lg-1 col-md-1 col-xs-12 col-sm-12">
+			</div>
+			<div class="col-lg-4 col-md-4 col-xs-12 col-sm-12">
+			<img src="/static/images/knn.png" alt="k-Nearest Neighbour">
+			</div>
+		</div>
+	</div>
+<hr/>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+			<h3>Support Vector Machine</h3>
+			<p>Support vector machine is a supervised learning algorithm that treats each data point as a coordinate which are referred to as support vectors. The algorithm classifies each support vector by finding the hyper-plane that differentiates the classes. This means that the algorithm finds the frontier that best segregates the classes. This is done by maximizing the distances between nearest data point and hyper-plane. The goal is to maximize the margin.</p>
+			</div>
+			<div class="col-lg-1 col-md-1 col-xs-12 col-sm-12">
+			</div>
+			<div class="col-lg-4 col-md-4 col-xs-12 col-sm-12">
+			<img src="/static/images/svm.png" alt="Support Vector Machine">
+			</div>
+		</div>
+	</div>
 
 {% endblock %}
