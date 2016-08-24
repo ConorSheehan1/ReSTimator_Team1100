@@ -38,8 +38,8 @@ def extract_csvs(path):
     '''
     absolute_path = os.path.abspath(path)
 
-    # while there are things in the folder other than csvs
-    while [file for file in glob.glob(path + "*") if file not in glob.glob(path + "*.csv")]:
+    # while there are zips or folders in the directory
+    while [file for file in glob.glob(path + "*") if file in glob.glob(path + "*.zip") or os.path.isdir(file)]:
 
         # iterate over every file
         for file in glob.glob(path + "*"):
@@ -57,12 +57,12 @@ def extract_csvs(path):
                     shutil.move(sub_file, absolute_path + "/" + file_name)
                 os.rmdir(file)
 
-def delete_csvs(path):
+def delete_all(path):
     '''Input: directory containing csvs
 
-    Delete csv files
+    Delete every file in the folder
     '''
-    for file in glob.glob(path + "*.csv"):
+    for file in glob.glob(path + "*"):
         os.remove(file)
 
 def format(date_string):
@@ -112,6 +112,9 @@ def log_df(path=""):
     return df
 
 if __name__ == "__main__":
-    extract_csvs("./log_data")
-    print(log_df())
-    delete_csvs()
+    extract_csvs("./log_data/")
+    try:
+        print(log_df("./log_data/"))
+    except:
+        print("csvs failed to import, please check file format")
+    delete_all("./log_data/")
