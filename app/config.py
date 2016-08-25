@@ -50,9 +50,10 @@ class TestingConfig(BaseConfig):
 	DEBUG = True
 	TESTING = True
 	WTF_CSRF_ENABLED = False
-	ACCEPTABLE_SUFFIX = "@ucd.ie"
+	ACCEPTABLE_SUFFIX = ".ie"
 
 
 class ProductionConfig(BaseConfig):
 	''''''
 	DEBUG = False
+	ACCEPTABLE_SUFFIX = "@ucd.ie"

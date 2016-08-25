@@ -9,7 +9,7 @@ from project.models import Users
 def ucd_email(form, field):
     # if not field.data.endswith('@ucd.ie'):
     if not field.data.endswith(app.config["ACCEPTABLE_SUFFIX"]):
-        raise validators.ValidationError('Please use a ucd staff email (example@ucd.ie)')
+        raise validators.ValidationError('Please use an email ending in {}'.format(app.config["ACCEPTABLE_SUFFIX"]))
 
 
 def already_signed_up(form, field):
