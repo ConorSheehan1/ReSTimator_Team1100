@@ -82,7 +82,14 @@ def convert_perc_int(df):
     df["occupancy"] = df["occupancy"].astype(int)
     return df
 
-def abt(normal=True, convert=False):
+def adjustment(df):
+	''''''
+	# Adjustment: Based on assumption of max devices = max of % range * capacity * 2 (see Data_Ana_Final.ipynb for full explanation)
+	df["max_devices"] = ((df["occupancy_number"] + (df["capacity"] * .125)) * 2) 
+	df["difference"] = df["authenticated_client_count"] - df["max_devices"]
+	return df[df["difference"] < 0]
+
+def abt(normal=True, convert=False, adjust=True):
 	'''Construct ABT'''
 	# create dfs
 	df_occupy = occupy_df() 
@@ -102,8 +109,10 @@ def abt(normal=True, convert=False):
 	df_abt = df_abt[df_abt["Difference"] <= df_abt["max_error"]]
 	# Take min between occupancy gt and reg students to remove error in gt measurement
 	df_abt["min_occ_reg"] = df_abt.loc[:, ['occupancy_number', 'reg_students']].min(axis=1) 
-	# Insert day
-	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x)) 
+	if adjust:
+		df_abt = adjustment(df_abt)
+
+	df_abt["day"] = df_abt["date"].apply(lambda x: get_day(x)) # Insert day
 
 	if normal:
 		df_abt["min_occ_reg_NORM"] = normalize(df_abt, "min_occ_reg")
@@ -117,3 +126,35 @@ def abt(normal=True, convert=False):
 		df_abt = convert_perc_int(df_abt)
 
 	return df_abt
+
+def lin_exp_var(df):
+	''''''
+	return df["authenticated_client_count"].reshape(len(df["authenticated_client_count"]), 1)
+
+def log_exp_var(df):
+	''''''
+	EXP = []
+	for a, o in zip(df["authenticated_client_count"], df['capacity']):
+		EXP.append([a, o])
+	return np.array(EXP)
+
+def gnb_exp_var(df):
+	''''''
+	EXP = []
+	for a, o in zip(df["authenticated_client_count"] / df["capacity"], df['reg_students']):
+		EXP.append([a, o])
+	return np.array(EXP)
+
+def knn_exp_var(df):
+	''''''
+	EXP = []
+	for a, o in zip(df["authenticated_client_count"] / df["capacity"], df['reg_students']):
+		EXP.append([a, o])
+	return np.array(EXP)
+
+def svm_exp_var(df):
+	''''''    
+	EXP = []
+	for a, o in zip(df["authenticated_client_count"], df['capacity']):
+		EXP.append([a, o])
+	return np.array(EXP)

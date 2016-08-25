@@ -17,9 +17,10 @@ def analysis():
     '''analysis view'''
     pg_name = "Analysis"
     form = AnalysisForm()
-    cate_model = True
+    cate_model = False
     svc = False
     accuracy = None
+    model_hist = "" 
     hist = None
     pred = None
     hist_pred = None
@@ -29,11 +30,11 @@ def analysis():
     chart_2 = None
     ave_pred = None
     ave_auth = None
+    ave_X = None
     day = None
     time = None
     room = None
     date = None
-    df_abt = abt(normal=False, adjust=False).copy() 
     
     if form.validate_on_submit():
         # model's accuracy metrics
@@ -45,35 +46,26 @@ def analysis():
         query_model = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.model).all() # Query to get model object
         model = pickle.loads(query_model[0][0]) # load pickled object from db
 
-        if "Linear" in form.model_type.data:
-            cate_model = False
-            X = lin_exp_var(df_abt) 
-        elif "Logistic" in form.model_type.data:
-            X = log_exp_var(df_abt)
-        elif "Naive" in form.model_type.data:
-            X = gnb_exp_var(df_abt) 
-        elif "Neighbor" in form.model_type.data:
-            X = knn_exp_var(df_abt) 
-        else:
-            svc = True
-            X = svm_exp_var(df_abt) 
-        prediction1 = model.predict(X)
-        df_abt["predicted"] = pd.Series(prediction1, index=df_abt.index) # Append predictions to ABT
-        df_abt["predicted"] = df_abt["predicted"].apply(lambda x: round(x, 2)) 
-        df_abt = df_abt.sort_values(by="time", ascending=1)
-
+        query_abt = Results.query.filter_by(model_type=form.model_type.data).with_entities(Results.abt).all() # Query to get model object
+        df_model = pickle.loads(query_abt[0][0])
+        df_model = df_model.sort_values(by="time", ascending=1)
+        # Get Model Predictions for historical information
         date = str(form.date.data)
         day = get_day(date)
         room = form.room.data
         time = form.time.data
 
-        location = df_abt[(df_abt["campus"] == form.campus.data) & (df_abt["building"] == form.building.data) & (df_abt["room"] == room)].copy() # DF based on location selected
-        room_cap = location["capacity"].values[0]
+        df_model["predicted"] = df_model["predicted"].apply(lambda x: round(x, 2)) 
+        model_hist = df_model["predicted"].tolist()
 
+        location = df_model[(df_model["campus"] == form.campus.data) & (df_model["building"] == form.building.data) & (df_model["room"] == room)].copy() # DF based on location selected
+        room_cap = location["capacity"].values[0]
         # CHART 1: Plot historical predictions against ground truth
         df_chart_1 = location[location["date"] == date]
-        print(df_chart_1)
+
         chart_1 = df_chart_1.to_dict("records") # DF based on date selected & convert df to dict
+
+        # Report variables
         try:
             hist_vars = df_chart_1[df_chart_1["time"] == time]
             hist_pred = hist_vars["predicted"].values[0]
@@ -88,28 +80,52 @@ def analysis():
         df_chart_2 = df_chart_2.groupby(["room", "time"], as_index=False).mean() # get the mean values for day selected
         del df_chart_2["predicted"]
 
+        groups = [0, 25, 50, 75, 100] # need to make this dynamic (if we decide to have more percentage groups)
         if "Linear" in form.model_type.data:
-            X = lin_exp_var(df_chart_2) 
-        elif "Logistic" in form.model_type.data:
-            X = log_exp_var(df_chart_2)
-        elif "Naive" in form.model_type.data:
-            X = gnb_exp_var(df_chart_2) 
-        elif "Neighbor" in form.model_type.data:
-            X = knn_exp_var(df_chart_2) 
+            X = df_chart_2["authenticated_client_count"].reshape(len(df_chart_2["authenticated_client_count"]), 1) # Explanatory variable (REPLACE WITH PICKLE)
+            model_pred = model.predict(X)
+        elif "Support" in form.model_type.data:
+            svc = True
+            X = get_exp_var(df_chart_2)
+            model_pred = model.predict(X)
         else:
-            X = svm_exp_var(df_chart_2) 
-        prediction2 = model.predict(X)
-        df_chart_2["predicted"] = pd.Series(prediction2, index=df_chart_2.index) # Prediction based off average number of devices in room
+            cate_model = True
+            X = get_exp_var(df_chart_2)
+            group_index = model.predict_proba(X).argmax(axis=1)
+            model_pred = []
+            for i in group_index:
+                model_pred.append(groups[i])
+        df_chart_2["predicted"] = pd.Series(model_pred, index=df_chart_2.index) # Append historical predictions to ABT
         df_chart_2["predicted"] = df_chart_2["predicted"].apply(lambda x: round(x, 2)) 
         chart_2 =  df_chart_2.to_dict("records") # convert df to dict
 
+        # Prediction based off average number of devices in room
         try:
-            ave_vars = df_chart_2[df_chart_2["time"] == time]
-            ave_pred = ave_vars["predicted"].values[0]
+            ave_vars = df_chart_2[df_chart_2["time"] == time].copy() 
             ave_auth = ave_vars["authenticated_client_count"].values[0]
+            if cate_model == True:
+                X = get_exp_var(ave_vars)
+                ave_pred = groups[model.predict_proba(X).argmax(axis=1)]
+            elif svc == True:
+                X = get_exp_var(ave_vars)
+                ave_pred = model.predict(X)[0]
+            else:
+                ave_pred = model.predict(ave_auth)[0]
             pred = True
+        except TypeError:
+            pred = False
+            ave_pred = day + ": No class on in " + room + " at " + time
         except IndexError:
             pred = False
             ave_pred = day + ": No class on in " + room + " at " + time
 
-    return render_template("analysis.html", pg_name=pg_name, form=form, cate_model=cate_model, svc=svc, accuracy=accuracy, pred=pred, hist=hist, hist_pred=hist_pred, hist_auth=hist_auth, room_cap=room_cap, chart_1=chart_1, chart_2=chart_2, ave_pred=ave_pred, ave_auth=ave_auth, day=day, time=time, room=room, date=date)
+    return render_template("analysis.html", pg_name=pg_name, form=form, cate_model=cate_model, svc=svc, accuracy=accuracy, pred=pred, hist=hist, model_hist=model_hist, hist_pred=hist_pred, hist_auth=hist_auth, room_cap=room_cap, chart_1=chart_1, chart_2=chart_2, ave_pred=ave_pred, ave_auth=ave_auth, day=day, time=time, room=room, date=date)
+
+
+def get_exp_var(df):
+    '''Input: df, Output: Explanatory variable'''
+    occ = df["occupancy"].copy().apply(lambda x: (x / 100) * df["capacity"].values[0])
+    EXP = []
+    for a, o in zip(df["authenticated_client_count"], occ):
+        EXP.append([a, o])
+    return np.array(EXP)
