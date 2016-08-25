@@ -33,9 +33,9 @@ def update_db(db, df, table, gt=False):
 
         try:
             db.session.commit()
-            print("row inserted @", end=="")
+            print("row inserted @", end="")
             for value in pk_list:
-                print("", row[value], end=="")
+                print("", row[value], end="")
             print("\n")
             if gt:
                 flash("Thank you. Your data has been recorded.")
@@ -43,9 +43,9 @@ def update_db(db, df, table, gt=False):
             # remove staged changes which caused integrity error
             db.session.rollback()
 
-            print("integrity error @", end=="")
+            print("integrity error @", end="")
             for value in pk_list:
-                print("", row[value], end=="")
+                print("", row[value], end="")
             print("\ntrying to update db...")
 
             # create dictionary of primary key values which caused integrity error
@@ -68,9 +68,9 @@ def update_db(db, df, table, gt=False):
 
             # if the merge doesn't have any new values, don't bother committing to the db
             if merged == dict_db_row:
-                print("no new values to commit @", end=="")
+                print("no new values to commit @", end="")
                 for value in pk_list:
-                    print("", row[value], end=="")
+                    print("", row[value], end="")
                 print("\n")
                 if gt:
                     flash("Your data has already been recorded. Please check that you selected the correct information.")
@@ -83,9 +83,9 @@ def update_db(db, df, table, gt=False):
             # this can't fail integrity because it is updating a row already in the db
             db.session.commit()
 
-            print("db updated @", end=="")
+            print("db updated @", end="")
             for value in pk_list:
-                print("", row[value], end=="")
+                print("", row[value], end="")
             print("\n")
             if gt:
                 flash("Thank you. Your data has been recorded.")
