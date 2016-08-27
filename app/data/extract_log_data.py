@@ -7,8 +7,6 @@ def convert_month(month_string):
 
     Output: numerical month representation
     '''
-    # abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
-    # return abbr_to_num[month_string]
     month = list(calendar.month_abbr).index(month_string)
     if month < 10:
         return "0" + str(month)
@@ -57,6 +55,7 @@ def extract_csvs(path):
                     shutil.move(sub_file, absolute_path + "/" + file_name)
                 os.rmdir(file)
 
+
 def delete_all(path):
     '''Input: directory containing csvs
 
@@ -64,6 +63,7 @@ def delete_all(path):
     '''
     for file in glob.glob(path + "*"):
         os.remove(file)
+
 
 def format(date_string):
     '''Input: date string
@@ -75,6 +75,7 @@ def format(date_string):
         date_string = "0" + date_string
     date_string = date_string[4:] + "-" + date_string[2:4] + "-" + date_string[:2]
     return str(date_string)
+
 
 # include varibale path, default value is empty string
 def log_df(path=""):

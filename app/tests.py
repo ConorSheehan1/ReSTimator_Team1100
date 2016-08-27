@@ -54,18 +54,6 @@ class FlaskTest(BaseTest):
 		response = self.client.get("/sign_up", content_type="html/text")
 		self.assertIn(b"ReSTimator - Sign Up", response.data)
 
-	# def test_signup_feature1(self):
-	# 	'''Test Sign up feature works correctly when given correct credentials'''
-	# 	pass
-	# # 	response = self.client.post("/sign_up", data=dict(username="x@ucd.ie", password="ucd", confirm="ucd", accept_terms=True), follow_redirects=True)
-	# # 	self.assertIn(b"Successfully Registered", response.data)
-    #
-	# def test_signup_feature2(self):
-	# 	'''Test Sign up feature works correctly when given incorrect credentials'''
-	# 	pass
-	# 	response = self.client.post("/login", data=dict(username="x", password="ucd", confirm="udc", accept_terms=False))
-	# 	self.assertIn(b"This field is required", response.data)
-
 	# Login page testing
 
 	def test_login(self):
@@ -77,35 +65,6 @@ class FlaskTest(BaseTest):
 		'''Test Flask loads page correctly'''
 		response = self.client.get("/login", content_type="html/text")
 		self.assertIn(b"ReSTimator - Login", response.data)
-
-	# def test_login_feature1(self):
-	# 	'''Test Login redirects to home when given correct credentials'''
-	# 	response = self.client.post("/login", data=dict(username="admin@ucd.ie", password="admin"), follow_redirects=True)
-	# 	self.assertIn(b"ReSTimator - Home", response.data)
-    #
-	# def test_login_feature2(self):
-	# 	'''Test Login feature works correctly when given incorrect credentials'''
-	# 	response = self.client.post("/login", data=dict(username="x@ucd.ie", password=None), follow_redirects=True)
-	# 	self.assertIn(b"This field is required", response.data)
-	# 	response = self.client.post("/login", data=dict(username="admin", password="admin"), follow_redirects=True)
-	# 	self.assertIn(b"Invalid email address", response.data)
-    #
-	# def test_login_feature3(self):
-	# 	'''Test Login feature requires user to login first'''
-	# 	response = self.client.post("/home", follow_redirects=True)
-	# 	self.assertIn(b"Please log in to access this page.", response.data)
-
-	# Analysis page testing
-
-	# def test_analysis(self):
-	# 	'''Test Flask set up correctly'''
-	# 	response = self.client.get("/analysis", content_type="html/text")
-	# 	self.assertEqual(response.status_code, 200)
-
-	# def test_analysis_loads_correctly(self):
-	# 	'''Test Flask loads page correctly'''
-	# 	response = self.client.get("/analysis", content_type="html/text")
-	# 	self.assertIn(b"ReSTimator - Analysis", response.data)
 
 	# test db
 	def test_num_rows_occupy(self):
@@ -252,7 +211,7 @@ class FlaskTest(BaseTest):
 
 	def test_password_indb(self):
 		'''
-		hashed passwords should always be 66 characters long
+		hashed passwords should always be 66 characters long due to our choice of hashing algorithm.
 		'''
 		passwords = db.session.query(Users.password).all()
 		for tup in passwords:
@@ -261,6 +220,9 @@ class FlaskTest(BaseTest):
 	def test_email_indb(self):
 		'''
 		all emails should end in the acceptable suffix
+		this is likely to fail if you switch from development or testing config to production config,
+		because all emails ending in .ie will be accepted into the db, but then the accpetable suffix will change on deployemnt.
+		to handle this I have included prints which list all emails in the database and whether they have a valid suffix
 		'''
 		emails = db.session.query(Users.username).all()
 		for tup in emails:

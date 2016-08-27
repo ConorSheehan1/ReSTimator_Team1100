@@ -32,9 +32,7 @@ def convert_to_nested_dict(obj):
 @main_blueprint.route("/home", methods=["GET", "POST"])
 def home():
     '''home view'''
-    pg_name = "Home" 
-    # random = db.session.query(Users).all()
-    # return render_template("home.html", pg_name=pg_name, random=random)
+    pg_name = "Home"
     return render_template("home.html", pg_name=pg_name)
     # function takes a template filename and a variable list of template args and returns the rendered template
     #  (invokes Jinja2 templating engine)

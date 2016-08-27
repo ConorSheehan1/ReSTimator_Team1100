@@ -21,12 +21,14 @@ class GTForm(Form):
     
     room = SelectField("Room", [validators.DataRequired()])
     date = StringField('Pick a Date', [validators.DataRequired()])
-    time = SelectField("Time", [validators.DataRequired()], choices = [("09:00", "09:00"), ("10:00", "10:00"), ("11:00", "11:00"),
+    time = SelectField("Time", [validators.DataRequired()],
+                       choices=[("09:00", "09:00"), ("10:00", "10:00"), ("11:00", "11:00"),
                                           ("12:00", "12:00"), ("13:00", "13:00"), ("14:00", "14:00"),
                                           ("15:00", "15:00"), ("16:00", "16:00")])
     module_code = SelectField("Module Code", [validators.DataRequired()])
-    occupancy = SelectField("Occupancy", [validators.DataRequired()], choices = [("0", "0%"), ("0.125", "12.5%"), ("0.25", "25%"), ("0.375", "37.5%"), ("0.5", "50%"), 
-                                                                                 ("0.625", "62.5%"), ("0.75", "75%"), ("0.875", "87.5%"), ("1", "100%")])
+    occupancy = SelectField("Occupancy", [validators.DataRequired()],
+                        choices=[("0", "0%"), ("0.125", "12.5%"), ("0.25", "25%"), ("0.375", "37.5%"), ("0.5", "50%"),
+                                         ("0.625", "62.5%"), ("0.75", "75%"), ("0.875", "87.5%"), ("1", "100%")])
     
     def __init__(self, *args, **kwargs):
         super(GTForm, self).__init__(*args, **kwargs)
