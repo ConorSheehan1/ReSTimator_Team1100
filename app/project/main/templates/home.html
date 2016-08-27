@@ -5,8 +5,37 @@
 {% endblock %}
 {% block content %} <!-- the linked templates have matching block statements named "content" -->
 
+    <style>
+	    ul {
+	        list-style:disc;
+	        margin-left: 20px;
+	    }
+	</style>
+
 	<h1>Home</h1>
     <hr />
+    <div class="container">
+        <h3>Welcome to ReSTimator!</h3>
+        <p>This is a predictive system for estimating room occupancy based on WiFi log data. Here you can:</p>
+        <ul>
+            <li>Add occupancy information</li>
+            <li>View analysis of occupancy information</li>
+            <li>If you are an admin you can:<br />
+                <ul style="list-style:circle;">
+                    <li>Upload WiFi Data</li>
+                    <li>Add Location Information</li>
+                    <li>Add Module Information</li>
+                    <li>Add a New User</li>
+                </ul>
+            </li>
+            <li>Access our API</li>
+        </ul>
+        <p>
+            Details of the predictive models used in our analysis can be seen below.<br /><br />
+            <strong>Just sign up to get started!</strong>
+        </p>
+    </div>
+<hr />
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
