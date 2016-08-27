@@ -15,3 +15,7 @@ Only admin users can create other admin users, so make sure to set up the databa
 1. Go to create_db.py to do this.
 2. Change the variable user1 or user2 to your email address and password to make yourself the initial admin.
 3. You can then deploy the application and add other admins using the add user feature in the admin section.
+
+### Tests
+Falsk-testing is not playing nice with nosetest or pytest.
+To run our tests, just run app/tests.py
