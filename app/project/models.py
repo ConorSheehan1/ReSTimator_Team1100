@@ -138,4 +138,6 @@ class Occupy(db.Model):
 		
 	def __repr__(self):
 		'''object representation'''
-		return "{} - {} - {} - {} - {} - {} - {}".format(self.room, self.date, self.time, self.occupancy, self.module_code, self.associated_client_count, self.authenticated_client_count)
+		return "{} - {} - {} - {} - {} - {} - {}".format(self.room, self.date, self.time, self.occupancy,
+															self.module_code, self.associated_client_count,
+															self.authenticated_client_count)

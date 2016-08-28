@@ -39,6 +39,7 @@ def occupy_df():
 
 	return df_occupy
 
+
 def module_df():
 	'''Input: database connection
 
@@ -48,6 +49,7 @@ def module_df():
 	c = query_mod.statement.compile(query_mod.session.bind)
 	df_module = pd.read_sql(c.string, query_mod.session.bind, params=c.params)
 	return df_module
+
 
 # def location_df(conn):
 def location_df():
@@ -61,6 +63,7 @@ def location_df():
 	df_location = pd.read_sql(c.string, query_loc.session.bind, params=c.params)
 	return df_location
 
+
 def get_day(date_string):
     """Takes date in format yyyy-mm-dd and returns weekday string."""
     year = date_string[:4] 
@@ -68,13 +71,16 @@ def get_day(date_string):
     day = date_string[8:] 
     return datetime.strptime(year + "," + month + "," + day, "%Y,%m,%d").strftime('%A')
 
+
 def normalize(df, feature):
     '''Normalize data'''
     return (df[feature] - df[feature].mean()) / df[feature].std()
 
+
 def removeOutliers(df, feature):
     '''Remove outliers (more than 3 std devs from mean)'''
     return df[np.abs(df[feature] - df[feature].mean()) <= (3 * df[feature].std())]
+
 
 def convert_perc_int(df):
     ''''''
@@ -82,12 +88,14 @@ def convert_perc_int(df):
     df["occupancy"] = df["occupancy"].astype(int)
     return df
 
+
 def adjustment(df):
 	''''''
 	# Adjustment: Based on assumption of max devices = max of % range * capacity * 2 (see Data_Ana_Final.ipynb for full explanation)
 	df["max_devices"] = ((df["occupancy_number"] + (df["capacity"] * .125)) * 2) 
 	df["difference"] = df["authenticated_client_count"] - df["max_devices"]
 	return df[df["difference"] < 0]
+
 
 def abt(normal=True, convert=False, adjust=True):
 	'''Construct ABT'''
@@ -127,9 +135,11 @@ def abt(normal=True, convert=False, adjust=True):
 
 	return df_abt
 
+
 def lin_exp_var(df):
 	''''''
 	return df["authenticated_client_count"].reshape(len(df["authenticated_client_count"]), 1)
+
 
 def log_exp_var(df):
 	''''''
@@ -138,6 +148,7 @@ def log_exp_var(df):
 		EXP.append([a, o])
 	return np.array(EXP)
 
+
 def gnb_exp_var(df):
 	''''''
 	EXP = []
@@ -145,12 +156,14 @@ def gnb_exp_var(df):
 		EXP.append([a, o])
 	return np.array(EXP)
 
+
 def knn_exp_var(df):
 	''''''
 	EXP = []
 	for a, o in zip(df["authenticated_client_count"] / df["capacity"], df['reg_students']):
 		EXP.append([a, o])
 	return np.array(EXP)
+
 
 def svm_exp_var(df):
 	''''''    

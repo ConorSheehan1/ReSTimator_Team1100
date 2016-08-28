@@ -9,4 +9,9 @@ This project is on a public git repository. If you intend to use it:
 * Please use your own email (change values in config.py)
 
 ### Admin users
-Only admin users can create other admin users, so make sure to set up the database with an existing admin user.
+Only admin users can create other admin users.
+
+### Tests
+Falsk-testing is not playing nice with nosetest or pytest.
+To run our tests, just run app/tests.py
+

@@ -38,9 +38,13 @@ def verified(form, field):
     elif not db.session.query(Users).filter(Users.username == field.data).first().confirmed:
         raise validators.ValidationError("Please verify your email")
 
-def valid_password_content(form, field):
+
+def password_has_number(form, field):
     if not any(char.isdigit() for char in field.data):
         raise validators.ValidationError("Please include at least one number in your password")
+
+
+def password_has_letter(form, field):
     if not any(char.isalpha() for char in field.data):
         raise validators.ValidationError("Please include at least one letter in your password")
 
@@ -55,7 +59,7 @@ class LoginForm(Form):
 class SignUpForm(Form):
     username = StringField('Email Address', [validators.DataRequired(), validators.Email(), ucd_email, already_signed_up])
     password = PasswordField('Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords need to match'),
-                                          validators.Length(min=8), valid_password_content])
+                                          validators.Length(min=8), password_has_number, password_has_letter])
     confirm = PasswordField('Repeat Password')
     accept_terms = BooleanField('I accept the terms and conditions', [validators.DataRequired()])
     recaptcha = RecaptchaField()
@@ -65,7 +69,7 @@ class ResetForm(Form):
     # need to be verified to reset?
     username = StringField('Email Address', [validators.DataRequired(), validators.Email(), ucd_email, not_signed_up])
     password = PasswordField('New Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords need to match'),
-                                              validators.Length(min=8), valid_password_content])
+                                              validators.Length(min=8), password_has_number, password_has_letter])
     confirm = PasswordField('Repeat Password')
     recaptcha = RecaptchaField()
 
