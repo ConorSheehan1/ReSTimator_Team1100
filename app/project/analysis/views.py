@@ -72,7 +72,6 @@ def analysis():
 
         # CHART 1: Plot historical predictions against ground truth
         df_chart_1 = location[location["date"] == date]
-        print(df_chart_1)
         chart_1 = df_chart_1.to_dict("records") # DF based on date selected & convert df to dict
         try:
             hist_vars = df_chart_1[df_chart_1["time"] == time]

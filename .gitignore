@@ -10,7 +10,6 @@ __pycache__/
 # pytest 
 .cache
 
-* ipynb
 .ipynb_checkpoints
 
 # database
